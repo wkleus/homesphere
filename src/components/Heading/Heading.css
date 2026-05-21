@@ -1,0 +1,20 @@
+.heading {
+  margin: 6rem 0;
+  text-align: center;
+}
+
+.heading h1 {
+  font-size: 2.5rem;
+  color: goldenrod;
+  /* text-transform: uppercase; */
+  letter-spacing: 1px;
+  border-bottom: 0.15rem solid goldenrod;
+  margin: 0;
+  padding: 0.5rem;
+
+  display: inline-block;
+
+  b {
+    color: rgb(205, 137, 12);
+  }
+}

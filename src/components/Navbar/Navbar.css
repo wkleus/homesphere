@@ -1,0 +1,68 @@
+/* Navbar.css */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 3rem;
+  background: linear-gradient(90deg, #355fa7, #1e3c72);
+  position: relative;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.nav-brand {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: rgb(205, 137, 12);
+  letter-spacing: 1px;
+  text-decoration: underline 3px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+
+  b {
+    color: rgb(205, 137, 12);
+  }
+}
+
+.nav-brand-icon {
+  width: 46px;
+  height: 46px;
+}
+
+.nav-items {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-item {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: goldenrod;
+
+  display: flex;
+  align-items: center;
+}
+
+.nav-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.nav-span {
+  margin-left: 0.5rem;
+  color: goldenrod;
+}
+
+@media screen and (max-width: 768px) {
+  .nav-items {
+    display: none;
+  }
+
+  .navbar {
+    justify-content: center;
+  }
+}
