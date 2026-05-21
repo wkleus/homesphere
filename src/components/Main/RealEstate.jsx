@@ -1,7 +1,7 @@
 import "./RealEstate.css";
 
 const RealEstate = () => {
-  return <main>RealEstate</main>;
+  return <main></main>;
 };
 
 export default RealEstate;
