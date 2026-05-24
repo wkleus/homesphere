@@ -1,0 +1,18 @@
+.status {
+  /* absolute positioning of the status in the top right corner */
+  position: absolute;
+  top: 60px;
+  right: -60px;
+  transform: rotate(45deg);
+
+  padding: 0.5rem 5rem;
+  width: 75%;
+  background-color: red;
+  border-radius: 0 0 0 0.5rem;
+  font-weight: 900;
+  color: white;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3);
+  letter-spacing: 1px;
+}

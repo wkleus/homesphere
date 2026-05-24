@@ -1,6 +1,8 @@
 import "./RealEstateCard.css";
 // import RealEstate from "./../RealEstate";
 import RealEstatePhoto from "./RealEstatePhoto/RealEstatePhoto";
+import RealEstateCategory from "./RealEstatePhoto/RealEstateCategory/RealEstateCategory";
+import RealEstateStatus from "./RealEstatePhoto/RealEstateStatus/RealEstateStatus";
 
 const RealEstateCard = ({
   address,
@@ -15,7 +17,10 @@ const RealEstateCard = ({
 }) => {
   return (
     <div className="realEstate-card" style={{ opacity: isAvailable ? 1 : 0.5 }}>
-      <RealEstatePhoto photo={photo}>entry details</RealEstatePhoto>
+      <RealEstatePhoto photo={photo}>
+        <RealEstateCategory category={category} />
+        {!isAvailable && <RealEstateStatus />}
+      </RealEstatePhoto>
       <div>RealEstate Card Entries</div>
     </div>
   );

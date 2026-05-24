@@ -1,7 +1,7 @@
 import "./RealEstateCategory.css";
 
-const RealEstateCategory = () => {
-  return <div>RealEstateCategory</div>;
+const RealEstateCategory = ({ category }) => {
+  return <div className="category">{category}</div>;
 };
 
 export default RealEstateCategory;

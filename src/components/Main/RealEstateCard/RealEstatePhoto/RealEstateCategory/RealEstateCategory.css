@@ -1,0 +1,13 @@
+.category {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #fb1;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  color: #000;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3);
+}
