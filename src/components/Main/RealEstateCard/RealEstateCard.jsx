@@ -20,7 +20,7 @@ const RealEstateCard = ({
 }) => {
   return (
     <div className="realEstate-card" style={{ opacity: isAvailable ? 1 : 0.5 }}>
-      <RealEstatePhoto photo={photo}>
+      <RealEstatePhoto photo={photo} address={address}>
         <RealEstateCategory category={category} />
         {!isAvailable && <RealEstateStatus />}
         <div className="home-details">

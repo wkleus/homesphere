@@ -4,7 +4,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 3rem;
-  background: linear-gradient(90deg, #355fa7, #1e3c72);
+  background: linear-gradient(90deg, var(--color-primary), #1e3c72);
   position: relative;
   top: 0;
   right: 0;
@@ -15,7 +15,7 @@
 .nav-brand {
   font-size: 1.5rem;
   font-weight: 600;
-  color: rgb(205, 137, 12);
+  color: var(--color-gold);
   letter-spacing: 1px;
   text-decoration: underline 3px;
   cursor: pointer;
@@ -24,7 +24,7 @@
   align-items: center;
 
   b {
-    color: rgb(205, 137, 12);
+    color: var(--color-gold);
   }
 }
 

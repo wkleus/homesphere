@@ -1,6 +1,6 @@
 .footer {
-  background: linear-gradient(90deg, #355fa7, #152f5f);
-  color: rgb(205, 137, 12);
+  background: linear-gradient(90deg, var(--color-primary), #152f5f);
+  color: var(--color-gold);
   text-align: center;
   padding: 2rem;
   font-size: 1.1rem;
@@ -18,7 +18,6 @@
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
-  /* margin-top: 0.5rem; */
   margin: 0.3rem 0;
 }
 
@@ -38,7 +37,7 @@
 }
 
 .email {
-  color: rgb(205, 137, 12);
+  color: var(--color-gold);
   text-decoration: underline 1px;
 }
 

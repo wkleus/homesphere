@@ -17,7 +17,7 @@ const Footer = () => {
   const openStatus = storeIsOpen ? (
     <div>
       <div className="note">
-        <ClockAfternoon className="clock-icon" />
+        <ClockAfternoon className="clock-icon open" />
         <span className="note open">Store is still open.</span>
       </div>
       <div>

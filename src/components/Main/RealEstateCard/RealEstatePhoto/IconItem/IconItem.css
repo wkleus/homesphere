@@ -2,19 +2,12 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  position: relative;
-  bottom: -13rem;
   gap: 0.3rem;
-  /* margin: 0.5rem 0; */
   font-size: 0.8rem;
-  /* color: rgb(205, 137, 12); */
   font-weight: bold;
-  background-color: #fb1;
+  background-color: var(--color-accent);
   color: black;
   width: 4.5rem;
   padding: 0.3rem 0.3rem;
-  /* margin-left: 1rem; */
-  /* align-items: center; */
   justify-content: center;
-  /* text-align: center; */
 }

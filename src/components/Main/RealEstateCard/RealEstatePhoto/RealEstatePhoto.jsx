@@ -1,11 +1,13 @@
 import "./RealEstatePhoto.css";
 
-const RealEstatePhoto = ({ photo, children }) => {
+const RealEstatePhoto = ({ photo, address, children }) => {
   return (
-    <div
-      className="realEstate-photo"
-      style={{ backgroundImage: `url(${photo})` }}
-    >
+    <div className="realEstate-photo">
+      <img
+        src={photo}
+        alt={`Immobilie: ${address}`}
+        className="realEstate-img"
+      />
       {children}
     </div>
   );

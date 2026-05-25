@@ -2,7 +2,7 @@
   position: absolute;
   top: 10px;
   left: 10px;
-  background-color: #fb1;
+  background-color: var(--color-accent);
   padding: 5px 10px;
   border-radius: 5px;
   font-weight: bold;

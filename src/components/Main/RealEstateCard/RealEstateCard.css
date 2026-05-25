@@ -6,18 +6,18 @@
   overflow: hidden;
   box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3);
   margin: 1rem;
-  /* display: flex;
-  flex-direction: column; */
 }
 
 .home-details {
   display: flex;
   flex-direction: row;
-  /* gap: 0.5rem; */
-  /* margin: 0.5rem 0; */
   font-size: 0.8rem;
-  /* color: rgb(205, 137, 12); */
   font-weight: bold;
   padding: 5rem 0.5rem;
   cursor: pointer;
+
+  position: absolute;
+  bottom: -4.5rem;
+  left: 0;
+  right: 0;
 }
