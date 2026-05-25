@@ -6,7 +6,6 @@ const RealEstatePhoto = ({ photo, children }) => {
       className="realEstate-photo"
       style={{ backgroundImage: `url(${photo})` }}
     >
-      {/* <img src={photo} alt="Real Estate" width={400} /> */}
       {children}
     </div>
   );

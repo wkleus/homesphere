@@ -1,5 +1,4 @@
 import "./RealEstateCard.css";
-// import RealEstate from "./../RealEstate";
 import RealEstatePhoto from "./RealEstatePhoto/RealEstatePhoto";
 import RealEstateCategory from "./RealEstatePhoto/RealEstateCategory/RealEstateCategory";
 import RealEstateStatus from "./RealEstatePhoto/RealEstateStatus/RealEstateStatus";

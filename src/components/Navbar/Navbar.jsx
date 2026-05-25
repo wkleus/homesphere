@@ -3,7 +3,7 @@ import { Buildings, EnvelopeOpen, PhoneCall } from "phosphor-react";
 
 const Navbar = () => {
   return (
-    <navbar className="navbar">
+    <nav className="navbar">
       <div className="nav-brand">
         <Buildings className="nav-brand-icon" weight="fill" />
         <span className="nav-span">
@@ -20,7 +20,7 @@ const Navbar = () => {
           <span className="nav-span">(+49) 030 XXXX XXXX</span>
         </div>
       </div>
-    </navbar>
+    </nav>
   );
 };
 
