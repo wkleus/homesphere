@@ -6,3 +6,89 @@
   /* new element will be placed on a new line when it doesn't fit */
   flex-wrap: wrap;
 }
+
+/* Filter Bar */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.2rem 2rem;
+  background: white;
+  border-bottom: 2px solid #eee;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.filter-label {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #355fa7;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 0.3rem 0.9rem;
+  border: 2px solid #ccc;
+  border-radius: 20px;
+  background: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.filter-btn:hover {
+  border-color: #355fa7;
+  color: #355fa7;
+}
+
+.filter-btn.active {
+  background-color: #355fa7;
+  border-color: #355fa7;
+  color: white;
+}
+
+.filter-count {
+  margin-left: auto;
+  font-size: 0.85rem;
+  color: #888;
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.no-results {
+  text-align: center;
+  color: #888;
+  font-size: 1.1rem;
+  margin: 4rem auto;
+  width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+  .filter-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .filter-count {
+    margin-left: 0;
+  }
+}
