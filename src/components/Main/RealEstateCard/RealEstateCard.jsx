@@ -4,6 +4,7 @@ import RealEstatePhoto from "./RealEstatePhoto/RealEstatePhoto";
 import RealEstateCategory from "./RealEstatePhoto/RealEstateCategory/RealEstateCategory";
 import RealEstateStatus from "./RealEstatePhoto/RealEstateStatus/RealEstateStatus";
 import IconItem from "./RealEstatePhoto/IconItem/IconItem";
+import RealEstateDetails from "./RealEstateDetails/RealEstateDetails";
 import { Bed, Buildings, Lightning, Square } from "phosphor-react";
 
 const RealEstateCard = ({
@@ -19,7 +20,7 @@ const RealEstateCard = ({
   yearBuilt,
 }) => {
   return (
-    <div className="realEstate-card" style={{ opacity: isAvailable ? 1 : 0.6 }}>
+    <div className="realEstate-card" style={{ opacity: isAvailable ? 1 : 0.5 }}>
       <RealEstatePhoto photo={photo}>
         <RealEstateCategory category={category} />
         {!isAvailable && <RealEstateStatus />}
@@ -42,7 +43,25 @@ const RealEstateCard = ({
           />
         </div>
       </RealEstatePhoto>
-      <div>RealEstate Card Entries</div>
+      <div>
+        <RealEstateDetails description={address} />
+      </div>
+      <div>
+        {rent && (
+          <RealEstateDetails
+            description={`Monthly rent: EUR ${rent}`}
+            color="#4488bb"
+            fontWeight="bold"
+          />
+        )}
+        {buy && (
+          <RealEstateDetails
+            description={`Purchase price: EUR ${buy}`}
+            color="#4488bb"
+            fontWeight="bold"
+          />
+        )}
+      </div>
     </div>
   );
 };
