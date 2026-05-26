@@ -1,4 +1,5 @@
 import "./RealEstateCard.css";
+import { useNavigate } from "react-router-dom";
 import RealEstatePhoto from "./RealEstatePhoto/RealEstatePhoto";
 import RealEstateCategory from "./RealEstatePhoto/RealEstateCategory/RealEstateCategory";
 import RealEstateStatus from "./RealEstatePhoto/RealEstateStatus/RealEstateStatus";
@@ -7,6 +8,7 @@ import RealEstateDetails from "./RealEstateDetails/RealEstateDetails";
 import { Bed, Buildings, Lightning, Square } from "phosphor-react";
 
 const RealEstateCard = ({
+  id,
   address,
   isAvailable,
   energyClass,
@@ -18,8 +20,15 @@ const RealEstateCard = ({
   category,
   yearBuilt,
 }) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="realEstate-card" style={{ opacity: isAvailable ? 1 : 0.5 }}>
+    <div
+      className="realEstate-card"
+      style={{ opacity: isAvailable ? 1 : 0.5 }}
+      onClick={() => navigate(`/property/${id}`)}
+      title="View details"
+    >
       <RealEstatePhoto photo={photo} address={address}>
         <RealEstateCategory category={category} />
         {!isAvailable && <RealEstateStatus />}
