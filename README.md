@@ -14,22 +14,19 @@ A modular React frontend for browsing and discovering residential properties acr
 
 ## Screenshots
 
-<div style="display:flex; gap:12px; flex-wrap:wrap;">
+<div style="display:flex; gap:20px; flex-wrap:wrap;">
   <div style="width:calc(50% - 6px); text-align:center;">
     <img src="public/screenshots/home.png" width="100%" alt="Home" />
     <p><em>Home – Navbar with contact info and hero heading</em></p>
   </div>
-
   <div style="width:calc(50% - 6px); text-align:center;">
     <img src="public/screenshots/main.png" width="100%" alt="Main" />
     <p><em>Main – Property listings with category and deal type filters</em></p>
   </div>
-
   <div style="width:calc(50% - 6px); text-align:center;">
     <img src="public/screenshots/footer.png" width="100%" alt="Footer" />
     <p><em>Footer – Opening hours and contact details</em></p>
   </div>
-
   <div style="width:calc(50% - 6px); text-align:center;">
     <img src="public/screenshots/details.png" width="100%" alt="Property Detail" />
     <p><em>Detail Page – Full property info with stats and pricing</em></p>
@@ -65,6 +62,7 @@ A modular React frontend for browsing and discovering residential properties acr
 ```
 homesphere/
 ├── public/
+│   ├── favicons/            # Favicons
 │   ├── photos/              # Property images
 │   └── screenshots/         # Screenshots for README.md
 └── src/
