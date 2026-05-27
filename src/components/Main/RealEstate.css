@@ -81,6 +81,14 @@
   width: 100%;
 }
 
+.status-msg {
+  text-align: center;
+  color: #888;
+  font-size: 1.1rem;
+  margin: 4rem auto;
+  width: 100%;
+}
+
 @media screen and (min-width: 1200px) {
   .filter-group {
     margin-left: auto;

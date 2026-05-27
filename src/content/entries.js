@@ -1,3 +1,9 @@
+/**************************************************
+ * src/content/entries
+ * This file is replaced by the API via mockapi.io.
+ **************************************************/
+
+/*
 const entries = [
   {
     id: 1,
@@ -218,3 +224,4 @@ const entries = [
 ];
 
 export default entries;
+*/

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./RealEstate.css";
 import RealEstateCard from "./RealEstateCard/RealEstateCard";
 
@@ -12,9 +12,30 @@ const CATEGORIES = [
 ];
 const DEAL_TYPES = ["All", "Rent", "Buy"];
 
-const RealEstate = ({ entries }) => {
+const API_URL = "https://6a16f2541b90031f81b1c58f.mockapi.io/api/v1/properties";
+
+const RealEstate = () => {
+  const [entries, setEntries] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [activeCategory, setActiveCategory] = useState("All");
   const [activeDeal, setActiveDeal] = useState("All");
+
+  useEffect(() => {
+    fetch(API_URL)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch properties");
+        return res.json();
+      })
+      .then((data) => {
+        setEntries(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
 
   const filtered = entries.filter((entry) => {
     const categoryMatch =
@@ -25,6 +46,9 @@ const RealEstate = ({ entries }) => {
       (activeDeal === "Buy" && entry.buy);
     return categoryMatch && dealMatch;
   });
+
+  if (loading) return <p className="status-msg">Loading properties...</p>;
+  if (error) return <p className="status-msg">Error: {error}</p>;
 
   return (
     <main>
