@@ -1,20 +1,86 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&family=DM+Sans:wght@300;400;500&display=swap");
+
 .heading {
-  margin: 6rem 0;
+  background: #f4f0e8;
+  padding: 3.5rem 2rem 3rem;
   text-align: center;
+  position: relative;
+  overflow: hidden;
 }
 
-.heading h1 {
-  font-size: 2.5rem;
-  color: goldenrod;
-  /* text-transform: uppercase; */
-  letter-spacing: 1px;
-  border-bottom: 0.15rem solid goldenrod;
-  margin: 0;
-  padding: 0.5rem;
+.heading::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 500px;
+  height: 220px;
+  background: radial-gradient(
+    ellipse,
+    rgba(201, 168, 76, 0.15) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
 
-  display: inline-block;
+.heading-eyebrow {
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #c9a84c;
+  font-weight: 500;
+  margin-bottom: 0.8rem;
+}
 
-  b {
-    color: var(--color-gold);
-  }
+.heading-title {
+  font-family: "Playfair Display", serif;
+  font-size: 2.8rem;
+  font-weight: 600;
+  color: #0f1e3d;
+  line-height: 1.2;
+  margin: 0 0 1rem;
+}
+
+.heading-title em {
+  font-style: italic;
+  color: #b8882a;
+}
+
+.heading-sub {
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.95rem;
+  color: #666;
+  font-weight: 300;
+  max-width: 420px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.heading-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.8rem;
+}
+
+.heading-line::before,
+.heading-line::after {
+  content: "";
+  flex: 1;
+  max-width: 80px;
+  height: 1px;
+  background: #c9a84c;
+  opacity: 0.5;
+}
+
+.heading-badge {
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #c9a84c;
+  font-weight: 500;
 }

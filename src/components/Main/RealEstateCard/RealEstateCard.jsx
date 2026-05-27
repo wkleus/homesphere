@@ -33,7 +33,12 @@ const RealEstateCard = ({
         <RealEstateCategory category={category} />
         {!isAvailable && <RealEstateStatus />}
         <div className="home-details">
-          <IconItem Icon={Bed} description={rooms} tooltip="Number of rooms" />
+          <IconItem
+            Icon={Bed}
+            description={rooms}
+            tooltip="Number of rooms"
+            className="icon-rooms"
+          />
           <IconItem
             Icon={Square}
             description={`${squareMeters} m²`}
