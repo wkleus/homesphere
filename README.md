@@ -3,12 +3,13 @@
 ![React](https://img.shields.io/badge/React-19.0+-61DAFB?logo=react&logoColor=white)
 ![React Router](https://img.shields.io/badge/React_Router-7.0+-CA4245?logo=reactrouter&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-8.0+-646CFF?logo=vite&logoColor=white)
+![mockapi](https://img.shields.io/badge/API-mockapi.io-6f42c1)
 ![Vercel](https://img.shields.io/badge/Vercel-Live-black?logo=vercel)
 ![Status](https://img.shields.io/badge/Status-In_Progress-yellow)
 
 🔗 [Live Demo](https://homesphere-web.vercel.app)
 
-A modular React frontend for browsing and discovering residential properties across Europe — from city apartments to alpine chalets.
+A modular React frontend for browsing and discovering residential properties across Europe — from city apartments to alpine chalets. Property data is fetched from a live REST API via mockapi.io.
 
 ---
 
@@ -33,11 +34,14 @@ A modular React frontend for browsing and discovering residential properties acr
   </div>
 </div>
 
+---
+
 ## Features
 
-- **18 property listings** with photos, details and pricing
+- **property listings** with details and pricing - fetched from a live REST API
 - **Filter by category** (Apartment, Chalet, Residence, Studio, Townhouse)
 - **Filter by deal type** (Rent / Buy)
+- **Loading and error states** for all API calls
 - **Detail page** per property with full info and stats
 - **Client-side routing** via React Router
 - **Responsive layout** for mobile and desktop
@@ -46,14 +50,15 @@ A modular React frontend for browsing and discovering residential properties acr
 
 ## Tech Stack
 
-| Tool                    | Version |
-| ----------------------- | ------- |
-| React                   | 19      |
-| React Router DOM        | 7       |
-| Phosphor Icons          | 1.4     |
-| Vite                    | 8       |
-| JavaScript (ESM)        | —       |
-| CSS (custom properties) | —       |
+| Tool                    | Version  |
+| ----------------------- | -------- |
+| React                   | 19       |
+| React Router DOM        | 7        |
+| Phosphor Icons          | 1.4      |
+| Vite                    | 8        |
+| mockapi.io              | REST API |
+| JavaScript (ESM)        | —        |
+| CSS (custom properties) | —        |
 
 ---
 
@@ -69,14 +74,12 @@ homesphere/
     ├── App.jsx
     ├── App.css
     ├── main.jsx
-    ├── content/
-    │   └── entries.js       # Property data
     ├── components/
     │   ├── Navbar/
-    │   ├── Heading/
+    │   ├── Heading/          # Fetches available count from API
     │   ├── Footer/
     │   └── Main/
-    │       ├── RealEstate.jsx        # Filter logic + listing
+    │       ├── RealEstate.jsx        # Fetches all properties, filter logic
     │       └── RealEstateCard/
     │           ├── RealEstateCard.jsx
     │           ├── RealEstateDetails/
@@ -85,7 +88,18 @@ homesphere/
     │               ├── RealEstateStatus/
     │               └── IconItem/
     └── pages/
-        └── EstateDetails/   # Property detail page
+        └── EstateDetails/    # Fetches single property by ID from API
+```
+
+---
+
+## API
+
+Property data is served by [mockapi.io](https://mockapi.io):
+
+```
+GET https://6a16f2541b90031f81b1c58f.mockapi.io/api/v1/properties
+GET https://6a16f2541b90031f81b1c58f.mockapi.io/api/v1/properties/:id
 ```
 
 ---
@@ -99,9 +113,9 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:5000](http://localhost:5000) in your browser.
+Open [http://localhost:5173](http://localhost:5000) in your browser.
 
-Or check our the 🔗 ** [Live Demo](https://homesphere-web.vercel.app)**
+Or check out the 🔗 **[Live Demo](https://homesphere-web.vercel.app)**
 
 ---
 
