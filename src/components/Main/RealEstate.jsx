@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./RealEstate.css";
 import RealEstateCard from "./RealEstateCard/RealEstateCard";
+import useFetch from "../../hooks/useFetch";
 
 const CATEGORIES = [
   "All",
@@ -15,29 +16,11 @@ const DEAL_TYPES = ["All", "Rent", "Buy"];
 const API_URL = "https://6a16f2541b90031f81b1c58f.mockapi.io/api/v1/properties";
 
 const RealEstate = () => {
-  const [entries, setEntries] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { data: entries, loading, error } = useFetch(API_URL);
   const [activeCategory, setActiveCategory] = useState("All");
   const [activeDeal, setActiveDeal] = useState("All");
 
-  useEffect(() => {
-    fetch(API_URL)
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch properties");
-        return res.json();
-      })
-      .then((data) => {
-        setEntries(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }, []);
-
-  const filtered = entries.filter((entry) => {
+  const filtered = (entries || []).filter((entry) => {
     const categoryMatch =
       activeCategory === "All" || entry.category === activeCategory;
     const dealMatch =

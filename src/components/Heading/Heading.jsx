@@ -1,20 +1,11 @@
-import { useState, useEffect } from "react";
 import "./Heading.css";
+import useFetch from "../../hooks/useFetch";
 
 const API_URL = "https://6a16f2541b90031f81b1c58f.mockapi.io/api/v1/properties";
 
 const Heading = () => {
-  const [available, setAvailable] = useState(null);
-
-  useEffect(() => {
-    fetch(API_URL)
-      .then((res) => res.json())
-      .then((data) => {
-        const count = data.filter((e) => e.isAvailable).length;
-        setAvailable(count);
-      })
-      .catch(() => setAvailable(null));
-  }, []);
+  const { data } = useFetch(API_URL);
+  const available = data ? data.filter((e) => e.isAvailable).length : null;
 
   return (
     <div className="heading">
