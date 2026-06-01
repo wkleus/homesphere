@@ -26,7 +26,7 @@ const RealEstateCard = ({
     <div
       className="realEstate-card"
       style={{ opacity: isAvailable ? 1 : 0.5 }}
-      onClick={() => navigate(`/property/${id}`)}
+      onClick={() => navigate(`/entry/${id}`)}
       title="View details"
     >
       <RealEstatePhoto photo={photo} address={address}>

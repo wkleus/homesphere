@@ -1,10 +1,9 @@
 import "./Heading.css";
 import useFetch from "../../hooks/useFetch";
-
-const API_URL = "https://6a16f2541b90031f81b1c58f.mockapi.io/api/v1/properties";
+import { ENTRIES_URL } from "../../config/api";
 
 const Heading = () => {
-  const { data } = useFetch(API_URL);
+  const { data } = useFetch(ENTRIES_URL);
   const available = data ? data.filter((e) => e.isAvailable).length : null;
 
   return (

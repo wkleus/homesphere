@@ -10,16 +10,14 @@ import {
 } from "phosphor-react";
 import "./EstateDetails.css";
 import useFetch from "../../hooks/useFetch";
-
-const API_BASE =
-  "https://6a16f2541b90031f81b1c58f.mockapi.io/api/v1/properties";
+import { ENTRY_URL } from "../../config/api";
 
 const EstateDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data: entry, loading, error } = useFetch(`${API_BASE}/${id}`);
+  const { data: entry, loading, error } = useFetch(ENTRY_URL(id));
 
-  if (loading) return <p className="status-msg">Loading property...</p>;
+  if (loading) return <p className="status-msg">Loading entry...</p>;
   if (error || !entry)
     return (
       <div className="detail-not-found">

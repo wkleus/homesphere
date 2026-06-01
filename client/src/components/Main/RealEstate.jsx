@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./RealEstate.css";
 import RealEstateCard from "./RealEstateCard/RealEstateCard";
 import useFetch from "../../hooks/useFetch";
+import { ENTRIES_URL } from "../../config/api";
 
 const CATEGORIES = [
   "All",
@@ -13,10 +14,8 @@ const CATEGORIES = [
 ];
 const DEAL_TYPES = ["All", "Rent", "Buy"];
 
-const API_URL = "https://6a16f2541b90031f81b1c58f.mockapi.io/api/v1/properties";
-
 const RealEstate = () => {
-  const { data: entries, loading, error } = useFetch(API_URL);
+  const { data: entries, loading, error } = useFetch(ENTRIES_URL);
   const [activeCategory, setActiveCategory] = useState("All");
   const [activeDeal, setActiveDeal] = useState("All");
 
@@ -30,7 +29,7 @@ const RealEstate = () => {
     return categoryMatch && dealMatch;
   });
 
-  if (loading) return <p className="status-msg">Loading properties...</p>;
+  if (loading) return <p className="status-msg">Loading entries...</p>;
   if (error) return <p className="status-msg">Error: {error}</p>;
 
   return (
@@ -50,7 +49,6 @@ const RealEstate = () => {
             ))}
           </div>
         </div>
-
         <div className="filter-group">
           <span className="filter-label">Type</span>
           <div className="filter-buttons">
@@ -65,8 +63,7 @@ const RealEstate = () => {
             ))}
           </div>
         </div>
-
-        <span className="filter-count">{filtered.length} properties found</span>
+        <span className="filter-count">{filtered.length} entries found</span>
       </div>
 
       <div className="realEstate">
