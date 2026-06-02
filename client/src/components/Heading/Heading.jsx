@@ -1,11 +1,6 @@
 import "./Heading.css";
-import useFetch from "../../hooks/useFetch";
-import { ENTRIES_URL } from "../../config/api";
 
-const Heading = () => {
-  const { data } = useFetch(ENTRIES_URL);
-  const available = data ? data.filter((e) => e.isAvailable).length : null;
-
+const Heading = ({ available }) => {
   return (
     <div className="heading">
       <p className="heading-eyebrow">Premium Real Estate</p>

@@ -3,7 +3,7 @@ import cors from "cors";
 import entries from "./content/entries.js";
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -13,9 +13,9 @@ app.get("/api/entries", (req, res) => {
   res.json(entries);
 });
 
-// GET /api/entries/:id – single property
+// GET /api/entries/:id – single entry
 app.get("/api/entries/:id", (req, res) => {
-  const entry = entries.find((p) => p.id === req.params.id);
+  const entry = entries.find((e) => e.id === req.params.id);
 
   if (!entry) {
     return res.status(404).json({ error: "Entry not found" });

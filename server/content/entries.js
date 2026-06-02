@@ -1,4 +1,4 @@
-const properties = [
+const entries = [
   {
     id: "1",
     address: "Bergstraße 14, Garmisch-Partenkirchen, Germany",
@@ -235,4 +235,4 @@ const properties = [
   },
 ];
 
-export default properties;
+export default entries;
