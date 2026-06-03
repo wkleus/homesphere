@@ -1,3 +1,6 @@
+// IMPORTANT: This file is deprecated. Entries must be loaded from Supabase, not from local static data.
+
+/*
 const entries = [
   {
     id: "1",
@@ -236,3 +239,4 @@ const entries = [
 ];
 
 export default entries;
+*/
