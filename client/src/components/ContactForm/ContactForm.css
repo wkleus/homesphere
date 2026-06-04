@@ -1,0 +1,222 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px);
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-window {
+  background: #ffffff;
+  width: 550px;
+  max-height: 90vh;
+  height: auto;
+  overflow-y: auto;
+  max-width: 95%;
+  padding: 2.5rem;
+  border-radius: 18px;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  animation: popIn 0.3s ease-out;
+  border-top: 10px solid #4f7cff;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.85) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  transition: transform 0.15s ease;
+}
+
+.modal-close:hover {
+  transform: scale(1.2);
+}
+
+.modal-illustration {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.modal-note {
+  color: #555;
+  text-align: center;
+  margin-top: 0.5rem;
+  width: 80%;
+}
+
+/* Progress bar */
+.progress-bar {
+  width: 80%;
+  height: 10px;
+  background: #e5e5e5;
+  border-radius: 6px;
+
+  margin: 1.5rem auto;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4f7cff, #7aa8ff);
+  transition: width 0.3s ease;
+}
+
+/* Slide animations */
+.step-content {
+  /* animation: slideIn 0.3s ease; */
+}
+
+.slide-forward {
+  animation: slideIn 0.3s ease;
+}
+
+.slide-backward {
+  animation: slideBack 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideBack {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Inputs */
+.content {
+  width: 80%;
+  margin: 2rem auto;
+}
+
+.step-title {
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  margin-top: 6px;
+  font-size: 1rem;
+}
+
+.send-btn {
+  width: 100%;
+  padding: 14px;
+  background: #4f7cff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 0.8rem;
+  font-size: 1rem;
+  transition: background 0.2s ease;
+  font-weight: 600;
+}
+
+.send-btn:hover {
+  background: #3b63d9;
+}
+
+.back-btn {
+  width: 30%;
+  padding: 14px;
+  margin-right: 10px;
+  margin-top: 0.8rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: rgb(20, 202, 202);
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.back-btn:hover {
+  background-color: rgb(20, 190, 200);
+}
+
+.error {
+  color: #d60000;
+  margin-top: 4px;
+}
+
+.wizard-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.success-screen {
+  text-align: center;
+  margin-top: 4rem;
+}
+
+/* Responsive: smartphones */
+@media (max-width: 480px) {
+  .modal-window {
+    width: 95%;
+    padding: 1.5rem;
+    border-radius: 10px;
+  }
+}
+
+/* Very small devices */
+@media (max-width: 360px) {
+  .modal-window {
+    padding: 1.2rem;
+  }
+}

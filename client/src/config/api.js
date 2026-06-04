@@ -5,3 +5,4 @@ const API_BASE = import.meta.env.DEV
 
 export const ENTRIES_URL = `${API_BASE}/entries`;
 export const ENTRY_URL = (id) => `${API_BASE}/entries/${id}`;
+export const CONTACT_URL = `${API_BASE}/contact`;

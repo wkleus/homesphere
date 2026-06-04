@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Bed,
@@ -11,11 +12,14 @@ import {
 import "./EstateDetails.css";
 import useFetch from "../../hooks/useFetch";
 import { ENTRY_URL } from "../../config/api";
+import ContactForm from "../../components/ContactForm/ContactForm";
 
 const EstateDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { data: entry, loading, error } = useFetch(ENTRY_URL(id));
+
+  const [showModal, setShowModal] = useState(false);
 
   if (loading) return <p className="status-msg">Loading entry...</p>;
   if (error || !entry)
@@ -53,7 +57,9 @@ const EstateDetails = () => {
             className="detail-photo"
           />
           <span
-            className={`detail-availability ${isAvailable ? "available" : "unavailable"}`}
+            className={`detail-availability ${
+              isAvailable ? "available" : "unavailable"
+            }`}
           >
             {isAvailable ? "Available" : "Not Available"}
           </span>
@@ -108,9 +114,24 @@ const EstateDetails = () => {
             </div>
           </div>
 
-          <button className="detail-contact-btn">Contact Agent</button>
+          <button
+            className="detail-contact-btn"
+            onClick={() => setShowModal(true)}
+          >
+            Contact Agent
+          </button>
         </div>
       </div>
+
+      {showModal && (
+        <ContactForm
+          onClose={() => {
+            const modal = document.querySelector(".modal-window");
+            modal.classList.add("modal-exit");
+            setTimeout(() => setShowModal(false), 200);
+          }}
+        />
+      )}
     </div>
   );
 };
