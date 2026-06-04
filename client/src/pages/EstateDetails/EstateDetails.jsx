@@ -17,8 +17,11 @@ import ContactForm from "../../components/ContactForm/ContactForm";
 const EstateDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  // Fetch single property by ID from the backend
   const { data: entry, loading, error } = useFetch(ENTRY_URL(id));
 
+  // Controls visibility of the contact form modal
   const [showModal, setShowModal] = useState(false);
 
   if (loading) return <p className="status-msg">Loading entry...</p>;
@@ -57,9 +60,7 @@ const EstateDetails = () => {
             className="detail-photo"
           />
           <span
-            className={`detail-availability ${
-              isAvailable ? "available" : "unavailable"
-            }`}
+            className={`detail-availability ${isAvailable ? "available" : "unavailable"}`}
           >
             {isAvailable ? "Available" : "Not Available"}
           </span>
@@ -114,6 +115,7 @@ const EstateDetails = () => {
             </div>
           </div>
 
+          {/* Opens the contact form modal */}
           <button
             className="detail-contact-btn"
             onClick={() => setShowModal(true)}
@@ -123,14 +125,9 @@ const EstateDetails = () => {
         </div>
       </div>
 
+      {/* Pass address so the email subject references the correct property */}
       {showModal && (
-        <ContactForm
-          onClose={() => {
-            const modal = document.querySelector(".modal-window");
-            modal.classList.add("modal-exit");
-            setTimeout(() => setShowModal(false), 200);
-          }}
-        />
+        <ContactForm address={address} onClose={() => setShowModal(false)} />
       )}
     </div>
   );

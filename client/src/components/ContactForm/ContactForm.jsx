@@ -10,9 +10,11 @@ import {
 } from "phosphor-react";
 import * as Yup from "yup";
 import "./ContactForm.css";
+import { CONTACT_URL } from "../../config/api";
 
 const steps = ["name", "contact", "message", "confirm", "success"];
 
+// Yup validation schemas per step
 const schemas = {
   name: Yup.object({
     fullName: Yup.string()
@@ -29,24 +31,22 @@ const schemas = {
   }),
 };
 
-const ContactForm = ({ onClose }) => {
+const ContactForm = ({ onClose, address }) => {
   const [step, setStep] = useState("name");
   const [direction, setDirection] = useState("forward");
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState(null);
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     message: "",
   });
   const [errors, setErrors] = useState({});
+
+  // Render modal into #modal-root to escape stacking context
   const modalRoot = document.getElementById("modal-root");
 
-  // Optional: enable dark mode while modal is open
-  // useEffect(() => {
-  //   document.body.classList.add("dark");
-  //   return () => document.body.classList.remove("dark");
-  // }, []);
-
-  // ESC closes modal
+  // Close modal on ESC key
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === "Escape") onClose();
@@ -75,18 +75,41 @@ const ContactForm = ({ onClose }) => {
     const valid = await validateStep();
     if (!valid) return;
     setDirection("forward");
-    const nextIndex = steps.indexOf(step) + 1;
-    setStep(steps[nextIndex]);
+    setStep(steps[steps.indexOf(step) + 1]);
   };
 
   const back = () => {
     setDirection("backward");
-    const prevIndex = steps.indexOf(step) - 1;
-    if (prevIndex >= 0) setStep(steps[prevIndex]);
+    setStep(steps[steps.indexOf(step) - 1]);
   };
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  // Send form data to backend – triggers email via Resend
+  const handleSend = async () => {
+    setSending(true);
+    setSendError(null);
+    try {
+      const res = await fetch(CONTACT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.fullName,
+          email: formData.email,
+          message: formData.message,
+          property: address,
+        }),
+      });
+      if (!res.ok) throw new Error("Failed to send");
+      setDirection("forward");
+      setStep("success");
+    } catch {
+      setSendError("Something went wrong. Please try again.");
+    } finally {
+      setSending(false);
+    }
   };
 
   const progress = (steps.indexOf(step) / (steps.length - 1)) * 100;
@@ -101,32 +124,26 @@ const ContactForm = ({ onClose }) => {
         </button>
 
         <div className="modal-layout">
-          {/* Left illustration panel */}
           <div className="modal-illustration">
             <HouseLine size={48} weight="duotone" className="house-outline" />
             <h3>Contact the Agent</h3>
             <p className="modal-note">
-              Share your details and message, and we’ll connect you with the
+              Share your details and message, and we'll connect you with the
               agent.
             </p>
           </div>
 
-          {/* Right content */}
           <div className="modal-content">
             {step !== "success" && (
-              <>
-                {/* Progress bar */}
-                <div className="progress-bar">
-                  <div
-                    className="progress-fill"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-              </>
+              <div className="progress-bar">
+                <div
+                  className="progress-fill"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
             )}
 
             <div className={`step-content slide-${direction} content`}>
-              {/* Step 1: Name */}
               {step === "name" && (
                 <>
                   <h2 className="step-title">
@@ -147,7 +164,6 @@ const ContactForm = ({ onClose }) => {
                 </>
               )}
 
-              {/* Step 2: Contact */}
               {step === "contact" && (
                 <>
                   <h2 className="step-title">
@@ -171,7 +187,6 @@ const ContactForm = ({ onClose }) => {
                 </>
               )}
 
-              {/* Step 3: Message */}
               {step === "message" && (
                 <>
                   <h2 className="step-title">
@@ -196,7 +211,6 @@ const ContactForm = ({ onClose }) => {
                 </>
               )}
 
-              {/* Step 4: Confirm */}
               {step === "confirm" && (
                 <>
                   <h2 className="step-title">
@@ -211,22 +225,31 @@ const ContactForm = ({ onClose }) => {
                   <p>
                     <strong>Message:</strong> {formData.message}
                   </p>
-
+                  {sendError && <p className="error">{sendError}</p>}
                   <div className="wizard-buttons">
-                    <button className="back-btn" onClick={back}>
+                    <button
+                      className="back-btn"
+                      onClick={back}
+                      disabled={sending}
+                    >
                       Back
                     </button>
-                    <button className="send-btn" onClick={next}>
-                      Send
+                    <button
+                      className="send-btn"
+                      onClick={handleSend}
+                      disabled={sending}
+                    >
+                      {sending ? "Sending..." : "Send"}
                     </button>
                   </div>
                 </>
               )}
 
-              {/* Step 5: Success */}
               {step === "success" && (
                 <div className="success-screen">
-                  <h2>Message Sent!</h2>
+                  <h2 className="checked">
+                    Message Sent! <CheckCircle size={30} weight="duotone" />
+                  </h2>
                   <p>The agent will contact you shortly.</p>
                   <button className="send-btn" onClick={onClose}>
                     Close

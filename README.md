@@ -5,13 +5,14 @@
 ![Vite](https://img.shields.io/badge/Vite-8.0+-646CFF?logo=vite&logoColor=white)
 ![Node.js](https://img.shields.io/badge/Node.js-Express-339933?logo=node.js&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Supabase-4169E1?logo=postgresql&logoColor=white)
+![Resend](https://img.shields.io/badge/Email-Resend-000000?logo=mail.ru&logoColor=white)
 ![Render](https://img.shields.io/badge/API-Render.com-46E3B7?logo=render&logoColor=white)
 ![Vercel](https://img.shields.io/badge/Frontend-Vercel-black?logo=vercel)
 ![Status](https://img.shields.io/badge/Status-In_Progress-yellow)
 
 🔗 [Live Demo](https://homesphere-web.vercel.app)
 
-A fullstack real estate web application for browsing and discovering residential properties across Europe — from city apartments to alpine chalets. The React frontend fetches data from a custom Node.js/Express REST API backed by a PostgreSQL database hosted on Supabase, deployed separately on Render.com.
+A fullstack real estate web application for browsing and discovering residential properties across Europe — from city apartments to alpine chalets. The React frontend fetches data from a custom Node.js/Express REST API backed by a PostgreSQL database hosted on Supabase. Contact requests are sent via email using Resend.
 
 ---
 
@@ -45,6 +46,7 @@ A fullstack real estate web application for browsing and discovering residential
 - **Filter by deal type** (Rent / Buy)
 - **Loading & error states** for all API calls
 - **Detail page** per property with full info and stats
+- **Contact agent** via multi-step form with Yup validation and email delivery via Resend
 - **Custom `useFetch` hook** for reusable data fetching
 - **Client-side routing** via React Router
 - **Responsive layout** for mobile and desktop
@@ -60,6 +62,7 @@ A fullstack real estate web application for browsing and discovering residential
 | **Frontend** | React                 | 19           |
 |              | React Router DOM      | 7            |
 |              | Phosphor Icons        | 1.4          |
+|              | Yup                   | 1            |
 |              | Vite                  | 8            |
 |              | CSS Custom Properties | —            |
 | **Backend**  | Node.js               | —            |
@@ -67,6 +70,7 @@ A fullstack real estate web application for browsing and discovering residential
 |              | CORS                  | 2            |
 |              | pg (node-postgres)    | 8            |
 |              | dotenv                | 17           |
+|              | Resend                | 6            |
 | **Database** | PostgreSQL            | via Supabase |
 | **Hosting**  | Vercel                | Frontend     |
 |              | Render.com            | Backend API  |
@@ -96,6 +100,7 @@ homesphere/
 │   │    │   ├── Navbar/
 │   │    │   ├── Heading/
 │   │    │   ├── Footer/
+│   │    │   ├── ContactForm/         # Multi-step modal with Yup validation
 │   │    │   └── Main/
 │   │    │       ├── RealEstate.jsx   # Filter logic + listings
 │   │    │       └── RealEstateCard/
@@ -112,8 +117,6 @@ homesphere/
     ├── server.js                     # Express server & routes
     ├── schema.sql                    # Database table definition
     ├── seed.sql                      # Initial data (entries)
-    ├── content/
-    │   └── entries.js                # Property data (DEPRECATED!)
     └── package.json
 ```
 
@@ -124,8 +127,9 @@ homesphere/
 The backend is a custom Node.js/Express REST API connected to a PostgreSQL database on Supabase, deployed on [Render.com](https://render.com):
 
 ```
-GET https://homesphere-kifc.onrender.com/api/entries
-GET https://homesphere-kifc.onrender.com/api/entries/:id
+GET  https://homesphere-kifc.onrender.com/api/entries
+GET  https://homesphere-kifc.onrender.com/api/entries/:id
+POST https://homesphere-kifc.onrender.com/api/contact
 ```
 
 ---
@@ -153,8 +157,17 @@ server/seed.sql     ← inserts all entries
 Create `server/.env`:
 
 ```
+# Server port (Render sets this automatically in production)
 PORT=3000
+
+# PostgreSQL connection string (Supabase)
 DATABASE_URL=your_postgresql_connection_string
+
+# Resend API key for email sending
+RESEND_API_KEY=your_resend_api_key
+
+# Email address that receives contact form submissions
+CONTACT_EMAIL=your@email.com
 ```
 
 ### 4. Start the backend
@@ -211,10 +224,11 @@ Or check out the 🔗 **[Live Demo](https://homesphere-web.vercel.app)**
 - [x] Property detail page
 - [x] Custom `useFetch` hook
 - [x] Responsive layout
+- [x] Multi-step contact form with Yup validation
+- [x] Email delivery via Resend
 
 ### Next Steps
 
-- [ ] Contact agent form - Add form on detail page + backend email handling
 - [ ] Advanced search - Price, rooms, size, combined filters
 - [ ] Favorites system
 - [ ] SEO improvements

@@ -142,6 +142,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-top: auto;
+  margin-bottom: 0.5rem;
 }
 
 input,
@@ -173,9 +175,9 @@ textarea {
 }
 
 .back-btn {
-  width: 30%;
+  width: 35%;
   padding: 14px;
-  margin-right: 10px;
+  margin-right: 5px;
   margin-top: 0.8rem;
   border: none;
   border-radius: 10px;
@@ -197,12 +199,21 @@ textarea {
 
 .wizard-buttons {
   display: flex;
-  justify-content: space-between;
 }
 
 .success-screen {
   text-align: center;
   margin-top: 4rem;
+}
+
+.checked {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #156c0e;
+  margin-bottom: 0.2rem;
+  margin-top: -1rem;
 }
 
 /* Responsive: smartphones */

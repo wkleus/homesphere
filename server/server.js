@@ -1,12 +1,14 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import { Resend } from "resend";
 import pool from "./db.js";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 app.use(
   cors({
@@ -15,58 +17,83 @@ app.use(
 );
 app.use(express.json());
 
-// Helper function: snake_case into camelCase
-const toCamelCase = (str) => {
-  return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
-};
+// Converts snake_case DB column names to camelCase for the frontend
+const toCamelCase = (str) =>
+  str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
 
 const transformKeys = (obj) => {
   if (!obj || typeof obj !== "object") return obj;
-
   const newObj = {};
   for (let key in obj) {
-    const camelKey = toCamelCase(key);
-    newObj[camelKey] = obj[key];
+    newObj[toCamelCase(key)] = obj[key];
   }
   return newObj;
 };
 
-// GET /api/entries – all entries
+// GET /api/entries – returns all property listings
 app.get("/api/entries", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM entries ORDER BY id");
-
-    // transform every entry from snake_case into camelCase
-    const transformedEntries = result.rows.map(transformKeys);
-
-    res.json(transformedEntries);
+    res.json(result.rows.map(transformKeys));
   } catch (err) {
-    console.error("❌ Database error:", err);
+    console.error("Database error:", err);
     res.status(500).json({ error: "Database error" });
   }
 });
 
-// GET /api/entries/:id – single entry
+// GET /api/entries/:id – returns a single property by ID
 app.get("/api/entries/:id", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM entries WHERE id = $1", [
       req.params.id,
     ]);
-
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Entry not found" });
     }
-
-    const transformedEntry = transformKeys(result.rows[0]);
-    res.json(transformedEntry);
+    res.json(transformKeys(result.rows[0]));
   } catch (err) {
-    console.error(err);
+    console.error("Database error:", err);
     res.status(500).json({ error: "Database error" });
   }
 });
 
+// POST /api/contact – sends a contact email via Resend
+app.post("/api/contact", async (req, res) => {
+  const { name, email, message, property } = req.body;
+
+  // Basic validation – all fields required
+  if (!name || !email || !message) {
+    return res
+      .status(400)
+      .json({ error: "Name, email and message are required" });
+  }
+
+  try {
+    await resend.emails.send({
+      from: "HomeSphere <onboarding@resend.dev>",
+      to: process.env.CONTACT_EMAIL,
+      subject: `New enquiry: ${property || "HomeSphere"}`,
+      html: `
+        <h2>New Contact Request – HomeSphere</h2>
+        <p><strong>Property:</strong> ${property || "—"}</p>
+        <hr />
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message}</p>
+      `,
+    });
+
+    res.status(200).json({ message: "Email sent successfully" });
+  } catch (err) {
+    console.error("Email error:", err);
+    res.status(500).json({ error: "Failed to send email" });
+  }
+});
+
 app.listen(PORT, () => {
-  console.log(`🏠 HomeSphere API running at http://localhost:${PORT}`);
-  console.log(`  GET http://localhost:${PORT}/api/entries`);
-  console.log(`  GET http://localhost:${PORT}/api/entries/:id`);
+  console.log(`HomeSphere API running at http://localhost:${PORT}`);
+  console.log(`  GET  http://localhost:${PORT}/api/entries`);
+  console.log(`  GET  http://localhost:${PORT}/api/entries/:id`);
+  console.log(`  POST http://localhost:${PORT}/api/contact`);
 });
