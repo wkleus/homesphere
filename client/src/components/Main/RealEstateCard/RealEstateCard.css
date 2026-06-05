@@ -32,3 +32,35 @@
   border-radius: 4px;
   overflow: hidden;
 }
+
+/* Favorite button */
+.favorite-btn {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  background: rgba(240, 240, 240, 0.9);
+  border: 1px solid #bbb;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #999;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.favorite-btn:hover {
+  background: white;
+  color: orange;
+  transform: scale(1.1);
+}
+
+.favorite-btn.favorited {
+  /* color: #e74c3c; */
+  color: orange;
+
+  background: white;
+}

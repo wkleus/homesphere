@@ -1,0 +1,89 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500&display=swap");
+
+.favorites-page {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+  flex: 1;
+  font-family: "Playfair Display", serif;
+}
+
+.favorites-header {
+  margin-bottom: 2rem;
+}
+
+.favorites-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 2.4rem;
+  /* color: var(--color-primary); */
+  color: #777;
+  font-weight: 900;
+  margin-bottom: 0.4rem;
+  margin-top: 4rem;
+}
+
+.favorites-title svg {
+  color: #777;
+
+  /* color: var(--color-primary); */
+  /* border: 2px solid var(--color-primary); */
+  /* border-radius: 50%; */
+  margin-top: 0.4rem;
+}
+
+.favorites-count {
+  font-size: 1.1rem;
+  /* color: #888; */
+  color: silver;
+  text-align: center;
+  font-family: "DM Sans", sans-serif;
+  font-weight: 900;
+  line-height: 1.6;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 0.7rem;
+}
+
+.favorites-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.favorites-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #aaa;
+}
+
+.favorites-empty .empty-icon {
+  color: #ddd;
+  margin-bottom: 1rem;
+}
+
+.favorites-empty p {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  color: #888;
+}
+
+.favorites-empty button {
+  background: #355fa7;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1.8rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.favorites-empty button:hover {
+  background: #0f1e3d;
+}

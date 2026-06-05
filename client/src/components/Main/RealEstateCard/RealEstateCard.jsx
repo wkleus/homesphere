@@ -5,7 +5,8 @@ import RealEstateCategory from "./RealEstatePhoto/RealEstateCategory/RealEstateC
 import RealEstateStatus from "./RealEstatePhoto/RealEstateStatus/RealEstateStatus";
 import IconItem from "./RealEstatePhoto/IconItem/IconItem";
 import RealEstateDetails from "./RealEstateDetails/RealEstateDetails";
-import { Bed, Buildings, Lightning, Square } from "phosphor-react";
+import { Bed, Buildings, Lightning, Square, Heart } from "phosphor-react";
+import { useFavorites } from "../../../context/FavoritesContext";
 
 const RealEstateCard = ({
   id,
@@ -21,6 +22,26 @@ const RealEstateCard = ({
   yearBuilt,
 }) => {
   const navigate = useNavigate();
+  const { toggleFavorite, isFavorite } = useFavorites();
+  const favorited = isFavorite(id);
+
+  const handleFavorite = (e) => {
+    // Prevent card click from navigating to detail page
+    e.stopPropagation();
+    toggleFavorite({
+      id,
+      address,
+      isAvailable,
+      energyClass,
+      rent,
+      buy,
+      photo,
+      rooms,
+      squareMeters,
+      category,
+      yearBuilt,
+    });
+  };
 
   return (
     <div
@@ -32,6 +53,16 @@ const RealEstateCard = ({
       <RealEstatePhoto photo={photo} address={address}>
         <RealEstateCategory category={category} />
         {!isAvailable && <RealEstateStatus />}
+
+        {/* Favorite toggle button */}
+        <button
+          className={`favorite-btn ${favorited ? "favorited" : ""}`}
+          onClick={handleFavorite}
+          title={favorited ? "Remove from favorites" : "Save to favorites"}
+        >
+          <Heart size={20} weight={favorited ? "fill" : "regular"} />
+        </button>
+
         <div className="home-details">
           <IconItem
             Icon={Bed}

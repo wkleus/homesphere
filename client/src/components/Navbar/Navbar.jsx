@@ -1,9 +1,11 @@
 import "./Navbar.css";
-import { EnvelopeOpen, PhoneCall, Buildings } from "phosphor-react";
+import { EnvelopeOpen, PhoneCall, Buildings, Heart } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
+import { useFavorites } from "../../context/FavoritesContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const { favorites } = useFavorites();
 
   return (
     <nav className="navbar">
@@ -38,6 +40,19 @@ const Navbar = () => {
             <span className="nav-contact-value">(+49) 030 XXXX XXXX</span>
           </div>
         </div>
+
+        <div className="nav-divider" />
+
+        {/* Favorites link with count badge */}
+        <button
+          className="nav-favorites-btn"
+          onClick={() => navigate("/favorites")}
+        >
+          <Heart size={18} weight={favorites.length > 0 ? "fill" : "regular"} />
+          {favorites.length > 0 && (
+            <span className="nav-favorites-count">{favorites.length}</span>
+          )}
+        </button>
       </div>
     </nav>
   );
