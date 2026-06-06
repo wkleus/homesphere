@@ -8,6 +8,9 @@ const useFetch = (url) => {
   });
 
   useEffect(() => {
+    // Skip fetch if url is not yet available
+    if (!url) return;
+
     fetch(url)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch data");
