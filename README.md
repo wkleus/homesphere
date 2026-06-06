@@ -44,10 +44,12 @@ A fullstack real estate web application for browsing and discovering residential
 - **Property listings** fetched from a custom REST API
 - **Filter by category** (Apartment, Chalet, Residence, Studio, Townhouse)
 - **Filter by deal type** (Rent / Buy)
+- **Favorites system** – save properties via heart icon, persisted in localStorage
 - **Loading & error states** for all API calls
 - **Detail page** per property with full info and stats
 - **Contact agent** via multi-step form with Yup validation and email delivery via Resend
 - **Custom `useFetch` hook** for reusable data fetching
+- **Context API** for global favorites state
 - **Client-side routing** via React Router
 - **Responsive layout** for mobile and desktop
 - **Separate deployments** – Frontend on Vercel, API on Render.com
@@ -94,6 +96,8 @@ homesphere/
 │   │    ├── index.html
 │   │    ├── config/
 │   │    │   └── api.js               # Central API URL config (dev/prod)
+│   │    ├── context/
+│   │    │   └── FavoritesContext.jsx # Global favorites state with localStorage
 │   │    ├── hooks/
 │   │    │   └── useFetch.js          # Custom fetch hook
 │   │    ├── components/
@@ -110,7 +114,8 @@ homesphere/
 │   │    │               ├── RealEstateStatus/
 │   │    │               └── IconItem/
 │   │    └── pages/
-│   │         └── EstateDetails/      # Single entry detail page
+│   │        ├── EstateDetails/       # Single entry detail page
+│   │        └── Favorites/           # Saved properties page
 │   └── package.json
 └── server/                           # Node.js / Express Backend
     ├── db.js                         # PostgreSQL connection pool
@@ -226,11 +231,11 @@ Or check out the 🔗 **[Live Demo](https://homesphere-web.vercel.app)**
 - [x] Responsive layout
 - [x] Multi-step contact form with Yup validation
 - [x] Email delivery via Resend
+- [x] Favorites system with Context API and localStorage
 
 ### Next Steps
 
 - [ ] Advanced search - Price, rooms, size, combined filters
-- [ ] Favorites system
 - [ ] SEO improvements
 - [ ] Admin account/dashboard
 - [ ] Authentication with Supabase Auth
