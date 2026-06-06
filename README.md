@@ -35,6 +35,13 @@ A fullstack real estate web application for browsing and discovering residential
     <img src="client/public/screenshots/details.png" width="100%" alt="Property Detail" />
     <p><em>Detail Page – Full property info with stats and pricing</em></p>
   </div>
+   <div style="width:calc(50% - 6px); text-align:center;">
+    <img src="client/public/screenshots/contact-form.png" width="100%" alt="Contact Form" />
+    <p><em>Contact Form</em></p>
+  </div> <div style="width:calc(50% - 6px); text-align:center;">
+    <img src="client/public/screenshots/favorites-page.png" width="100%" alt="Favorites Page" />
+    <p><em>Favorites Page</em></p>
+  </div>
 </div>
 
 ---
