@@ -79,6 +79,7 @@ A fullstack real estate web application for browsing and discovering residential
 |              | CORS                  | 2            |
 |              | pg (node-postgres)    | 8            |
 |              | dotenv                | 17           |
+|              | he                    | 1            |
 |              | Resend                | 6            |
 | **Database** | PostgreSQL            | via Supabase |
 | **Hosting**  | Vercel                | Frontend     |
