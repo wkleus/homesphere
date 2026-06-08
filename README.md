@@ -59,6 +59,7 @@ A fullstack real estate web application for browsing and discovering residential
 - **Context API** for global favorites state
 - **Client-side routing** via React Router
 - **Responsive layout** for mobile and desktop
+- **Unit tested** – useFetch and FavoritesContext covered with Vitest + RTL
 - **Separate deployments** – Frontend on Vercel, API on Render.com
 - **PostgreSQL database** hosted on Supabase
 
@@ -66,26 +67,27 @@ A fullstack real estate web application for browsing and discovering residential
 
 ## Tech Stack
 
-|              | Tool                  | Version      |
-| ------------ | --------------------- | ------------ |
-| **Frontend** | React                 | 19           |
-|              | React Router DOM      | 7            |
-|              | Phosphor Icons        | 1.4          |
-|              | Yup                   | 1            |
-|              | Vite                  | 8            |
-|              | CSS Custom Properties | —            |
-| **Backend**  | Node.js               | —            |
-|              | Express               | 4            |
-|              | CORS                  | 2            |
-|              | pg (node-postgres)    | 8            |
-|              | dotenv                | 17           |
-|              | express-rate-limit    | 7            |
-|              | he(XSS sanitization)  | 1            |
-|              | Resend                | 6            |
-| **Database** | PostgreSQL            | via Supabase |
-| **Hosting**  | Vercel                | Frontend     |
-|              | Render.com            | Backend API  |
-|              | Supabase              | Database     |
+|              | Tool                           | Version      |
+| ------------ | ------------------------------ | ------------ |
+| **Frontend** | React                          | 19           |
+|              | React Router DOM               | 7            |
+|              | Phosphor Icons                 | 1.4          |
+|              | Yup                            | 1            |
+|              | Vite                           | 8            |
+|              | CSS Custom Properties          | —            |
+|              | Vitest + React Testing Library | 3 / 16       |
+| **Backend**  | Node.js                        | —            |
+|              | Express                        | 4            |
+|              | CORS                           | 2            |
+|              | pg (node-postgres)             | 8            |
+|              | dotenv                         | 17           |
+|              | express-rate-limit             | 7            |
+|              | he(XSS sanitization)           | 1            |
+|              | Resend                         | 6            |
+| **Database** | PostgreSQL                     | via Supabase |
+| **Hosting**  | Vercel                         | Frontend     |
+|              | Render.com                     | Backend API  |
+|              | Supabase                       | Database     |
 
 ---
 
@@ -93,29 +95,33 @@ A fullstack real estate web application for browsing and discovering residential
 
 ```
 homesphere/
-├── client/                           # React Frontend
+├── client/                                 # React Frontend
 │   ├── public/
 │   │   ├── favicons/
-│   │   ├── photos/                   # Property images
-│   │   └── screenshots/              # README screenshots
+│   │   ├── photos/                         # Property images
+│   │   └── screenshots/                    # README screenshots
 │   ├── src/
 │   │    ├── App.jsx
 │   │    ├── App.css
 │   │    ├── main.jsx
 │   │    ├── index.html
 │   │    ├── config/
-│   │    │   └── api.js               # Central API URL config (dev/prod)
+│   │    │   └── api.js                     # Central API URL config (dev/prod)
 │   │    ├── context/
-│   │    │   └── FavoritesContext.jsx # Global favorites state with localStorage
+│   │    │   └── FavoritesContext.jsx       # Global favorites state with localStorage
 │   │    ├── hooks/
-│   │    │   └── useFetch.js          # Custom fetch hook
+│   │    │   └── useFetch.js                # Custom fetch hook
+│   │    ├── __tests__/
+│   │    │   ├── setup.js                   # Test environment setup
+│   │    │   ├── useFetch.test.js           # Tests for useFetch hook (3 tests)
+│   │    │   └── FavoritesContext.test.jsx  # Tests for FavoritesContext (4 tests)
 │   │    ├── components/
 │   │    │   ├── Navbar/
 │   │    │   ├── Heading/
 │   │    │   ├── Footer/
-│   │    │   ├── ContactForm/         # Multi-step modal with Yup validation
+│   │    │   ├── ContactForm/               # Multi-step modal with Yup validation
 │   │    │   └── Main/
-│   │    │       ├── RealEstate.jsx   # Filter logic + listings
+│   │    │       ├── RealEstate.jsx         # Filter logic + listings
 │   │    │       └── RealEstateCard/
 │   │    │           ├── RealEstateDetails/
 │   │    │           └── RealEstatePhoto/
@@ -123,14 +129,14 @@ homesphere/
 │   │    │               ├── RealEstateStatus/
 │   │    │               └── IconItem/
 │   │    └── pages/
-│   │        ├── EstateDetails/       # Single entry detail page
-│   │        └── Favorites/           # Saved properties page
+│   │        ├── EstateDetails/             # Single entry detail page
+│   │        └── Favorites/                 # Saved properties page
 │   └── package.json
-└── server/                           # Node.js / Express Backend
-    ├── db.js                         # PostgreSQL connection pool
-    ├── server.js                     # Express server & routes
-    ├── schema.sql                    # Database table definition
-    ├── seed.sql                      # Initial data (entries)
+└── server/                                 # Node.js / Express Backend
+    ├── db.js                               # PostgreSQL connection pool
+    ├── server.js                           # Express server & routes
+    ├── schema.sql                          # Database table definition
+    ├── seed.sql                            # Initial data (entries)
     └── package.json
 ```
 
@@ -206,16 +212,37 @@ App runs at `http://localhost:5000`
 
 Or check out the 🔗 **[Live Demo](https://homesphere-web.vercel.app)**
 
+---
+
+## Testing
+
+Frontend tests are written with **Vitest** and **React Testing Library**.
+
+```bash
+cd client
+npm test            # watch mode
+npm run test:run    # run once
+```
+
+| Test file                   | What it covers                                                          |
+| --------------------------- | ----------------------------------------------------------------------- |
+| `useFetch.test.js`          | loading state, successful fetch, undefined url guard                    |
+| `FavoritesContext.test.jsx` | toggle add/remove, isFavorite, localStorage persistence, provider error |
+
+---
+
 ## Available Scripts
 
 ### Client
 
-| Command           | Description               |
-| ----------------- | ------------------------- |
-| `npm run dev`     | Start frontend dev server |
-| `npm run build`   | Build for production      |
-| `npm run preview` | Preview production build  |
-| `npm run lint`    | Run ESLint                |
+| Command            | Description               |
+| ------------------ | ------------------------- |
+| `npm run dev`      | Start frontend dev server |
+| `npm run build`    | Build for production      |
+| `npm run preview`  | Preview production build  |
+| `npm run lint`     | Run ESLint                |
+| `npm test`         | Run tests in watch mode   |
+| `npm run test:run` | Run tests once            |
 
 ### Server
 
@@ -241,14 +268,15 @@ Or check out the 🔗 **[Live Demo](https://homesphere-web.vercel.app)**
 - [x] Multi-step contact form with Yup validation
 - [x] Email delivery via Resend
 - [x] Favorites system with Context API and localStorage
+- [x] Frontend unit tests for useFetch and FavoritesContext (Vitest + React Testing Library)
 
 ### Next Steps
 
+- [ ] Backend tests for Express endpoints (Supertest)
 - [ ] Advanced search - Price, rooms, size, combined filters
 - [ ] SEO improvements
 - [ ] Admin account/dashboard
 - [ ] Authentication with Supabase Auth
-- [ ] Unit tests with Vitest + React Testing Library
 - [ ] Map integration
 - [ ] Mortgage calculator
 
