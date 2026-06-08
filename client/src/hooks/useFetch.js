@@ -8,18 +8,28 @@ const useFetch = (url) => {
   });
 
   useEffect(() => {
-    // Skip fetch if url is not yet available
+    // skip fetch if url is not yet available
     if (!url) return;
 
-    fetch(url)
+    // solve race conditions by abort the previous request:
+    // cancel the fetch when the component unmounts
+    // or the url changes before the previous request completes
+    const controller = new AbortController();
+
+    fetch(url, { signal: controller.signal })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch data");
         return res.json();
       })
       .then((data) => setState({ data, loading: false, error: null }))
-      .catch((err) =>
-        setState({ data: null, loading: false, error: err.message }),
-      );
+      .catch((err) => {
+        // ignore abort errors
+        if (err.name === "AbortError") return;
+        setState({ data: null, loading: false, error: err.message });
+      });
+
+    // cleanup: abort the fetch when the component unmounts or url changes
+    return () => controller.abort();
   }, [url]);
 
   return state;
