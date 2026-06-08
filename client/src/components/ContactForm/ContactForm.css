@@ -146,9 +146,9 @@
   margin-bottom: 0.5rem;
 }
 
-/* ATTENTION: not scoped (not only for this component), but global */
-input,
-textarea {
+/* not global, but locally scoped to this component */
+.step-content input,
+.step-content textarea {
   width: 100%;
   padding: 12px;
   border-radius: 10px;

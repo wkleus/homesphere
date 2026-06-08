@@ -19,6 +19,8 @@
   gap: 10px;
   cursor: pointer;
   text-decoration: none;
+  background-color: transparent;
+  border: none;
 }
 
 .nav-logo-box {

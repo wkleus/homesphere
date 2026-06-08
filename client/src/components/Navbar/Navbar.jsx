@@ -9,14 +9,14 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      <div className="nav-brand" onClick={() => navigate("/")}>
+      <button type="button" className="nav-brand" onClick={() => navigate("/")}>
         <div className="nav-logo-box">
           <Buildings weight="fill" className="nav-logo-icon" />
         </div>
         <span className="nav-brand-name">
           Home<strong>Sphere</strong>
         </span>
-      </div>
+      </button>
 
       <div className="nav-contacts">
         <div className="nav-contact-item">
