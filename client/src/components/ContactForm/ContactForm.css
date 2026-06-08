@@ -146,6 +146,7 @@
   margin-bottom: 0.5rem;
 }
 
+/* ATTENTION: not scoped (not only for this component), but global */
 input,
 textarea {
   width: 100%;

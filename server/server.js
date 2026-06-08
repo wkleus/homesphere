@@ -34,11 +34,9 @@ const toCamelCase = (str) =>
 
 const transformKeys = (obj) => {
   if (!obj || typeof obj !== "object") return obj;
-  const newObj = {};
-  for (let key in obj) {
-    newObj[toCamelCase(key)] = obj[key];
-  }
-  return newObj;
+  return Object.fromEntries(
+    Object.entries(obj).map(([key, value]) => [toCamelCase(key), value]),
+  );
 };
 
 // GET /api/entries – returns all property listings

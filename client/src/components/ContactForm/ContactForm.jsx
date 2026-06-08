@@ -119,7 +119,7 @@ const ContactForm = ({ onClose, address }) => {
   return createPortal(
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-window" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>
+        <button type="button" className="modal-close" onClick={onClose}>
           <X size={22} />
         </button>
 
@@ -158,7 +158,7 @@ const ContactForm = ({ onClose, address }) => {
                   {errors.fullName && (
                     <p className="error">{errors.fullName}</p>
                   )}
-                  <button className="send-btn" onClick={next}>
+                  <button type="button" className="send-btn" onClick={next}>
                     Next
                   </button>
                 </>
@@ -177,10 +177,10 @@ const ContactForm = ({ onClose, address }) => {
                   />
                   {errors.email && <p className="error">{errors.email}</p>}
                   <div className="wizard-buttons">
-                    <button className="back-btn" onClick={back}>
+                    <button type="button" className="back-btn" onClick={back}>
                       Back
                     </button>
-                    <button className="send-btn" onClick={next}>
+                    <button type="button" className="send-btn" onClick={next}>
                       Next
                     </button>
                   </div>
@@ -201,10 +201,10 @@ const ContactForm = ({ onClose, address }) => {
                   />
                   {errors.message && <p className="error">{errors.message}</p>}
                   <div className="wizard-buttons">
-                    <button className="back-btn" onClick={back}>
+                    <button type="button" className="back-btn" onClick={back}>
                       Back
                     </button>
-                    <button className="send-btn" onClick={next}>
+                    <button type="button" className="send-btn" onClick={next}>
                       Next
                     </button>
                   </div>
@@ -228,6 +228,7 @@ const ContactForm = ({ onClose, address }) => {
                   {sendError && <p className="error">{sendError}</p>}
                   <div className="wizard-buttons">
                     <button
+                      type="button"
                       className="back-btn"
                       onClick={back}
                       disabled={sending}
@@ -235,6 +236,7 @@ const ContactForm = ({ onClose, address }) => {
                       Back
                     </button>
                     <button
+                      type="button"
                       className="send-btn"
                       onClick={handleSend}
                       disabled={sending}
@@ -251,7 +253,7 @@ const ContactForm = ({ onClose, address }) => {
                     Message Sent! <CheckCircle size={30} weight="duotone" />
                   </h2>
                   <p>The agent will contact you shortly.</p>
-                  <button className="send-btn" onClick={onClose}>
+                  <button type="button" className="send-btn" onClick={onClose}>
                     Close
                   </button>
                 </div>

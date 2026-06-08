@@ -25,22 +25,24 @@ const RealEstateCard = ({
   const { toggleFavorite, isFavorite } = useFavorites();
   const favorited = isFavorite(id);
 
+  const entryLabels = {
+    id,
+    address,
+    isAvailable,
+    energyClass,
+    rent,
+    buy,
+    photo,
+    rooms,
+    squareMeters,
+    category,
+    yearBuilt,
+  };
+
   const handleFavorite = (e) => {
     // Prevent card click from navigating to detail page
     e.stopPropagation();
-    toggleFavorite({
-      id,
-      address,
-      isAvailable,
-      energyClass,
-      rent,
-      buy,
-      photo,
-      rooms,
-      squareMeters,
-      category,
-      yearBuilt,
-    });
+    toggleFavorite(entryLabels);
   };
 
   return (
