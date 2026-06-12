@@ -250,7 +250,12 @@ const ContactForm = ({ onClose, address }) => {
               {step === "success" && (
                 <div className="success-screen">
                   <h2 className="checked">
-                    Message Sent! <CheckCircle size={30} weight="duotone" />
+                    Message Sent!{" "}
+                    <CheckCircle
+                      size={30}
+                      weight="duotone"
+                      className="checked-icon"
+                    />
                   </h2>
                   <p>The agent will contact you shortly.</p>
                   <button type="button" className="send-btn" onClick={onClose}>

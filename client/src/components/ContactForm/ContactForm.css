@@ -193,6 +193,10 @@
   background-color: rgb(20, 190, 200);
 }
 
+.checked-icon {
+  margin-bottom: 0.14rem;
+}
+
 .error {
   color: #d60000;
   margin-top: 4px;
@@ -213,7 +217,7 @@
   justify-content: center;
   gap: 10px;
   color: #156c0e;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.3rem;
   margin-top: -1rem;
 }
 

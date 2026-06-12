@@ -59,7 +59,7 @@ A fullstack real estate web application for browsing and discovering residential
 - **Context API** for global favorites state
 - **Client-side routing** via React Router
 - **Responsive layout** for mobile and desktop
-- **Unit tested** – useFetch and FavoritesContext covered with Vitest + RTL
+- **Tested** - Frontend with Vitest + RTL and Backend with Supertest
 - **Separate deployments** – Frontend on Vercel, API on Render.com
 - **PostgreSQL database** hosted on Supabase
 
@@ -75,7 +75,7 @@ A fullstack real estate web application for browsing and discovering residential
 |              | Yup                            | 1            |
 |              | Vite                           | 8            |
 |              | CSS Custom Properties          | —            |
-|              | Vitest + React Testing Library | 3 / 16       |
+|              | Vitest + React Testing Library | 4 / 16       |
 | **Backend**  | Node.js                        | —            |
 |              | Express                        | 4            |
 |              | CORS                           | 2            |
@@ -84,6 +84,7 @@ A fullstack real estate web application for browsing and discovering residential
 |              | express-rate-limit             | 7            |
 |              | he(XSS sanitization)           | 1            |
 |              | Resend                         | 6            |
+|              | Vitest + Supertest             | 4 / 7        |
 | **Database** | PostgreSQL                     | via Supabase |
 | **Hosting**  | Vercel                         | Frontend     |
 |              | Render.com                     | Backend API  |
@@ -135,8 +136,12 @@ homesphere/
 └── server/                                 # Node.js / Express Backend
     ├── db.js                               # PostgreSQL connection pool
     ├── server.js                           # Express server & routes
+    ├── server.start.js
+    ├── server.test.js
+    ├── vitest.connfig.js
     ├── schema.sql                          # Database table definition
     ├── seed.sql                            # Initial data (entries)
+    ├── .env
     └── package.json
 ```
 
@@ -216,7 +221,7 @@ Or check out the 🔗 **[Live Demo](https://homesphere-web.vercel.app)**
 
 ## Testing
 
-Frontend tests are written with **Vitest** and **React Testing Library**.
+**Frontend** tests are written with **Vitest** and **React Testing Library**.
 
 ```bash
 cd client
@@ -228,6 +233,20 @@ npm run test:run    # run once
 | --------------------------- | ----------------------------------------------------------------------- |
 | `useFetch.test.js`          | loading state, successful fetch, undefined url guard                    |
 | `FavoritesContext.test.jsx` | toggle add/remove, isFavorite, localStorage persistence, provider error |
+
+**Backend** tests are written with **Vitest** and **Supertest**.
+
+```bash
+cd server
+npm test          # watch mode
+npm run test:run  # run once
+```
+
+| Test file        | What it covers                                                  |
+| ---------------- | --------------------------------------------------------------- |
+| `servre.test.js` | GET /api/entries → checks it returns 200 and camelCase data     |
+|                  | GET /api/entries/:id → checks 404 for missing entry             |
+|                  | POST /api/contact → checks 400 when required fields are missing |
 
 ---
 
@@ -246,10 +265,12 @@ npm run test:run    # run once
 
 ### Server
 
-| Command       | Description                |
-| ------------- | -------------------------- |
-| `npm run dev` | Start backend with nodemon |
-| `npm start`   | Start backend (production) |
+| Command            | Description                |
+| ------------------ | -------------------------- |
+| `npm run dev`      | Start backend with nodemon |
+| `npm start`        | Start backend (production) |
+| `npm test`         | Run tests in watch mode    |
+| `npm run test:run` | Run tests once             |
 
 ---
 
@@ -268,16 +289,13 @@ npm run test:run    # run once
 - [x] Multi-step contact form with Yup validation
 - [x] Email delivery via Resend
 - [x] Favorites system with Context API and localStorage
-- [x] Frontend unit tests for useFetch and FavoritesContext (Vitest + React Testing Library)
+- [x] Frontend unit tests for useFetch and FavoritesContext (Vitest + React Testing Library) -[x] Backend integration tests for all API endpoints (Supertest)
 
 ### Next Steps
 
-- [ ] Backend tests for Express endpoints (Supertest)
 - [ ] Advanced search - Price, rooms, size, combined filters
 - [ ] SEO improvements
 - [ ] Admin account/dashboard
 - [ ] Authentication with Supabase Auth
 - [ ] Map integration
 - [ ] Mortgage calculator
-
----

@@ -9,7 +9,6 @@ import pool from "./db.js";
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 app.use(
@@ -106,9 +105,4 @@ app.post("/api/contact", contactLimiter, async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`HomeSphere API running at http://localhost:${PORT}`);
-  console.log(`  GET  http://localhost:${PORT}/api/entries`);
-  console.log(`  GET  http://localhost:${PORT}/api/entries/:id`);
-  console.log(`  POST http://localhost:${PORT}/api/contact`);
-});
+export default app;
