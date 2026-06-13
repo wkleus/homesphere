@@ -13,10 +13,12 @@ import "./EstateDetails.css";
 import useFetch from "../../hooks/useFetch";
 import { ENTRY_URL } from "../../config/api";
 import ContactForm from "../../components/ContactForm/ContactForm";
+import { useTranslation } from "react-i18next";
 
 const EstateDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   // Fetch single property by ID from the backend
   const { data: entry, loading, error } = useFetch(ENTRY_URL(id));
@@ -24,12 +26,12 @@ const EstateDetails = () => {
   // Controls visibility of the contact form modal
   const [showModal, setShowModal] = useState(false);
 
-  if (loading) return <p className="status-msg">Loading entry...</p>;
+  if (loading) return <p className="status-msg">{t("loading")}</p>;
   if (error || !entry)
     return (
       <div className="detail-not-found">
-        <p>Property not found.</p>
-        <button onClick={() => navigate("/")}>← Back to listings</button>
+        <p>{t("detail.notFound")}</p>
+        <button onClick={() => navigate("/")}>{t("detail.back")}</button>
       </div>
     );
 
@@ -49,7 +51,7 @@ const EstateDetails = () => {
   return (
     <div className="detail-page">
       <button className="detail-back-btn" onClick={() => navigate(-1)}>
-        <ArrowLeft size={18} weight="bold" /> Back to listings
+        <ArrowLeft size={18} weight="bold" /> {t("detail.back")}
       </button>
 
       <div className="detail-card">
@@ -62,7 +64,7 @@ const EstateDetails = () => {
           <span
             className={`detail-availability ${isAvailable ? "available" : "unavailable"}`}
           >
-            {isAvailable ? "Available" : "Not Available"}
+            {isAvailable ? t("detail.available") : t("detail.unavailable")}
           </span>
           <span className="detail-category">{category}</span>
         </div>
@@ -75,13 +77,13 @@ const EstateDetails = () => {
           <div className="detail-price-row">
             {rent && (
               <div className="detail-price rent">
-                <span className="price-label">Monthly Rent</span>
+                <span className="price-label">{t("detail.monthlyRent")}</span>
                 <span className="price-value">EUR {rent.toLocaleString()}</span>
               </div>
             )}
             {buy && (
               <div className="detail-price buy">
-                <span className="price-label">Purchase Price</span>
+                <span className="price-label">{t("detail.purchasePrice")}</span>
                 <span className="price-value">EUR {buy.toLocaleString()}</span>
               </div>
             )}
@@ -91,27 +93,27 @@ const EstateDetails = () => {
             <div className="detail-stat">
               <Bed size={28} weight="duotone" />
               <span className="stat-value">{rooms}</span>
-              <span className="stat-label">Rooms</span>
+              <span className="stat-label">{t("detail.rooms")}</span>
             </div>
             <div className="detail-stat">
               <Square size={28} weight="duotone" />
               <span className="stat-value">{squareMeters} m²</span>
-              <span className="stat-label">Living Area</span>
+              <span className="stat-label">{t("detail.area")}</span>
             </div>
             <div className="detail-stat">
               <Lightning size={28} weight="duotone" />
               <span className="stat-value">{energyClass}</span>
-              <span className="stat-label">Energy Class</span>
+              <span className="stat-label">{t("detail.energy")}</span>
             </div>
             <div className="detail-stat">
               <Buildings size={28} weight="duotone" />
               <span className="stat-value">{yearBuilt}</span>
-              <span className="stat-label">Year Built</span>
+              <span className="stat-label">{t("detail.yearBuilt")}</span>
             </div>
             <div className="detail-stat">
               <Tag size={28} weight="duotone" />
               <span className="stat-value">{category}</span>
-              <span className="stat-label">Type</span>
+              <span className="stat-label">{t("detail.type")}</span>
             </div>
           </div>
 
@@ -120,7 +122,7 @@ const EstateDetails = () => {
             className="detail-contact-btn"
             onClick={() => setShowModal(true)}
           >
-            Contact Agent
+            {t("detail.contact")}
           </button>
         </div>
       </div>

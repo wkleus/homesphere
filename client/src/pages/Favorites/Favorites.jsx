@@ -3,29 +3,31 @@ import { Heart } from "phosphor-react";
 import { useFavorites } from "../../context/FavoritesContext";
 import RealEstateCard from "../../components/Main/RealEstateCard/RealEstateCard";
 import "./Favorites.css";
+import { useTranslation } from "react-i18next";
 
 const Favorites = () => {
   const { favorites } = useFavorites();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <div className="favorites-page">
       <div className="favorites-header">
         <h1 className="favorites-title">
-          <Heart size={36} /> Saved Properties
+          <Heart size={36} /> {t("favorites.title")}
         </h1>
         <p className="favorites-count">
           {favorites.length === 0
-            ? "No saved properties yet"
-            : `${favorites.length} ${favorites.length === 1 ? "property" : "properties"} saved`}
+            ? t("favorites.none")
+            : t("favorites.saved", { count: favorites.length })}
         </p>
       </div>
 
       {favorites.length === 0 ? (
         <div className="favorites-empty">
           <Heart size={64} weight="thin" className="empty-icon" />
-          <p>You haven't saved any properties yet.</p>
-          <button onClick={() => navigate("/")}>Browse Properties</button>
+          <p>{t("favorites.empty")}</p>
+          <button onClick={() => navigate("/")}>{t("favorites.browse")}</button>
         </div>
       ) : (
         <div className="favorites-grid">

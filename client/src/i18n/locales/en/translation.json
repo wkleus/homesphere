@@ -1,0 +1,83 @@
+{
+  "nav": {
+    "email": "Email",
+    "phone": "Phone",
+    "favorites": "Favorites"
+  },
+  "heading": {
+    "eyebrow": "Premium Real Estate",
+    "title": "Rent or Buy",
+    "subtitle": "Your Perfect Home",
+    "sub": "Discover handpicked properties across Europe — from city studios to alpine chalets.",
+    "available": "{{count}} properties available"
+  },
+  "filter": {
+    "category": "Category",
+    "type": "Type",
+    "all": "All",
+    "rent": "Rent",
+    "buy": "Buy",
+    "found": "{{count}} entries found"
+  },
+  "card": {
+    "addFavorite": "Save to favorites",
+    "removeFavorite": "Remove from favorites",
+    "rooms": "Number of rooms",
+    "area": "Living area in square meters",
+    "energy": "Energy efficiency class",
+    "yearBuilt": "Year built",
+    "monthlyRent": "Monthly rent",
+    "purchasePrice": "Purchase price"
+  },
+  "detail": {
+    "back": "Back to listings",
+    "available": "Available",
+    "unavailable": "Not Available",
+    "rooms": "Rooms",
+    "area": "Living Area",
+    "energy": "Energy Class",
+    "yearBuilt": "Year Built",
+    "type": "Type",
+    "monthlyRent": "Monthly Rent",
+    "purchasePrice": "Purchase Price",
+    "contact": "Contact Agent",
+    "notFound": "Property not found."
+  },
+  "contact": {
+    "title": "Contact the Agent",
+    "note": "Share your details and message, and we'll connect you with the agent.",
+    "name": "Your Name",
+    "fullName": "Full Name",
+    "contactStep": "Your Contact",
+    "email": "Email Address",
+    "message": "Your Message",
+    "messagePlaceholder": "Write your message...",
+    "confirm": "Confirm Details",
+    "send": "Send",
+    "sending": "Sending...",
+    "next": "Next",
+    "back": "Back",
+    "close": "Close",
+    "success": "Message Sent!",
+    "successMsg": "The agent will contact you shortly.",
+    "error": "Something went wrong. Please try again.",
+    "interested": "Interested in",
+    "sendMessage": "Send us a message."
+  },
+  "favorites": {
+    "title": "Saved Properties",
+    "empty": "You haven't saved any properties yet.",
+    "browse": "Browse Properties",
+    "saved": "{{count}} property saved",
+    "saved_plural": "{{count}} properties saved",
+    "none": "No saved properties yet"
+  },
+  "footer": {
+    "openNow": "Open Now",
+    "closedNow": "Closed Now",
+    "hours": "Opening Hours"
+  },
+  "loading": "Loading entries...",
+  "error": "Error: {{message}}",
+  "noResults": "No properties match your filters."
+}

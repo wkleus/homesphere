@@ -1,0 +1,83 @@
+{
+  "nav": {
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "favorites": "Favoriten"
+  },
+  "heading": {
+    "eyebrow": "Premium Immobilien",
+    "title": "Mieten oder Kaufen",
+    "subtitle": "Ihr perfektes Zuhause",
+    "sub": "Entdecken Sie handverlesene Immobilien in ganz Europa – von Stadtstudios bis zu Bergchalets.",
+    "available": "{{count}} Immobilien verfügbar"
+  },
+  "filter": {
+    "category": "Kategorie",
+    "type": "Typ",
+    "all": "Alle",
+    "rent": "Miete",
+    "buy": "Kauf",
+    "found": "{{count}} Einträge gefunden"
+  },
+  "card": {
+    "addFavorite": "Zu Favoriten hinzufügen",
+    "removeFavorite": "Aus Favoriten entfernen",
+    "rooms": "Anzahl der Zimmer",
+    "area": "Wohnfläche in Quadratmetern",
+    "energy": "Energieeffizienzklasse",
+    "yearBuilt": "Baujahr",
+    "monthlyRent": "Monatliche Miete",
+    "purchasePrice": "Kaufpreis"
+  },
+  "detail": {
+    "back": "Zurück zur Übersicht",
+    "available": "Verfügbar",
+    "unavailable": "Nicht verfügbar",
+    "rooms": "Zimmer",
+    "area": "Wohnfläche",
+    "energy": "Energieklasse",
+    "yearBuilt": "Baujahr",
+    "type": "Typ",
+    "monthlyRent": "Monatliche Miete",
+    "purchasePrice": "Kaufpreis",
+    "contact": "Makler kontaktieren",
+    "notFound": "Immobilie nicht gefunden."
+  },
+  "contact": {
+    "title": "Makler kontaktieren",
+    "note": "Teilen Sie Ihre Daten und Nachricht mit, wir verbinden Sie mit dem Makler.",
+    "name": "Ihr Name",
+    "fullName": "Vollständiger Name",
+    "contactStep": "Ihre Kontaktdaten",
+    "email": "E-Mail-Adresse",
+    "message": "Ihre Nachricht",
+    "messagePlaceholder": "Schreiben Sie Ihre Nachricht...",
+    "confirm": "Details bestätigen",
+    "send": "Senden",
+    "sending": "Wird gesendet...",
+    "next": "Weiter",
+    "back": "Zurück",
+    "close": "Schließen",
+    "success": "Nachricht gesendet!",
+    "successMsg": "Der Makler wird sich in Kürze bei Ihnen melden.",
+    "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
+    "interested": "Interesse an",
+    "sendMessage": "Senden Sie uns eine Nachricht."
+  },
+  "favorites": {
+    "title": "Gespeicherte Immobilien",
+    "empty": "Sie haben noch keine Immobilien gespeichert.",
+    "browse": "Immobilien durchsuchen",
+    "saved": "{{count}} Immobilie gespeichert",
+    "saved_plural": "{{count}} Immobilien gespeichert",
+    "none": "Noch keine gespeicherten Immobilien"
+  },
+  "footer": {
+    "openNow": "Jetzt geöffnet",
+    "closedNow": "Jetzt geschlossen",
+    "hours": "Öffnungszeiten"
+  },
+  "loading": "Einträge werden geladen...",
+  "error": "Fehler: {{message}}",
+  "noResults": "Keine Immobilien entsprechen Ihren Filtern."
+}

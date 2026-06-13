@@ -7,6 +7,7 @@ import IconItem from "./RealEstatePhoto/IconItem/IconItem";
 import RealEstateDetails from "./RealEstateDetails/RealEstateDetails";
 import { Bed, Buildings, Lightning, Square, Heart } from "phosphor-react";
 import { useFavorites } from "../../../context/FavoritesContext";
+import { useTranslation } from "react-i18next";
 
 const RealEstateCard = ({
   id,
@@ -23,6 +24,7 @@ const RealEstateCard = ({
 }) => {
   const navigate = useNavigate();
   const { toggleFavorite, isFavorite } = useFavorites();
+  const { t } = useTranslation();
   const favorited = isFavorite(id);
 
   const entryLabels = {
@@ -40,7 +42,6 @@ const RealEstateCard = ({
   };
 
   const handleFavorite = (e) => {
-    // Prevent card click from navigating to detail page
     e.stopPropagation();
     toggleFavorite(entryLabels);
   };
@@ -56,11 +57,10 @@ const RealEstateCard = ({
         <RealEstateCategory category={category} />
         {!isAvailable && <RealEstateStatus />}
 
-        {/* Favorite toggle button */}
         <button
           className={`favorite-btn ${favorited ? "favorited" : ""}`}
           onClick={handleFavorite}
-          title={favorited ? "Remove from favorites" : "Save to favorites"}
+          title={favorited ? t("card.removeFavorite") : t("card.addFavorite")}
         >
           <Heart size={20} weight={favorited ? "fill" : "regular"} />
         </button>
@@ -69,40 +69,41 @@ const RealEstateCard = ({
           <IconItem
             Icon={Bed}
             description={rooms}
-            tooltip="Number of rooms"
+            tooltip={t("card.rooms")}
             className="icon-rooms"
           />
           <IconItem
             Icon={Square}
             description={`${squareMeters} m²`}
-            tooltip="Living area in square meters"
+            tooltip={t("card.area")}
           />
           <IconItem
             Icon={Lightning}
             description={energyClass}
-            tooltip="Energy efficiency class"
+            tooltip={t("card.energy")}
           />
           <IconItem
             Icon={Buildings}
             description={yearBuilt}
-            tooltip="Year built"
+            tooltip={t("card.yearBuilt")}
           />
         </div>
       </RealEstatePhoto>
+
       <div>
         <RealEstateDetails description={address} />
       </div>
       <div>
         {rent && (
           <RealEstateDetails
-            description={`Monthly rent: EUR ${rent}`}
+            description={`${t("card.monthlyRent")}: EUR ${rent}`}
             color="#4488bb"
             fontWeight="bold"
           />
         )}
         {buy && (
           <RealEstateDetails
-            description={`Purchase price: EUR ${buy}`}
+            description={`${t("card.purchasePrice")}: EUR ${buy}`}
             color="#4488bb"
             fontWeight="bold"
           />

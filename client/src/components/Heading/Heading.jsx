@@ -1,21 +1,23 @@
 import "./Heading.css";
+import { useTranslation } from "react-i18next";
 
 const Heading = ({ available }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="heading">
-      <p className="heading-eyebrow">Premium Real Estate</p>
+      <p className="heading-eyebrow">{t("heading.eyebrow")}</p>
       <h1 className="heading-title">
-        Rent or Buy
+        {t("heading.title")}
         <br />
-        <em>Your Perfect Home</em>
+        <em>{t("heading.subtitle")}</em>
       </h1>
-      <p className="heading-sub">
-        Discover handpicked properties across Europe — from city studios to
-        alpine chalets.
-      </p>
+      <p className="heading-sub">{t("heading.sub")}</p>
       <div className="heading-line">
         <span className="heading-badge">
-          {available !== null ? `${available} properties available` : ""}
+          {available !== null
+            ? t("heading.available", { count: available })
+            : ""}
         </span>
       </div>
     </div>

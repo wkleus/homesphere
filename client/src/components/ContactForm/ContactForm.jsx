@@ -11,27 +11,12 @@ import {
 import * as Yup from "yup";
 import "./ContactForm.css";
 import { CONTACT_URL } from "../../config/api";
+import { useTranslation } from "react-i18next";
 
 const steps = ["name", "contact", "message", "confirm", "success"];
 
-// Yup validation schemas per step
-const schemas = {
-  name: Yup.object({
-    fullName: Yup.string()
-      .min(2, "Name is too short")
-      .required("Name is required"),
-  }),
-  contact: Yup.object({
-    email: Yup.string().email("Invalid email").required("Email is required"),
-  }),
-  message: Yup.object({
-    message: Yup.string()
-      .min(10, "Message is too short")
-      .required("Message is required"),
-  }),
-};
-
 const ContactForm = ({ onClose, address }) => {
+  const { t } = useTranslation();
   const [step, setStep] = useState("name");
   const [direction, setDirection] = useState("forward");
   const [sending, setSending] = useState(false);
@@ -42,6 +27,23 @@ const ContactForm = ({ onClose, address }) => {
     message: "",
   });
   const [errors, setErrors] = useState({});
+
+  // Yup validation schemas per step
+  const schemas = {
+    name: Yup.object({
+      fullName: Yup.string()
+        .min(2, "Name is too short")
+        .required("Name is required"),
+    }),
+    contact: Yup.object({
+      email: Yup.string().email("Invalid email").required("Email is required"),
+    }),
+    message: Yup.object({
+      message: Yup.string()
+        .min(10, "Message is too short")
+        .required("Message is required"),
+    }),
+  };
 
   // Render modal into #modal-root to escape stacking context
   const modalRoot = document.getElementById("modal-root");
@@ -106,7 +108,7 @@ const ContactForm = ({ onClose, address }) => {
       setDirection("forward");
       setStep("success");
     } catch {
-      setSendError("Something went wrong. Please try again.");
+      setSendError(t("contact.error"));
     } finally {
       setSending(false);
     }
@@ -126,11 +128,8 @@ const ContactForm = ({ onClose, address }) => {
         <div className="modal-layout">
           <div className="modal-illustration">
             <HouseLine size={48} weight="duotone" className="house-outline" />
-            <h3>Contact the Agent</h3>
-            <p className="modal-note">
-              Share your details and message, and we'll connect you with the
-              agent.
-            </p>
+            <h3>{t("contact.title")}</h3>
+            <p className="modal-note">{t("contact.note")}</p>
           </div>
 
           <div className="modal-content">
@@ -147,11 +146,11 @@ const ContactForm = ({ onClose, address }) => {
               {step === "name" && (
                 <>
                   <h2 className="step-title">
-                    <User size={26} weight="duotone" /> Your Name
+                    <User size={26} weight="duotone" /> {t("contact.name")}
                   </h2>
                   <input
                     name="fullName"
-                    placeholder="Full Name"
+                    placeholder={t("contact.fullName")}
                     value={formData.fullName}
                     onChange={handleChange}
                   />
@@ -159,7 +158,7 @@ const ContactForm = ({ onClose, address }) => {
                     <p className="error">{errors.fullName}</p>
                   )}
                   <button type="button" className="send-btn" onClick={next}>
-                    Next
+                    {t("contact.next")}
                   </button>
                 </>
               )}
@@ -167,21 +166,22 @@ const ContactForm = ({ onClose, address }) => {
               {step === "contact" && (
                 <>
                   <h2 className="step-title">
-                    <EnvelopeSimple size={30} weight="duotone" /> Your Contact
+                    <EnvelopeSimple size={30} weight="duotone" />{" "}
+                    {t("contact.contactStep")}
                   </h2>
                   <input
                     name="email"
-                    placeholder="Email Address"
+                    placeholder={t("contact.email")}
                     value={formData.email}
                     onChange={handleChange}
                   />
                   {errors.email && <p className="error">{errors.email}</p>}
                   <div className="wizard-buttons">
                     <button type="button" className="back-btn" onClick={back}>
-                      Back
+                      {t("contact.back")}
                     </button>
                     <button type="button" className="send-btn" onClick={next}>
-                      Next
+                      {t("contact.next")}
                     </button>
                   </div>
                 </>
@@ -190,22 +190,23 @@ const ContactForm = ({ onClose, address }) => {
               {step === "message" && (
                 <>
                   <h2 className="step-title">
-                    <ChatCircleText size={26} weight="duotone" /> Your Message
+                    <ChatCircleText size={26} weight="duotone" />{" "}
+                    {t("contact.message")}
                   </h2>
                   <textarea
                     name="message"
                     rows="4"
-                    placeholder="Write your message..."
+                    placeholder={t("contact.messagePlaceholder")}
                     value={formData.message}
                     onChange={handleChange}
                   />
                   {errors.message && <p className="error">{errors.message}</p>}
                   <div className="wizard-buttons">
                     <button type="button" className="back-btn" onClick={back}>
-                      Back
+                      {t("contact.back")}
                     </button>
                     <button type="button" className="send-btn" onClick={next}>
-                      Next
+                      {t("contact.next")}
                     </button>
                   </div>
                 </>
@@ -214,7 +215,8 @@ const ContactForm = ({ onClose, address }) => {
               {step === "confirm" && (
                 <>
                   <h2 className="step-title">
-                    <CheckCircle size={26} weight="duotone" /> Confirm Details
+                    <CheckCircle size={26} weight="duotone" />{" "}
+                    {t("contact.confirm")}
                   </h2>
                   <p>
                     <strong>Name:</strong> {formData.fullName}
@@ -233,7 +235,7 @@ const ContactForm = ({ onClose, address }) => {
                       onClick={back}
                       disabled={sending}
                     >
-                      Back
+                      {t("contact.back")}
                     </button>
                     <button
                       type="button"
@@ -241,7 +243,7 @@ const ContactForm = ({ onClose, address }) => {
                       onClick={handleSend}
                       disabled={sending}
                     >
-                      {sending ? "Sending..." : "Send"}
+                      {sending ? t("contact.sending") : t("contact.send")}
                     </button>
                   </div>
                 </>
@@ -250,16 +252,12 @@ const ContactForm = ({ onClose, address }) => {
               {step === "success" && (
                 <div className="success-screen">
                   <h2 className="checked">
-                    Message Sent!{" "}
-                    <CheckCircle
-                      size={30}
-                      weight="duotone"
-                      className="checked-icon"
-                    />
+                    {t("contact.success")}{" "}
+                    <CheckCircle size={30} weight="duotone" />
                   </h2>
-                  <p>The agent will contact you shortly.</p>
+                  <p>{t("contact.successMsg")}</p>
                   <button type="button" className="send-btn" onClick={onClose}>
-                    Close
+                    {t("contact.close")}
                   </button>
                 </div>
               )}
