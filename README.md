@@ -8,11 +8,12 @@
 ![Resend](https://img.shields.io/badge/Email-Resend-000000?logo=mail.ru&logoColor=white)
 ![Render](https://img.shields.io/badge/API-Render.com-46E3B7?logo=render&logoColor=white)
 ![Vercel](https://img.shields.io/badge/Frontend-Vercel-black?logo=vercel)
+![i18n](https://img.shields.io/badge/i18n-EN%20%7C%20DE%20-blue)
 ![Status](https://img.shields.io/badge/Status-In_Progress-yellow)
 
 🔗 [Live Demo](https://homesphere-web.vercel.app)
 
-A fullstack real estate web application for browsing and discovering residential properties across Europe — from city apartments to alpine chalets. The React frontend fetches data from a custom Node.js/Express REST API backed by a PostgreSQL database hosted on Supabase. Contact requests are sent via email using Resend.
+A fullstack real estate web application for browsing and discovering residential properties across Europe — from city apartments to alpine chalets. The React frontend fetches data from a custom Node.js/Express REST API backed by a PostgreSQL database hosted on Supabase. Contact requests are sent via email using Resend. The app supports two languages (English and German) via react-i18next.
 
 ---
 
@@ -48,7 +49,7 @@ A fullstack real estate web application for browsing and discovering residential
 
 ## Features
 
-- **Property listings** fetched from a custom REST API
+- **Property listings** fetched from a PostgreSQL database via REST API
 - **Filter by category** (Apartment, Chalet, Residence, Studio, Townhouse)
 - **Filter by deal type** (Rent / Buy)
 - **Favorites system** – save properties via heart icon, persisted in localStorage
@@ -59,7 +60,8 @@ A fullstack real estate web application for browsing and discovering residential
 - **Context API** for global favorites state
 - **Client-side routing** via React Router
 - **Responsive layout** for mobile and desktop
-- **Tested** - Frontend with Vitest + RTL and Backend with Supertest
+- **Multilingual** – English and German via react-i18next, flag icons in Navbar
+- **Tested** - Frontend with Vitest + React Testing Library and Backend with Supertest
 - **Separate deployments** – Frontend on Vercel, API on Render.com
 - **PostgreSQL database** hosted on Supabase
 
@@ -75,6 +77,7 @@ A fullstack real estate web application for browsing and discovering residential
 |              | Yup                            | 1            |
 |              | Vite                           | 8            |
 |              | CSS Custom Properties          | —            |
+|              | react-i18next                  | 15           |
 |              | Vitest + React Testing Library | 4 / 16       |
 | **Backend**  | Node.js                        | —            |
 |              | Express                        | 4            |
@@ -110,6 +113,10 @@ homesphere/
 │   │    │   └── api.js                     # Central API URL config (dev/prod)
 │   │    ├── context/
 │   │    │   └── FavoritesContext.jsx       # Global favorites state with localStorage
+│   │    ├── i18n/                          # i18next configuration
+│   │    │   └── locales/
+│   │    │        ├── en/translation.json
+│   │    │        └── de/translation.json
 │   │    ├── hooks/
 │   │    │   └── useFetch.js                # Custom fetch hook
 │   │    ├── __tests__/
@@ -289,7 +296,9 @@ npm run test:run  # run once
 - [x] Multi-step contact form with Yup validation
 - [x] Email delivery via Resend
 - [x] Favorites system with Context API and localStorage
-- [x] Frontend unit tests for useFetch and FavoritesContext (Vitest + React Testing Library) -[x] Backend integration tests for all API endpoints (Supertest)
+- [x] Multilingual support (EN/DE) with react-i18next
+- [x] Frontend unit tests for useFetch and FavoritesContext (Vitest + React Testing Library)
+- [x] Backend integration tests for all API endpoints (Supertest)
 
 ### Next Steps
 
