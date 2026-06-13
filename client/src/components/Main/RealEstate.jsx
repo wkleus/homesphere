@@ -4,6 +4,7 @@ import RealEstateCard from "./RealEstateCard/RealEstateCard";
 import useFetch from "../../hooks/useFetch";
 import { ENTRIES_URL } from "../../config/api";
 import Heading from "../Heading/Heading";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 const CATEGORIES = [
   "All",
@@ -38,7 +39,7 @@ const RealEstate = () => {
     return (
       <>
         <Heading available={null} />
-        <p className="status-msg">Loading entries...</p>
+        <LoadingSpinner />
       </>
     );
 
