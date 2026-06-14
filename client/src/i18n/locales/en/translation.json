@@ -81,6 +81,19 @@
     "contact": "Contact us at",
     "hours": "Business hours: 8am - 6pm, Mon - Fri"
   },
+  "mortgage": {
+    "title": "Mortgage Calculator",
+    "purchasePrice": "Purchase Price",
+    "equity": "Equity",
+    "interestRate": "Interest Rate",
+    "loanTerm": "Loan Term",
+    "years": "years",
+    "monthlyPayment": "Monthly Payment",
+    "loanAmount": "Loan Amount",
+    "totalCost": "Total Cost",
+    "totalInterest": "Total Interest",
+    "disclaimer": "* Indicative calculation only. Please consult a financial advisor."
+  },
   "loading": "Loading entries...",
   "error": "Error: {{message}}",
   "noResults": "No properties match your filters."

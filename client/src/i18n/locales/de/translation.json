@@ -81,6 +81,19 @@
     "contact": "Kontaktieren Sie uns unter",
     "hours": "Öffnungszeiten: 8 - 18 Uhr, Mo - Fr"
   },
+  "mortgage": {
+    "title": "Hypothekenrechner",
+    "purchasePrice": "Kaufpreis",
+    "equity": "Eigenkapital",
+    "interestRate": "Zinssatz",
+    "loanTerm": "Laufzeit",
+    "years": "Jahre",
+    "monthlyPayment": "Monatliche Rate",
+    "loanAmount": "Darlehensbetrag",
+    "totalCost": "Gesamtkosten",
+    "totalInterest": "Gesamtzinsen",
+    "disclaimer": "* Unverbindliche Berechnung. Bitte konsultieren Sie einen Finanzberater."
+  },
   "loading": "Einträge werden geladen...",
   "error": "Fehler: {{message}}",
   "noResults": "Keine Immobilien entsprechen Ihren Filtern."

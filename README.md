@@ -55,6 +55,7 @@ A fullstack real estate web application for browsing and discovering residential
 - **Favorites system** – save properties via heart icon, persisted in localStorage
 - **Loading & error states** for all API calls
 - **Detail page** per property with full info and stats
+- **Mortgage calculator** to estimate the monthly mortgage payment
 - **Contact agent** via multi-step form with Yup validation and email delivery via Resend
 - **Custom `useFetch` hook** for reusable data fetching
 - **Context API** for global favorites state
@@ -127,7 +128,9 @@ homesphere/
 │   │    │   ├── Navbar/
 │   │    │   ├── Heading/
 │   │    │   ├── Footer/
+│   │    │   ├── Loadingspinner/            # Spinner for loading time
 │   │    │   ├── ContactForm/               # Multi-step modal with Yup validation
+│   │    │   ├── MortgageCalculator/        # Mortage calculator - only for buying property
 │   │    │   └── Main/
 │   │    │       ├── RealEstate.jsx         # Filter logic + listings
 │   │    │       └── RealEstateCard/
@@ -297,6 +300,7 @@ npm run test:run  # run once
 - [x] Email delivery via Resend
 - [x] Favorites system with Context API and localStorage
 - [x] Multilingual support (EN/DE) with react-i18next
+- [x] Mortgage calculator
 - [x] Frontend unit tests for useFetch and FavoritesContext (Vitest + React Testing Library)
 - [x] Backend integration tests for all API endpoints (Supertest)
 
@@ -307,4 +311,3 @@ npm run test:run  # run once
 - [ ] Admin account/dashboard
 - [ ] Authentication with Supabase Auth
 - [ ] Map integration
-- [ ] Mortgage calculator

@@ -13,6 +13,7 @@ import "./EstateDetails.css";
 import useFetch from "../../hooks/useFetch";
 import { ENTRY_URL } from "../../config/api";
 import ContactForm from "../../components/ContactForm/ContactForm";
+import MortgageCalculator from "../../components/MortgageCalculator/MortgageCalculator";
 import { useTranslation } from "react-i18next";
 
 const EstateDetails = () => {
@@ -116,6 +117,9 @@ const EstateDetails = () => {
               <span className="stat-label">{t("detail.type")}</span>
             </div>
           </div>
+
+          {/* Mortgage Calculator – only for properties available for purchase */}
+          {buy && <MortgageCalculator price={buy} />}
 
           {/* Opens the contact form modal */}
           <button
