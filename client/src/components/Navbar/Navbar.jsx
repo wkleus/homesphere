@@ -4,7 +4,7 @@ import {
   PhoneCall,
   Buildings,
   Heart,
-  FlagBanner,
+  AddressBook,
 } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
 import { useFavorites } from "../../context/FavoritesContext";
@@ -36,7 +36,8 @@ const Navbar = () => {
       </div>
 
       <div className="nav-items">
-        <div className="nav-contact-item">
+        {/* Full contact info – visible on large screens */}
+        <div className="nav-contact-item nav-contact-full">
           <div className="nav-contact-icon">
             <EnvelopeOpen weight="regular" size={14} />
           </div>
@@ -47,7 +48,7 @@ const Navbar = () => {
           <div className="nav-divider" />
         </div>
 
-        <div className="nav-contact-item">
+        <div className="nav-contact-item nav-contact-full">
           <div className="nav-contact-icon">
             <PhoneCall weight="regular" size={14} />
           </div>
@@ -57,6 +58,15 @@ const Navbar = () => {
           </div>
           <div className="nav-divider" />
         </div>
+
+        {/* Contact icon – visible on small screens only */}
+        <button
+          className="nav-contact-icon-btn nav-contact-small"
+          onClick={() => navigate("/contact")}
+          title={t("nav.contact")}
+        >
+          <AddressBook size={20} weight="regular" />
+        </button>
 
         {/* Favorites link with count badge */}
         <button

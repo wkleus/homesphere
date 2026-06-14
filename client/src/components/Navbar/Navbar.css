@@ -5,7 +5,6 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.1rem 2.5rem;
-  /* background: #0f1e3d; */
   background: linear-gradient(90deg, var(--color-primary), #1e3c72);
   position: sticky;
   top: 0;
@@ -52,7 +51,7 @@
   font-weight: 600;
 }
 
-/* Contacts */
+/* Nav items */
 .nav-items {
   display: flex;
   align-items: center;
@@ -104,9 +103,29 @@
   width: 1px;
   height: 28px;
   background: rgba(255, 255, 255, 0.1);
+  margin-left: 1rem;
 }
 
-/* Favorites button in navbar */
+/* Contact icon button – small screens */
+.nav-contact-icon-btn {
+  background: rgba(201, 168, 76, 0.08);
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c9a84c;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nav-contact-icon-btn:hover {
+  background: rgba(201, 168, 76, 0.2);
+}
+
+/* Favorites button */
 .nav-favorites-btn {
   position: relative;
   background: rgba(201, 168, 76, 0.08);
@@ -142,12 +161,7 @@
   justify-content: center;
 }
 
-.nav-divider {
-  margin-left: 1rem;
-}
-
 /* Language Switcher */
-
 .nav-lang-switcher {
   display: flex;
   gap: 0.3rem;
@@ -179,11 +193,27 @@
   background: rgba(201, 168, 76, 0.08);
 }
 
+/* Responsive */
 @media screen and (max-width: 900px) {
-  .nav-contact-item {
+  /* Hide full contact info on small screens */
+  .nav-contact-full {
     display: none;
   }
-  .navbar {
-    justify-content: space-between;
+
+  /* Show contact icon on small screens */
+  .nav-contact-small {
+    display: flex;
+  }
+}
+
+@media screen and (min-width: 901px) {
+  /* Show full contact info on large screens */
+  .nav-contact-full {
+    display: flex;
+  }
+
+  /* Hide contact icon on large screens */
+  .nav-contact-small {
+    display: none;
   }
 }

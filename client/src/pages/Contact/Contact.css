@@ -1,0 +1,81 @@
+.contact-page {
+  max-width: 600px;
+  margin: 3rem auto;
+  padding: 0 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.contact-page-title {
+  font-family: "Playfair Display", serif;
+  font-size: 2.2rem;
+  /* color: #666; */
+  /* color: #b8882a; */
+  color: #0a5e9e;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.5px;
+  word-spacing: 5px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.contact-page-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  padding: 2.5rem 5rem;
+}
+
+.contact-page-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.contact-page-item:last-child {
+  border-bottom: none;
+}
+
+.contact-page-icon {
+  width: 45px;
+  height: 45px;
+  background: #f0f6ff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #355fa7;
+  flex-shrink: 0;
+}
+
+.contact-page-label {
+  display: block;
+  font-size: 0.8rem;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 2px;
+}
+
+.contact-page-value {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.contact-page-link {
+  color: #355fa7;
+  text-decoration: none;
+}
+
+.contact-page-link:hover {
+  text-decoration: underline;
+}

@@ -2,7 +2,8 @@
   "nav": {
     "email": "E-Mail",
     "phone": "Telefon",
-    "favorites": "Favoriten"
+    "favorites": "Favoriten",
+    "contact": "Kontakt"
   },
   "heading": {
     "eyebrow": "Premium Immobilien",
@@ -63,7 +64,10 @@
     "successMsg": "Der Makler wird sich in Kürze bei Ihnen melden.",
     "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
     "interested": "Interesse an",
-    "sendMessage": "Senden Sie uns eine Nachricht."
+    "sendMessage": "Senden Sie uns eine Nachricht.",
+    "pageTitle": "Kontakt",
+    "company": "Unternehmen",
+    "address": "Adresse"
   },
   "favorites": {
     "title": "Gespeicherte Immobilien",

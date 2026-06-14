@@ -43,6 +43,13 @@ A fullstack real estate web application for browsing and discovering residential
     <img src="client/public/screenshots/favorites-page.png" width="100%" alt="Favorites Page" />
     <p><em>Favorites Page</em></p>
   </div>
+   <div style="width:calc(50% - 6px); text-align:center;">
+    <img src="client/public/screenshots/calculator.png" width="100%" alt="Mortgage Calcualtor" />
+    <p><em>Mortgage Calculator</em></p>
+  </div>   <div style="width:calc(50% - 6px); text-align:center;">
+    <img src="client/public/screenshots/contact-page.png" width="100%" alt="Contact Page" />
+    <p><em>Contact Page on smaller screens</em></p>
+  </div>
 </div>
 
 ---

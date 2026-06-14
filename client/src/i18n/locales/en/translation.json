@@ -2,7 +2,8 @@
   "nav": {
     "email": "Email",
     "phone": "Phone",
-    "favorites": "Favorites"
+    "favorites": "Favorites",
+    "contact": "Contact"
   },
   "heading": {
     "eyebrow": "Premium Real Estate",
@@ -63,7 +64,10 @@
     "successMsg": "The agent will contact you shortly.",
     "error": "Something went wrong. Please try again.",
     "interested": "Interested in",
-    "sendMessage": "Send us a message."
+    "sendMessage": "Send us a message.",
+    "pageTitle": "Contact Us",
+    "company": "Company",
+    "address": "Address"
   },
   "favorites": {
     "title": "Saved Properties",

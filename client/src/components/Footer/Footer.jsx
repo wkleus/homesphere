@@ -1,8 +1,10 @@
-import { ClockAfternoon } from "phosphor-react";
+import { AddressBook, ClockAfternoon } from "phosphor-react";
 import "./Footer.css";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 const Footer = () => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const businessStart = 8;
   const businessEnd = 18;
@@ -38,7 +40,18 @@ const Footer = () => {
     </div>
   );
 
-  return <footer className="footer">{openStatus}</footer>;
+  return (
+    <footer className="footer">
+      <div>{openStatus}</div>
+
+      <button
+        className="footer-contact-icon-btn"
+        onClick={() => navigate("/contact")}
+      >
+        <AddressBook size={30} weight="regular" />
+      </button>
+    </footer>
+  );
 };
 
 export default Footer;

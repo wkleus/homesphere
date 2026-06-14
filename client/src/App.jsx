@@ -6,6 +6,7 @@ import RealEstate from "./components/Main/RealEstate";
 import EstateDetails from "./pages/EstateDetails/EstateDetails";
 import Favorites from "./pages/Favorites/Favorites";
 import { FavoritesProvider } from "./context/FavoritesContext";
+import Contact from "./pages/Contact/Contact";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/" element={<RealEstate />} />
           <Route path="/estate/:id" element={<EstateDetails />} />
           <Route path="/favorites" element={<Favorites />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
         <Footer />
       </div>

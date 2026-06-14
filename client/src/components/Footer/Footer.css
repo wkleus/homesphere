@@ -11,6 +11,11 @@
   left: 0;
   z-index: 1000;
   margin-top: 5rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2.5rem;
 }
 
 .note {
@@ -45,4 +50,23 @@
 .note.closed {
   color: rgb(255, 70, 12);
   font-weight: bold;
+}
+
+.footer-contact-icon-btn {
+  width: 48px !important;
+  height: 48px !important;
+  margin-top: 7px;
+  background: rgba(201, 168, 76, 0.08);
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c9a84c;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.footer-contact-icon-btn:hover {
+  background: rgba(201, 168, 76, 0.2);
 }
