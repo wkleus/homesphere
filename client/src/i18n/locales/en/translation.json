@@ -22,6 +22,7 @@
   "card": {
     "addFavorite": "Save to favorites",
     "removeFavorite": "Remove from favorites",
+    "alreadyTaken": "Already taken",
     "rooms": "Number of rooms",
     "area": "Living area in square meters",
     "energy": "Energy efficiency class",
@@ -75,7 +76,10 @@
   "footer": {
     "openNow": "Open Now",
     "closedNow": "Closed Now",
-    "hours": "Opening Hours"
+    "openNote": "Store is still open.",
+    "closedNote": "Store is closed.",
+    "contact": "Contact us at",
+    "hours": "Business hours: 8am - 6pm, Mon - Fri"
   },
   "loading": "Loading entries...",
   "error": "Error: {{message}}",

@@ -22,6 +22,7 @@
   "card": {
     "addFavorite": "Zu Favoriten hinzufügen",
     "removeFavorite": "Aus Favoriten entfernen",
+    "alreadyTaken": "Bereits vergeben",
     "rooms": "Anzahl der Zimmer",
     "area": "Wohnfläche in Quadratmetern",
     "energy": "Energieeffizienzklasse",
@@ -75,7 +76,10 @@
   "footer": {
     "openNow": "Jetzt geöffnet",
     "closedNow": "Jetzt geschlossen",
-    "hours": "Öffnungszeiten"
+    "openNote": "Wir haben noch geöffnet.",
+    "closedNote": "Wir sind geschlossen.",
+    "contact": "Kontaktieren Sie uns unter",
+    "hours": "Öffnungszeiten: 8 - 18 Uhr, Mo - Fr"
   },
   "loading": "Einträge werden geladen...",
   "error": "Fehler: {{message}}",
