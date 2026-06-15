@@ -5,10 +5,11 @@
 ![Vite](https://img.shields.io/badge/Vite-8.0+-646CFF?logo=vite&logoColor=white)
 ![Node.js](https://img.shields.io/badge/Node.js-Express-339933?logo=node.js&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Supabase-4169E1?logo=postgresql&logoColor=white)
-![Resend](https://img.shields.io/badge/Email-Resend-000000?logo=mail.ru&logoColor=white)
+![Resend](https://img.shields.io/badge/Email-Resend-orange?logo=mail.ru&logoColor=white)
 ![Render](https://img.shields.io/badge/API-Render.com-46E3B7?logo=render&logoColor=white)
-![Vercel](https://img.shields.io/badge/Frontend-Vercel-black?logo=vercel)
+![Vercel](https://img.shields.io/badge/Frontend-Vercel-orange?logo=vercel)
 ![i18n](https://img.shields.io/badge/i18n-EN%20%7C%20DE%20-blue)
+![Tests](https://img.shields.io/badge/Tests-Passing-brightgreen?logo=vitest)
 ![Status](https://img.shields.io/badge/Status-In_Progress-yellow)
 
 🔗 [Live Demo](https://homesphere-web.vercel.app)
@@ -20,36 +21,47 @@ A fullstack real estate web application for browsing and discovering residential
 ## Screenshots
 
 <div style="display:flex; gap:12px; flex-wrap:wrap;">
+
   <div style="width:calc(50% - 6px); text-align:center;">
-    <img src="client/public/screenshots/home.png" width="100%" alt="Home" />
+    <img src="client/public/screenshots/home.png" alt="Home" style="max-height:260px; width:auto;" />
     <p><em>Home – Navbar with contact info and hero heading</em></p>
   </div>
+
   <div style="width:calc(50% - 6px); text-align:center;">
-    <img src="client/public/screenshots/main.png" width="100%" alt="Main" />
+    <img src="client/public/screenshots/main.png" alt="Main" style="max-height:260px; width:auto;" />
     <p><em>Main – Property listings with category and deal type filters</em></p>
   </div>
+
   <div style="width:calc(50% - 6px); text-align:center;">
-    <img src="client/public/screenshots/footer.png" width="100%" alt="Footer" />
+    <img src="client/public/screenshots/footer.png" alt="Footer" style="max-height:260px; width:auto;" />
     <p><em>Footer – Opening hours and contact details</em></p>
   </div>
+
   <div style="width:calc(50% - 6px); text-align:center;">
-    <img src="client/public/screenshots/details.png" width="100%" alt="Property Detail" />
+    <img src="client/public/screenshots/details.png" alt="Property Detail" style="max-height:260px; width:auto;" />
     <p><em>Detail Page – Full property info with stats and pricing</em></p>
   </div>
-   <div style="width:calc(40% - 6px); text-align:center;">
-    <img src="client/public/screenshots/contact-form.png" width="100%" alt="Contact Form" />
+
+  <div style="width:calc(40% - 6px); text-align:center;">
+    <img src="client/public/screenshots/contact-form.png" alt="Contact Form" style="max-height:260px; width:auto;" />
     <p><em>Contact Form</em></p>
-  </div> <div style="width:calc(50% - 6px); text-align:center;">
-    <img src="client/public/screenshots/favorites-page.png" width="100%" alt="Favorites Page" />
+  </div>
+
+  <div style="width:calc(50% - 6px); text-align:center;">
+    <img src="client/public/screenshots/favorites-page.png" alt="Favorites Page" style="max-height:260px; width:auto;" />
     <p><em>Favorites Page</em></p>
   </div>
-   <div style="width:calc(40% - 6px); text-align:center;">
-    <img src="client/public/screenshots/calculator.png" width="100%" alt="Mortgage Calcualtor" />
+
+  <div style="width:calc(40% - 6px); text-align:center;">
+    <img src="client/public/screenshots/calculator.png" alt="Mortgage Calculator" style="max-height:260px; width:auto;" />
     <p><em>Mortgage Calculator</em></p>
-  </div>   <div style="width:calc(28% - 6px); text-align:center;">
-    <img src="client/public/screenshots/contact-page.png" width="100%"alt="Contact Page" />
+  </div>
+
+  <div style="width:calc(35% - 6px); text-align:center;">
+    <img src="client/public/screenshots/contact-page.png" alt="Contact Page" style="max-height:260px; width:auto;" />
     <p><em>Contact Page on smaller screens</em></p>
   </div>
+
 </div>
 
 ---
