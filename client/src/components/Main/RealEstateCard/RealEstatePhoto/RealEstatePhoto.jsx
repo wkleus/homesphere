@@ -7,6 +7,8 @@ const RealEstatePhoto = ({ photo, address, children }) => {
         src={photo}
         alt={`Immobilie: ${address}`}
         className="realEstate-img"
+        // images outside the viewport are lazy-loaded
+        loading="lazy"
       />
       {children}
     </div>
