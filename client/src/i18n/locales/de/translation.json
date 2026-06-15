@@ -98,6 +98,11 @@
     "totalInterest": "Gesamtzinsen",
     "disclaimer": "* Unverbindliche Berechnung. Bitte konsultieren Sie einen Finanzberater."
   },
+  "map": {
+    "show": "Auf Karte anzeigen",
+    "loading": "Karte wird geladen...",
+    "error": "Standort konnte nicht gefunden werden."
+  },
   "loading": "Einträge werden geladen...",
   "error": "Fehler: {{message}}",
   "noResults": "Keine Immobilien entsprechen Ihren Filtern."

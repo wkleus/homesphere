@@ -8,12 +8,14 @@ import {
   MapPin,
   ArrowLeft,
   Tag,
+  MapTrifold,
 } from "phosphor-react";
 import "./EstateDetails.css";
 import useFetch from "../../hooks/useFetch";
 import { ENTRY_URL } from "../../config/api";
 import ContactForm from "../../components/ContactForm/ContactForm";
 import MortgageCalculator from "../../components/MortgageCalculator/MortgageCalculator";
+import MapModal from "../../components/MapModal/MapModal";
 import { useTranslation } from "react-i18next";
 
 const EstateDetails = () => {
@@ -26,6 +28,9 @@ const EstateDetails = () => {
 
   // Controls visibility of the contact form modal
   const [showModal, setShowModal] = useState(false);
+
+  // Controls visibility of the map modal
+  const [showMap, setShowMap] = useState(false);
 
   if (loading) return <p className="status-msg">{t("loading")}</p>;
   if (error || !entry)
@@ -73,6 +78,16 @@ const EstateDetails = () => {
         <div className="detail-content">
           <h1 className="detail-address">
             <MapPin size={20} weight="fill" /> {address}
+            {/* Map link next to address */}
+            <button
+              type="button"
+              className="detail-map-link"
+              onClick={() => setShowMap(true)}
+              title={t("map.show")}
+            >
+              <MapTrifold size={18} weight="duotone" />
+              {t("map.show")}
+            </button>
           </h1>
 
           <div className="detail-price-row">
@@ -131,9 +146,20 @@ const EstateDetails = () => {
         </div>
       </div>
 
-      {/* Pass address so the email subject references the correct property */}
+      {/* Contact form modal */}
       {showModal && (
         <ContactForm address={address} onClose={() => setShowModal(false)} />
+      )}
+
+      {/* Map modal */}
+      {showMap && (
+        <MapModal
+          address={address}
+          category={category}
+          rent={rent}
+          buy={buy}
+          onClose={() => setShowMap(false)}
+        />
       )}
     </div>
   );

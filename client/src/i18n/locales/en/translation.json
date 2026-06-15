@@ -98,6 +98,11 @@
     "totalInterest": "Total Interest",
     "disclaimer": "* Indicative calculation only. Please consult a financial advisor."
   },
+  "map": {
+    "show": "Show on map",
+    "loading": "Loading map...",
+    "error": "Location could not be found."
+  },
   "loading": "Loading entries...",
   "error": "Error: {{message}}",
   "noResults": "No properties match your filters."

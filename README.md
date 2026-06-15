@@ -36,18 +36,18 @@ A fullstack real estate web application for browsing and discovering residential
     <img src="client/public/screenshots/details.png" width="100%" alt="Property Detail" />
     <p><em>Detail Page – Full property info with stats and pricing</em></p>
   </div>
-   <div style="width:calc(50% - 6px); text-align:center;">
+   <div style="width:calc(40% - 6px); text-align:center;">
     <img src="client/public/screenshots/contact-form.png" width="100%" alt="Contact Form" />
     <p><em>Contact Form</em></p>
   </div> <div style="width:calc(50% - 6px); text-align:center;">
     <img src="client/public/screenshots/favorites-page.png" width="100%" alt="Favorites Page" />
     <p><em>Favorites Page</em></p>
   </div>
-   <div style="width:calc(50% - 6px); text-align:center;">
+   <div style="width:calc(40% - 6px); text-align:center;">
     <img src="client/public/screenshots/calculator.png" width="100%" alt="Mortgage Calcualtor" />
     <p><em>Mortgage Calculator</em></p>
-  </div>   <div style="width:calc(50% - 6px); text-align:center;">
-    <img src="client/public/screenshots/contact-page.png" width="100%" alt="Contact Page" />
+  </div>   <div style="width:calc(28% - 6px); text-align:center;">
+    <img src="client/public/screenshots/contact-page.png" width="100%"alt="Contact Page" />
     <p><em>Contact Page on smaller screens</em></p>
   </div>
 </div>
@@ -62,13 +62,14 @@ A fullstack real estate web application for browsing and discovering residential
 - **Favorites system** – save properties via heart icon, persisted in localStorage
 - **Loading & error states** for all API calls
 - **Detail page** per property with full info and stats
-- **Mortgage calculator** to estimate the monthly mortgage payment
+- **Mortgage calculator** – monthly payment calculator with sliders on detail page
 - **Contact agent** via multi-step form with Yup validation and email delivery via Resend
 - **Custom `useFetch` hook** for reusable data fetching
 - **Context API** for global favorites state
 - **Client-side routing** via React Router
 - **Responsive layout** for mobile and desktop
 - **Multilingual** – English and German via react-i18next, flag icons in Navbar
+- **Map integration** – interactive Leaflet map per property with OpenStreetMap geocoding
 - **Tested** - Frontend with Vitest + React Testing Library and Backend with Supertest
 - **Separate deployments** – Frontend on Vercel, API on Render.com
 - **PostgreSQL database** hosted on Supabase
@@ -84,10 +85,11 @@ A fullstack real estate web application for browsing and discovering residential
 |              | Phosphor Icons                 | 1.4          |
 |              | Yup                            | 1            |
 |              | Vite                           | 8            |
-|              | CSS Custom Properties          | —            |
+|              | CSS Custom Properties          |              |
 |              | react-i18next                  | 15           |
+|              | Leaflet + react-leaflet        | 1.9 / 4      |
 |              | Vitest + React Testing Library | 4 / 16       |
-| **Backend**  | Node.js                        | —            |
+| **Backend**  | Node.js                        |              |
 |              | Express                        | 4            |
 |              | CORS                           | 2            |
 |              | pg (node-postgres)             | 8            |
@@ -129,15 +131,16 @@ homesphere/
 │   │    │   └── useFetch.js                # Custom fetch hook
 │   │    ├── __tests__/
 │   │    │   ├── setup.js                   # Test environment setup
-│   │    │   ├── useFetch.test.js           # Tests for useFetch hook (3 tests)
-│   │    │   └── FavoritesContext.test.jsx  # Tests for FavoritesContext (4 tests)
+│   │    │   ├── useFetch.test.js           # Tests for useFetch hook
+│   │    │   └── FavoritesContext.test.jsx  # Tests for FavoritesContext
 │   │    ├── components/
 │   │    │   ├── Navbar/
 │   │    │   ├── Heading/
 │   │    │   ├── Footer/
 │   │    │   ├── Loadingspinner/            # Spinner for loading time
+│   │    │   ├── MapModal/                  # Leaflet map modal with Nominatim geocoding
 │   │    │   ├── ContactForm/               # Multi-step modal with Yup validation
-│   │    │   ├── MortgageCalculator/        # Mortage calculator - only for buying property
+│   │    │   ├── MortgageCalculator/        # Monthly payment calculator with useMemo
 │   │    │   └── Main/
 │   │    │       ├── RealEstate.jsx         # Filter logic + listings
 │   │    │       └── RealEstateCard/
@@ -147,15 +150,16 @@ homesphere/
 │   │    │               ├── RealEstateStatus/
 │   │    │               └── IconItem/
 │   │    └── pages/
-│   │        ├── EstateDetails/             # Single entry detail page
+│   │        ├── EstateDetails/             # Detail page with map, mortgage calculator
+│   │        ├── Contact/                   # Company contact info page
 │   │        └── Favorites/                 # Saved properties page
 │   └── package.json
 └── server/                                 # Node.js / Express Backend
     ├── db.js                               # PostgreSQL connection pool
     ├── server.js                           # Express server & routes
-    ├── server.start.js
-    ├── server.test.js
-    ├── vitest.connfig.js
+    ├── server.start.js                     # Entry point – starts the Express server
+    ├── server.test.js                      # Backend integration tests (Supertest)
+    ├── vitest.connfig.js                   # Vitest config for server
     ├── schema.sql                          # Database table definition
     ├── seed.sql                            # Initial data (entries)
     ├── .env
@@ -307,7 +311,8 @@ npm run test:run  # run once
 - [x] Email delivery via Resend
 - [x] Favorites system with Context API and localStorage
 - [x] Multilingual support (EN/DE) with react-i18next
-- [x] Mortgage calculator
+- [x] Mortgage calculator with annuity formula (useMemo)
+- [x] Map integration with Leaflet and OpenStreetMap geocoding
 - [x] Frontend unit tests for useFetch and FavoritesContext (Vitest + React Testing Library)
 - [x] Backend integration tests for all API endpoints (Supertest)
 
@@ -317,4 +322,3 @@ npm run test:run  # run once
 - [ ] SEO improvements
 - [ ] Admin account/dashboard
 - [ ] Authentication with Supabase Auth
-- [ ] Map integration

@@ -205,6 +205,33 @@
   font-family: inherit;
 }
 
+/* Map link next to address */
+.detail-map-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: none;
+  border: 1px solid #355fa7;
+  border-radius: 20px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #355fa7;
+  cursor: pointer;
+  margin-left: 0.8rem;
+  transition: all 0.2s;
+  vertical-align: middle;
+}
+
+.detail-map-link:hover {
+  background: #355fa7;
+  color: white;
+}
+
+.detail-map-link:hover svg {
+  color: white;
+}
+
 @media screen and (max-width: 600px) {
   .detail-photo-wrapper {
     height: 14rem;
