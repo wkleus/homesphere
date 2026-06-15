@@ -20,49 +20,51 @@ A fullstack real estate web application for browsing and discovering residential
 
 ## Screenshots
 
-<div style="display:flex; gap:12px; flex-wrap:wrap;">
+<table>
+  <tr>
+    <td align="center">
+      <img src="client/public/screenshots/home.png" alt="Home" height="220" />
+      <br><em>Home – Navbar with contact info and hero heading</em>
+    </td>
+    <td align="center">
+      <img src="client/public/screenshots/main.png" alt="Main" height="220" />
+      <br><em>Main – Property listings with category and deal type filters</em>
+    </td>
+  </tr>
 
-  <div style="width:calc(50% - 6px); text-align:center;">
-    <img src="client/public/screenshots/home.png" alt="Home" style="max-height:260px; width:auto;" />
-    <p><em>Home – Navbar with contact info and hero heading</em></p>
-  </div>
+  <tr>
+    <td align="center">
+      <img src="client/public/screenshots/footer.png" alt="Footer" height="220" />
+      <br><em>Footer – Opening hours and contact details</em>
+    </td>
+    <td align="center">
+      <img src="client/public/screenshots/details.png" alt="Property Detail" height="220" />
+      <br><em>Detail Page – Full property info with stats and pricing</em>
+    </td>
+  </tr>
 
-  <div style="width:calc(50% - 6px); text-align:center;">
-    <img src="client/public/screenshots/main.png" alt="Main" style="max-height:260px; width:auto;" />
-    <p><em>Main – Property listings with category and deal type filters</em></p>
-  </div>
+  <tr>
+    <td align="center">
+      <img src="client/public/screenshots/contact-form.png" alt="Contact Form" height="220" />
+      <br><em>Contact Form</em>
+    </td>
+    <td align="center">
+      <img src="client/public/screenshots/favorites-page.png" alt="Favorites Page" height="220" />
+      <br><em>Favorites Page</em>
+    </td>
+  </tr>
 
-  <div style="width:calc(50% - 6px); text-align:center;">
-    <img src="client/public/screenshots/footer.png" alt="Footer" style="max-height:260px; width:auto;" />
-    <p><em>Footer – Opening hours and contact details</em></p>
-  </div>
-
-  <div style="width:calc(50% - 6px); text-align:center;">
-    <img src="client/public/screenshots/details.png" alt="Property Detail" style="max-height:260px; width:auto;" />
-    <p><em>Detail Page – Full property info with stats and pricing</em></p>
-  </div>
-
-  <div style="width:calc(40% - 6px); text-align:center;">
-    <img src="client/public/screenshots/contact-form.png" alt="Contact Form" style="max-height:260px; width:auto;" />
-    <p><em>Contact Form</em></p>
-  </div>
-
-  <div style="width:calc(50% - 6px); text-align:center;">
-    <img src="client/public/screenshots/favorites-page.png" alt="Favorites Page" style="max-height:260px; width:auto;" />
-    <p><em>Favorites Page</em></p>
-  </div>
-
-  <div style="width:calc(40% - 6px); text-align:center;">
-    <img src="client/public/screenshots/calculator.png" alt="Mortgage Calculator" style="max-height:260px; width:auto;" />
-    <p><em>Mortgage Calculator</em></p>
-  </div>
-
-  <div style="width:calc(35% - 6px); text-align:center;">
-    <img src="client/public/screenshots/contact-page.png" alt="Contact Page" style="max-height:260px; width:auto;" />
-    <p><em>Contact Page on smaller screens</em></p>
-  </div>
-
-</div>
+  <tr>
+    <td align="center">
+      <img src="client/public/screenshots/calculator.png" alt="Mortgage Calculator" height="220" />
+      <br><em>Mortgage Calculator</em>
+    </td>
+    <td align="center">
+      <img src="client/public/screenshots/contact-page.png" alt="Contact Page" height="220" />
+      <br><em>Contact Page on smaller screens</em>
+    </td>
+  </tr>
+</table>
 
 ---
 
