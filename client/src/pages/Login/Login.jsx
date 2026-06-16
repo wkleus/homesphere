@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Buildings } from "phosphor-react";
+import { motion } from "framer-motion";
 import "./Login.css";
 
 const Login = () => {
@@ -24,19 +25,59 @@ const Login = () => {
     }
   };
 
+  // Stagger animation for form fields
+  const fieldVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
   return (
     <div className="login-page">
-      <div className="login-card">
+      {/* Animated background with gradient */}
+      <div className="login-bg">
+        <motion.div
+          className="bg-gradient"
+          animate={{
+            backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+          }}
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+        />
+      </div>
+
+      {/* Login card with spring animation */}
+      <motion.div
+        className="login-card"
+        initial={{ opacity: 0, y: 200 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 4,
+          type: "spring",
+          bounce: 0.6,
+          delay: 0.5,
+          ease: "easeInOut",
+        }}
+      >
         <div className="login-header">
           <div className="login-logo">
             <Buildings size={28} weight="fill" />
           </div>
-          <h1 className="login-title">HomeSphere</h1>
+          <span className="login-title">
+            Home<strong>Sphere</strong>
+          </span>
           <p className="login-subtitle">Admin Login</p>
         </div>
 
         <form className="login-form" onSubmit={handleSubmit}>
-          <div className="login-field">
+          <motion.div
+            className="login-field"
+            variants={fieldVariants}
+            initial="hidden"
+            animate="visible"
+          >
             <label htmlFor="email">Email</label>
             <input
               id="email"
@@ -46,9 +87,14 @@ const Login = () => {
               placeholder="admin@example.com"
               required
             />
-          </div>
+          </motion.div>
 
-          <div className="login-field">
+          <motion.div
+            className="login-field"
+            variants={fieldVariants}
+            initial="hidden"
+            animate="visible"
+          >
             <label htmlFor="password">Password</label>
             <input
               id="password"
@@ -58,15 +104,32 @@ const Login = () => {
               placeholder="••••••••"
               required
             />
-          </div>
+          </motion.div>
 
-          {error && <p className="login-error">{error}</p>}
+          {/* Error message */}
+          {error && (
+            <motion.p
+              className="login-error"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              {error}
+            </motion.p>
+          )}
 
-          <button type="submit" className="login-btn" disabled={loading}>
+          <motion.button
+            type="submit"
+            className="login-btn"
+            disabled={loading}
+            variants={fieldVariants}
+            initial="hidden"
+            animate="visible"
+          >
             {loading ? "Signing in..." : "Sign in"}
-          </button>
+          </motion.button>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 };

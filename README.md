@@ -9,12 +9,18 @@
 ![Render](https://img.shields.io/badge/API-Render.com-46E3B7?logo=render&logoColor=white)
 ![Vercel](https://img.shields.io/badge/Frontend-Vercel-orange?logo=vercel)
 ![i18n](https://img.shields.io/badge/i18n-EN%20%7C%20DE%20-blue)
+![Supabase Auth](https://img.shields.io/badge/Supabase%20Auth-Enabled-3ECF8E?logo=supabase&logoColor=white)
 ![Tests](https://img.shields.io/badge/Tests-Passing-brightgreen?logo=vitest)
 ![Status](https://img.shields.io/badge/Status-In_Progress-yellow)
 
 🔗 [Live Demo](https://homesphere-web.vercel.app)
 
-A fullstack real estate web application for browsing and discovering residential properties across Europe — from city apartments to alpine chalets. The React frontend fetches data from a custom Node.js/Express REST API backed by a PostgreSQL database hosted on Supabase. Contact requests are sent via email using Resend. The app supports two languages (English and German) via react-i18next.
+A full‑stack real estate web application for browsing and discovering residential properties across Europe — from modern city apartments to remote alpine chalets.
+The frontend is built with React and communicates with a custom Node.js/Express REST API. Data is stored in a PostgreSQL database hosted on Supabase.
+
+The platform includes user authentication with a secure login system and an admin dashboard for managing property listings, images, and content.
+Contact requests are delivered via email using Resend.
+The application supports English and German through react‑i18next.
 
 ---
 
@@ -23,22 +29,22 @@ A fullstack real estate web application for browsing and discovering residential
 <table>
   <tr>
     <td align="center">
-      <img src="client/public/screenshots/home.png" alt="Home" height="300" />
+      <img src="client/public/screenshots/home.png" alt="Home" height="320" />
       <br><em>Home – Navbar with contact info and hero heading</em>
     </td>
     <td align="center">
-      <img src="client/public/screenshots/main.png" alt="Main" height="330" />
+      <img src="client/public/screenshots/main.png" alt="Main" height="340" />
       <br><em>Main – Property listings with category and deal type filters</em>
     </td>
   </tr>
 
   <tr>
     <td align="center">
-      <img src="client/public/screenshots/footer.png" alt="Footer" height=300" />
+      <img src="client/public/screenshots/footer.png" alt="Footer" height=280" />
       <br><em>Footer – Opening hours and contact details</em>
     </td>
     <td align="center">
-      <img src="client/public/screenshots/details.png" alt="Property Detail" height="330" />
+      <img src="client/public/screenshots/details.png" alt="Property Detail" height="360" />
       <br><em>Detail Page – Full property info with stats and pricing</em>
     </td>
   </tr>
@@ -49,7 +55,7 @@ A fullstack real estate web application for browsing and discovering residential
       <br><em>Contact Form</em>
     </td>
     <td align="center">
-      <img src="client/public/screenshots/favorites-page.png" alt="Favorites Page" height="330" />
+      <img src="client/public/screenshots/favorites-page.png" alt="Favorites Page" height="360" />
       <br><em>Favorites Page</em>
     </td>
   </tr>
@@ -60,7 +66,7 @@ A fullstack real estate web application for browsing and discovering residential
       <br><em>Mortgage Calculator</em>
     </td>
     <td align="center">
-      <img src="client/public/screenshots/contact-page.png" alt="Contact Page" height="300" width="300" />
+      <img src="client/public/screenshots/contact-page.png" alt="Contact Page" height="300" width="310" />
       <br><em>Contact Page on smaller screens</em>
     </td>
   </tr>
@@ -84,6 +90,9 @@ A fullstack real estate web application for browsing and discovering residential
 - **Responsive layout** for mobile and desktop
 - **Multilingual** – English and German via react-i18next, flag icons in Navbar
 - **Map integration** – interactive Leaflet map per property with OpenStreetMap geocoding
+- **Login page** for user authentication
+- **Admin page** providing full CRUD operations
+- **SEO** enhancements such as lazy loading and WebP support
 - **Tested** - Frontend with Vitest + React Testing Library and Backend with Supertest
 - **Separate deployments** – Frontend on Vercel, API on Render.com
 - **PostgreSQL database** hosted on Supabase
@@ -166,6 +175,8 @@ homesphere/
 │   │    └── pages/
 │   │        ├── EstateDetails/             # Detail page with map, mortgage calculator
 │   │        ├── Contact/                   # Company contact info page
+│   │        ├── Login/                     # Login page for user authentication
+│   │        ├── Admin/                     # Admin dashboard providing CRUD operations
 │   │        └── Favorites/                 # Saved properties page
 │   └── package.json
 └── server/                                 # Node.js / Express Backend
@@ -329,10 +340,12 @@ npm run test:run  # run once
 - [x] Map integration with Leaflet and OpenStreetMap geocoding
 - [x] Frontend unit tests for useFetch and FavoritesContext (Vitest + React Testing Library)
 - [x] Backend integration tests for all API endpoints (Supertest)
+- [x] Admin Login for authentication
+- [x] SEO improvements: lazy loading + compressed Webp images
 
 ### Next Steps
 
-- [ ] Advanced search - Price, rooms, size, combined filters
-- [ ] SEO improvements
-- [ ] Admin account/dashboard
+- [ ] Admin dashboard for CRUD actions
 - [ ] Authentication with Supabase Auth
+- [ ] Advanced search - Price, rooms, size, combined filters
+- [ ] More SEO improvements
