@@ -125,6 +125,25 @@
   background: rgba(201, 168, 76, 0.2);
 }
 
+/* Login icon button */
+.nav-login-icon-btn {
+  background: rgba(201, 168, 76, 0.08);
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c9a84c;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nav-login-icon-btn:hover {
+  background: rgba(201, 168, 76, 0.2);
+}
+
 /* Favorites button */
 .nav-favorites-btn {
   position: relative;

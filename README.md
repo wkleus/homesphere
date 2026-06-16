@@ -27,7 +27,7 @@ A fullstack real estate web application for browsing and discovering residential
       <br><em>Home – Navbar with contact info and hero heading</em>
     </td>
     <td align="center">
-      <img src="client/public/screenshots/main.png" alt="Main" height="300" />
+      <img src="client/public/screenshots/main.png" alt="Main" height="330" />
       <br><em>Main – Property listings with category and deal type filters</em>
     </td>
   </tr>
@@ -38,7 +38,7 @@ A fullstack real estate web application for browsing and discovering residential
       <br><em>Footer – Opening hours and contact details</em>
     </td>
     <td align="center">
-      <img src="client/public/screenshots/details.png" alt="Property Detail" height="300" />
+      <img src="client/public/screenshots/details.png" alt="Property Detail" height="330" />
       <br><em>Detail Page – Full property info with stats and pricing</em>
     </td>
   </tr>
@@ -49,7 +49,7 @@ A fullstack real estate web application for browsing and discovering residential
       <br><em>Contact Form</em>
     </td>
     <td align="center">
-      <img src="client/public/screenshots/favorites-page.png" alt="Favorites Page" height="300" />
+      <img src="client/public/screenshots/favorites-page.png" alt="Favorites Page" height="330" />
       <br><em>Favorites Page</em>
     </td>
   </tr>
@@ -60,7 +60,7 @@ A fullstack real estate web application for browsing and discovering residential
       <br><em>Mortgage Calculator</em>
     </td>
     <td align="center">
-      <img src="client/public/screenshots/contact-page.png" alt="Contact Page" height="300" />
+      <img src="client/public/screenshots/contact-page.png" alt="Contact Page" height="300" width="300" />
       <br><em>Contact Page on smaller screens</em>
     </td>
   </tr>

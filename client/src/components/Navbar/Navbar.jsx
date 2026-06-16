@@ -5,6 +5,7 @@ import {
   Buildings,
   Heart,
   AddressBook,
+  User,
 } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
 import { useFavorites } from "../../context/FavoritesContext";
@@ -65,7 +66,16 @@ const Navbar = () => {
           onClick={() => navigate("/contact")}
           title={t("nav.contact")}
         >
-          <AddressBook size={20} weight="regular" />
+          <AddressBook size={22} weight="regular" />
+        </button>
+
+        {/* Login icon link */}
+        <button
+          className="nav-login-icon-btn"
+          onClick={() => navigate("/login")}
+          // title={t("nav.favorites")}
+        >
+          <User size={18} />
         </button>
 
         {/* Favorites link with count badge */}
