@@ -55,7 +55,7 @@ const Navbar = () => {
           </div>
           <div className="nav-contact-text">
             <span className="nav-contact-label">{t("nav.phone")}</span>
-            <span className="nav-contact-value">(+49) 030 XXXX XXXX</span>
+            <span className="nav-contact-value">(+49) 030 XXX XXX</span>
           </div>
           <div className="nav-divider" />
         </div>
