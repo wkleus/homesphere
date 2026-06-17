@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Buildings } from "phosphor-react";
 import { motion } from "framer-motion";
+import useAuth from "../../context/useAuth";
 import "./Login.css";
 
 const Login = () => {
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -17,6 +19,7 @@ const Login = () => {
     setError(null);
     setLoading(true);
     try {
+      await login(email, password);
       navigate("/admin");
     } catch (err) {
       setError("Invalid email or password.");

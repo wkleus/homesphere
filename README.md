@@ -88,6 +88,7 @@ The application supports English and German through react‑i18next.
 - **Context API** for global favorites state
 - **Client-side routing** via React Router
 - **Responsive layout** for mobile and desktop
+- **Framer motion**
 - **Multilingual** – English and German via react-i18next, flag icons in Navbar
 - **Map integration** – interactive Leaflet map per property with OpenStreetMap geocoding
 - **Login page** for user authentication
@@ -341,11 +342,11 @@ npm run test:run  # run once
 - [x] Frontend unit tests for useFetch and FavoritesContext (Vitest + React Testing Library)
 - [x] Backend integration tests for all API endpoints (Supertest)
 - [x] Admin Login for authentication
+- [x] Authentication with Supabase Auth
 - [x] SEO improvements: lazy loading + compressed Webp images
 
 ### Next Steps
 
 - [ ] Admin dashboard for CRUD actions
-- [ ] Authentication with Supabase Auth
 - [ ] Advanced search - Price, rooms, size, combined filters
 - [ ] More SEO improvements
