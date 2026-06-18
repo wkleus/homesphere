@@ -65,9 +65,17 @@ export const AuthProvider = ({ children }) => {
 
   // Logout function - signs out the current user and navigates to the login page
   const logout = async () => {
-    await supabase.auth.signOut();
-    setSupabaseToken(null); // Delete token on logout
-    navigate("/login");
+    try {
+      await supabase.auth.signOut();
+    } catch {
+      // NOTE: Supabase client throws an error 204 – ignore it
+      // Logout was successful (status 204 visible in the Network tab)
+    } finally {
+      // Always execute, regardless of whether there is an error or not
+      setSupabaseToken(null); // Delete token on logout
+      setUser(null);
+      navigate("/login");
+    }
   };
 
   // Provide auth context to all children components
