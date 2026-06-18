@@ -65,6 +65,52 @@ app.get("/api/entries/:id", async (req, res) => {
   }
 });
 
+// PUT /api/entries/:id – update entry
+app.put("/api/entries/:id", async (req, res) => {
+  const {
+    address,
+    category,
+    is_available,
+    energy_class,
+    rooms,
+    square_meters,
+    year_built,
+    buy,
+    rent,
+    photo,
+  } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE entries SET
+        address = $1, category = $2, is_available = $3, energy_class = $4,
+        rooms = $5, square_meters = $6, year_built = $7, buy = $8, rent = $9, photo = $10
+       WHERE id = $11 RETURNING *`,
+      [
+        address,
+        category,
+        is_available,
+        energy_class,
+        rooms,
+        square_meters,
+        year_built,
+        buy,
+        rent,
+        photo,
+        req.params.id,
+      ],
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Entry not found" });
+    }
+    res.json(transformKeys(result.rows[0]));
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
 // POST /api/contact – sends a contact email via Resend (rate limited)
 app.post("/api/contact", contactLimiter, async (req, res) => {
   const { name, email, message, property } = req.body;
