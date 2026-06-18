@@ -20,7 +20,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      // Send plain password - backend will hash it
+      // Send credentials to Supabase Auth for authentication
       await login(email, password);
       navigate("/admin");
     } catch (err) {

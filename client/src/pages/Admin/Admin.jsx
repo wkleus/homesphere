@@ -23,6 +23,7 @@ const EMPTY_FORM = {
 
 const Admin = () => {
   const { user, logout } = useAuth();
+  const { supabaseToken } = useAuth(); // Get Supabase JWT token
 
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,12 +35,16 @@ const Admin = () => {
   const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState(null);
 
-  // Fetch all property entries from backend API
+  // Fetch entries with Authorization header
   const fetchEntries = async () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(ENTRIES_URL);
+      const res = await fetch(ENTRIES_URL, {
+        headers: {
+          Authorization: `Bearer ${supabaseToken}`, // add token
+        },
+      });
       if (!res.ok) throw new Error("Failed to fetch entries");
       const data = await res.json();
       setEntries(data || []);
@@ -56,7 +61,7 @@ const Admin = () => {
     (async () => {
       await fetchEntries();
     })();
-  }, []);
+  }, [supabaseToken]);
 
   // Populate form with entry data for editing
   // Backend returns camelCase, form uses snake_case for DB compatibility
@@ -78,7 +83,7 @@ const Admin = () => {
     setFeedback(null);
   };
 
-  // Save updated entry - sends snake_case payload to backend
+  // Save updated entry
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -100,11 +105,20 @@ const Admin = () => {
 
       const res = await fetch(ENTRY_URL(editId), {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${supabaseToken}`, // add token
+        },
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) throw new Error("Failed to update entry");
+      if (!res.ok) {
+        // Error handling for different status codes -> only basic for now!
+        if (res.status === 401) {
+          throw new Error("Session expired. Please login again.");
+        }
+        throw new Error("Failed to update entry");
+      }
 
       setFeedback({ type: "success", message: "Entry updated successfully!" });
       setShowForm(false);
@@ -119,7 +133,7 @@ const Admin = () => {
     }
   };
 
-  // Generic handler for all form inputs (text + checkbox)
+  // Generic handler for form inputs (text + checkbox)
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm((prev) => ({

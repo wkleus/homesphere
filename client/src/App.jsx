@@ -11,6 +11,7 @@ import Contact from "./pages/Contact/Contact";
 import Login from "./pages/Login/Login";
 import Admin from "./pages/Admin/Admin";
 import { AuthProvider } from "./context/AuthProvider";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
 function App() {
   const location = useLocation(); // Get current location for animations
@@ -32,7 +33,14 @@ function App() {
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/admin" element={<Admin />} />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute>
+                    <Admin />
+                  </ProtectedRoute>
+                }
+              />
             </Routes>
           </AnimatePresence>
 

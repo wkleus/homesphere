@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 export const AuthProvider = ({ children }) => {
   // State to store the current authenticated user
   const [user, setUser] = useState(null);
+  // State for Supabase access token
+  const [supabaseToken, setSupabaseToken] = useState(null);
   // Loading state to handle async auth initialization
   const [loading, setLoading] = useState(true);
 
@@ -20,8 +22,10 @@ export const AuthProvider = ({ children }) => {
           ...user,
           name: user.user_metadata?.name || null,
         });
+        setSupabaseToken(session.access_token); // store token
       } else {
         setUser(null);
+        setSupabaseToken(null); // Reset token
       }
       setLoading(false);
     });
@@ -36,8 +40,10 @@ export const AuthProvider = ({ children }) => {
           ...user,
           name: user.user_metadata?.name || null,
         });
+        setSupabaseToken(session.access_token); // save token
       } else {
         setUser(null);
+        setSupabaseToken(null); // Reset token
       }
     });
 
@@ -60,12 +66,16 @@ export const AuthProvider = ({ children }) => {
   // Logout function - signs out the current user and navigates to the login page
   const logout = async () => {
     await supabase.auth.signOut();
+    setSupabaseToken(null); // Delete token on logout
     navigate("/login");
   };
 
   // Provide auth context to all children components
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    // Provide supabaseToken in the context
+    <AuthContext.Provider
+      value={{ user, supabaseToken, loading, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

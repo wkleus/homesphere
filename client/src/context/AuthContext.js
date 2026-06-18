@@ -1,4 +1,4 @@
 import { createContext } from "react";
 
-// Create a context object for authentication state to provide and consume auth data throughout the app
+// Create auth context for global authentication state
 export const AuthContext = createContext();

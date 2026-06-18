@@ -10,8 +10,6 @@
 ![Vercel](https://img.shields.io/badge/Frontend-Vercel-orange?logo=vercel)
 ![i18n](https://img.shields.io/badge/i18n-EN%20%7C%20DE%20-blue)
 ![Supabase Auth](https://img.shields.io/badge/Supabase%20Auth-Enabled-3ECF8E?logo=supabase&logoColor=white)
-![JWT](https://img.shields.io/badge/Auth-JWT-000000?logo=jsonwebtokens&logoColor=white)
-![bcrypt](https://img.shields.io/badge/Security-bcrypt-00599C?logo=lock&logoColor=white)
 ![Tests](https://img.shields.io/badge/Tests-Passing-brightgreen?logo=vitest)
 ![Status](https://img.shields.io/badge/Status-In_Progress-yellow)
 
@@ -21,68 +19,17 @@ HomeSphere is a full-stack real estate platform for property seekers and adminis
 
 **Tech Stack:** React frontend with a Node.js/Express REST API, PostgreSQL on Supabase, Resend for emails, and react‑i18next for multilingual support (EN/DE).
 
-Built with **security**, **performance**, and **user experience** in mind – featuring JWT authentication, server-side password hashing, lazy loading, and a fully responsive design.
-
----
+Built with **security**, **performance**, and **user experience** in mind – featuring Supabase Authentication, JWT-based session management, lazy loading, and a fully responsive design.
 
 ## Screenshots
 
-<table>
-  <tr>
-    <td align="center">
-      <img src="client/public/screenshots/home.png" alt="Home" height="320" />
-      <br><em>Home – Navbar with contact info and hero heading</em>
-    </td>
-    <td align="center">
-      <img src="client/public/screenshots/main.png" alt="Main" height="340" />
-      <br><em>Main – Property listings with category and deal type filters</em>
-    </td>
-  </tr>
-
-  <tr>
-    <td align="center">
-      <img src="client/public/screenshots/footer.png" alt="Footer" height=280" />
-      <br><em>Footer – Opening hours and contact details</em>
-    </td>
-    <td align="center">
-      <img src="client/public/screenshots/details.png" alt="Property Detail" height="360" />
-      <br><em>Detail Page – Full property info with stats and pricing</em>
-    </td>
-  </tr>
-
-  <tr>
-    <td align="center">
-      <img src="client/public/screenshots/contact-form.png" alt="Contact Form" height="300" />
-      <br><em>Contact Form</em>
-    </td>
-    <td align="center">
-      <img src="client/public/screenshots/favorites-page.png" alt="Favorites Page" height="360" />
-      <br><em>Favorites Page</em>
-    </td>
-  </tr>
-
-  <tr>
-    <td align="center">
-      <img src="client/public/screenshots/calculator.png" alt="Mortgage Calculator" height="300" />
-      <br><em>Mortgage Calculator</em>
-    </td>
-    <td align="center">
-      <img src="client/public/screenshots/contact-page.png" alt="Contact Page" height="300"  />
-      <br><em>Contact Page</em>
-    </td>
-  </tr>
-
-  <tr>
-    <td align="center">
-      <img src="client/public/screenshots/login-page.png" alt="Login Page" height="320" />
-      <br><em>Login Page</em>
-    </td>
-    <td align="center">
-      <img src="client/public/screenshots/admin-dashboard-page_in-progress.png" alt="Admin Dashboard Page" height="320" />
-      <br><em>Admin Dashbaord - still in progress</em>
-    </td>
-  </tr>
-</table>
+|                                                                                  |                                                                               |
+| -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| ![Home](client/public/screenshots/home.png)<br>_Home Page_                       | ![Main](client/public/screenshots/main.png)<br>_Main Listings_                |
+| ![Footer](client/public/screenshots/footer.png)<br>_Footer_                      | ![Details](client/public/screenshots/details.png)<br>_Property Details_       |
+| ![Contact Form](client/public/screenshots/contact-form.png)<br>_Contact Form_    | ![Favorites](client/public/screenshots/favorites-page.png)<br>_Favorites_     |
+| ![Calculator](client/public/screenshots/calculator.png)<br>_Mortgage Calculator_ | ![Contact Page](client/public/screenshots/contact-page.png)<br>_Contact Page_ |
+| ![Login](client/public/screenshots/login-page.png)<br>_Login_                    | ![Admin](client/public/screenshots/admin-page.png)<br>_Admin Dashboard_       |
 
 ---
 
@@ -113,9 +60,11 @@ Built with **security**, **performance**, and **user experience** in mind – fe
 
 ### Authentication & Security
 
-- Secure authentication with JWT tokens and server-side password hashing (bcrypt)
-- Protected admin routes with role-based access
+- **Supabase Authentication** with JWT-based session management
+- **Protected admin routes** with token validation middleware
+- **Server-side token verification** using Supabase Admin Client
 - Environment-based configuration for dev/prod
+- Rate limiting on contact endpoint (3 requests per 10 minutes)
 
 ### User Experience & User Interface (UX/UI)
 
@@ -164,19 +113,53 @@ Built with **security**, **performance**, and **user experience** in mind – fe
 |              | express-rate-limit             | 7       |
 |              | he(XSS sanitization)           | 1       |
 |              | Resend                         | 6       |
+|              | @supabase/supabase-js          | 2       |
 |              | Vitest + Supertest             | 4 / 7   |
-|              | bcrypt                         | 6       |
-|              | jsonwebtoken                   | 9       |
 | **Database** | PostgreSQL via Supabase        |         |
 | **Hosting**  | Vercel (Frontend)              |         |
 |              | Render (Backend API)           |         |
-|              | Supabase (Database)            |         |
-| **Auth**     | JWT (JSON Web Tokens)          |         |
-|              | bcrypt (password hashing)      |         |
+|              | Supabase (Database + Auth)     |         |
+| **Auth**     | Supabase Auth                  |         |
+|              | JWT (JSON Web Tokens)          |         |
 | **Email**    | Resend                         |         |
 | **Testing**  | Vitest                         |         |
 |              | React Testing Library          |         |
 |              | Supertest                      |         |
+
+---
+
+## Architecture Overview
+
+The application follows a clean three‑tier architecture:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ FRONTEND (Vercel)                                       │
+│ ┌─────────────────────────────────────────────────┐     │
+│ │ Login → Supabase Auth → JWT-Token               │     │
+│ │ Admin → Sends token in Authorization Header     │     │
+│ └─────────────────────────────────────────────────┘     │
+└─────────────────────────────────────────────────────────┘
+│
+▼
+┌─────────────────────────────────────────────────────────┐
+│ BACKEND (Render)                                        │
+│ ┌─────────────────────────────────────────────────┐     │
+│ │ authenticateSupabase Middleware                 │     │
+│ │ Validates token with Supabase Admin Client      │     │
+│ │ Protects PUT /api/entries/:id                   │     │
+│ └─────────────────────────────────────────────────┘     │
+└─────────────────────────────────────────────────────────┘
+│
+▼
+┌─────────────────────────────────────────────────────────┐
+│ DATABASE (Supabase)                                     │
+│ ┌─────────────────────────────────────────────────┐     │
+│ │ PostgreSQL with entries table                   │     │
+│ │ No users table needed (Supabase Auth handles)   │     │
+│ └─────────────────────────────────────────────────┘     │
+└─────────────────────────────────────────────────────────┘
+```
 
 ---
 
@@ -260,20 +243,26 @@ The backend is a custom Node.js/Express REST API connected to a PostgreSQL datab
 GET  https://homesphere-kifc.onrender.com/api/entries
 GET  https://homesphere-kifc.onrender.com/api/entries/:id
 POST https://homesphere-kifc.onrender.com/api/contact
-POST https://homesphere-kifc.onrender.com/api/login
+```
+
+### Protected Endpoints (require valid Supabase JWT):
+
+```
+PUT https://homesphere-kifc.onrender.com/api/entries/:id
 ```
 
 ---
 
 ## Authentication
 
-The application uses a secure JWT-based authentication system:
+The application uses **Supabase Authentication** with JWT-based session management:
 
-1. **Login**: User credentials are sent to `/api/login`
-2. **Password Hashing**: Passwords are hashed server-side using bcrypt
-3. **JWT Generation**: On successful login, a JWT token is generated using `JWT_SECRET`
-4. **Protected Routes**: Admin routes require a valid JWT in the Authorization header
-5. **Session**: Token is stored client-side and sent with each protected request
+1. **Login**: User credentials are authenticated via Supabase Auth
+2. **JWT Generation**: Supabase issues a JWT token on successful login
+3. **Token Storage**: Token is stored in the AuthContext and sent with each request
+4. **Token Validation**: Backend validates the token using Supabase Admin Client
+5. **Protected Routes**: Admin routes require a valid token in the Authorization header
+6. **Session Management**: Token is automatically refreshed by Supabase
 
 ---
 
@@ -287,8 +276,9 @@ The application uses a secure JWT-based authentication system:
 ### Backend (Render)
 
 - Manual or automatic deployments from GitHub
-- Environment variables: `DATABASE_URL`, `RESEND_API_KEY`, `CONTACT_EMAIL`, `JWT_SECRET`
+- Environment variables: `DATABASE_URL`, `RESEND_API_KEY`, `CONTACT_EMAIL`, `SUPABASE_URL`, `SUPABASE_SECRET_KEY`
 - Rate limiting: 3 requests/10min for contact endpoint
+- Admin endpoint protected with Supabase Auth middleware
 
 ---
 
@@ -329,8 +319,9 @@ RESEND_API_KEY=your_resend_api_key
 # Email address that receives contact form submissions
 CONTACT_EMAIL=your@email.com
 
-# JWT Secret for authentication tokens (generate with: openssl rand -hex 32)
-JWT_SECRET=your_generated_jwt_secret
+# Supabase configuration for Auth (get from Supabase Dashboard → Project Settings → API)
+SUPABASE_URL=your_supabase_project_url
+SUPABASE_SECRET_KEY=your_supabase_secret_key
 ```
 
 #### Create `client/.env`:
@@ -446,7 +437,8 @@ npm run test:run  # run once
 - [x] Authentication with Supabase Auth
 - [x] Admin dashboard for CRUD actions
 - [x] SEO improvements: lazy loading + compressed Webp images
-- [x] Security: server-side password hashing with JWT authentication
+- [x] Security: Supabase Auth with server-side token validation
+- [x] Protected admin routes with Supabase middlewar
 
 ### Next Steps
 

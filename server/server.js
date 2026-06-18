@@ -3,10 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { Resend } from "resend";
 import he from "he";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import rateLimit from "express-rate-limit";
-import pool from "./db.js";
+import { pool, supabaseAdmin } from "./db.js";
 
 dotenv.config();
 
@@ -29,6 +27,15 @@ const contactLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+// Rate limiter for admin endpoints
+const adminLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // 100 requests per IP
+  message: { error: "Too many requests. Please try again later." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // Converts snake_case DB column names to camelCase for the frontend
 const toCamelCase = (str) =>
   str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
@@ -40,7 +47,42 @@ const transformKeys = (obj) => {
   );
 };
 
-// GET /api/entries – returns all property listings
+// Supabase Auth Middleware
+const authenticateSupabase = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader?.split(" ")[1]; // "Bearer <token>"
+
+  if (!token) {
+    return res.status(401).json({
+      error: "Unauthorized - No token provided",
+    });
+  }
+
+  try {
+    const {
+      data: { user },
+      error,
+    } = await supabaseAdmin.auth.getUser(token);
+
+    if (error || !user) {
+      console.error("Auth error:", error);
+      return res.status(401).json({
+        error: "Unauthorized - Invalid token",
+      });
+    }
+
+    // Attach user to request for later use
+    req.user = user;
+    next();
+  } catch (err) {
+    console.error("Auth middleware error:", err);
+    return res.status(500).json({
+      error: "Internal server error during authentication",
+    });
+  }
+};
+
+// GET /api/entries – returns all property listings (PUBLIC)
 app.get("/api/entries", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM entries ORDER BY id");
@@ -51,7 +93,7 @@ app.get("/api/entries", async (req, res) => {
   }
 });
 
-// GET /api/entries/:id – returns a single property by ID
+// GET /api/entries/:id – returns a single property by ID (PUBLIC)
 app.get("/api/entries/:id", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM entries WHERE id = $1", [
@@ -67,51 +109,56 @@ app.get("/api/entries/:id", async (req, res) => {
   }
 });
 
-// PUT /api/entries/:id – update entry
-app.put("/api/entries/:id", async (req, res) => {
-  const {
-    address,
-    category,
-    is_available,
-    energy_class,
-    rooms,
-    square_meters,
-    year_built,
-    buy,
-    rent,
-    photo,
-  } = req.body;
+// PUT /api/entries/:id – update entry (PROTECTED with Supabase Auth)
+app.put(
+  "/api/entries/:id",
+  authenticateSupabase,
+  adminLimiter,
+  async (req, res) => {
+    const {
+      address,
+      category,
+      is_available,
+      energy_class,
+      rooms,
+      square_meters,
+      year_built,
+      buy,
+      rent,
+      photo,
+    } = req.body;
 
-  try {
-    const result = await pool.query(
-      `UPDATE entries SET
+    try {
+      const result = await pool.query(
+        `UPDATE entries SET
         address = $1, category = $2, is_available = $3, energy_class = $4,
         rooms = $5, square_meters = $6, year_built = $7, buy = $8, rent = $9, photo = $10
        WHERE id = $11 RETURNING *`,
-      [
-        address,
-        category,
-        is_available,
-        energy_class,
-        rooms,
-        square_meters,
-        year_built,
-        buy,
-        rent,
-        photo,
-        req.params.id,
-      ],
-    );
+        [
+          address,
+          category,
+          is_available,
+          energy_class,
+          rooms,
+          square_meters,
+          year_built,
+          buy,
+          rent,
+          photo,
+          req.params.id,
+        ],
+      );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Entry not found" });
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: "Entry not found" });
+      }
+      res.json(transformKeys(result.rows[0]));
+    } catch (err) {
+      console.error("Database error:", err);
+      res.status(500).json({ error: "Database error" });
     }
-    res.json(transformKeys(result.rows[0]));
-  } catch (err) {
-    console.error("Database error:", err);
-    res.status(500).json({ error: "Database error" });
-  }
-});
+  },
+);
 
 // POST /api/contact – sends a contact email via Resend (rate limited)
 app.post("/api/contact", contactLimiter, async (req, res) => {
@@ -150,50 +197,6 @@ app.post("/api/contact", contactLimiter, async (req, res) => {
   } catch (err) {
     console.error("Email error:", err);
     res.status(500).json({ error: "Failed to send email" });
-  }
-});
-
-// LOGIN ENDPOINT – Backend hashing
-app.post("/api/login", async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    // Retrieve user from database
-    const result = await pool.query("SELECT * FROM users WHERE email = $1", [
-      email,
-    ]);
-
-    if (result.rows.length === 0) {
-      return res.status(401).json({ error: "Invalid credentials" });
-    }
-
-    const user = result.rows[0];
-
-    // Compare plain password with stored hash
-    const isValid = await bcrypt.compare(password, user.password_hash);
-
-    if (!isValid) {
-      return res.status(401).json({ error: "Invalid credentials" });
-    }
-
-    // Create JWT token
-    const token = jwt.sign(
-      { userId: user.id, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" },
-    );
-
-    res.json({
-      token,
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-      },
-    });
-  } catch (err) {
-    console.error("Login error:", err);
-    res.status(500).json({ error: "Internal server error" });
   }
 });
 
