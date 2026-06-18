@@ -3,6 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { Resend } from "resend";
 import he from "he";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import rateLimit from "express-rate-limit";
 import pool from "./db.js";
 
@@ -148,6 +150,50 @@ app.post("/api/contact", contactLimiter, async (req, res) => {
   } catch (err) {
     console.error("Email error:", err);
     res.status(500).json({ error: "Failed to send email" });
+  }
+});
+
+// LOGIN ENDPOINT – Backend hashing
+app.post("/api/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // Retrieve user from database
+    const result = await pool.query("SELECT * FROM users WHERE email = $1", [
+      email,
+    ]);
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    const user = result.rows[0];
+
+    // Compare plain password with stored hash
+    const isValid = await bcrypt.compare(password, user.password_hash);
+
+    if (!isValid) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    // Create JWT token
+    const token = jwt.sign(
+      { userId: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" },
+    );
+
+    res.json({
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      },
+    });
+  } catch (err) {
+    console.error("Login error:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 

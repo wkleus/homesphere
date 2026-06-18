@@ -10,17 +10,18 @@
 ![Vercel](https://img.shields.io/badge/Frontend-Vercel-orange?logo=vercel)
 ![i18n](https://img.shields.io/badge/i18n-EN%20%7C%20DE%20-blue)
 ![Supabase Auth](https://img.shields.io/badge/Supabase%20Auth-Enabled-3ECF8E?logo=supabase&logoColor=white)
+![JWT](https://img.shields.io/badge/Auth-JWT-000000?logo=jsonwebtokens&logoColor=white)
+![bcrypt](https://img.shields.io/badge/Security-bcrypt-00599C?logo=lock&logoColor=white)
 ![Tests](https://img.shields.io/badge/Tests-Passing-brightgreen?logo=vitest)
 ![Status](https://img.shields.io/badge/Status-In_Progress-yellow)
 
 🔗 [Live Demo](https://homesphere-web.vercel.app)
 
-A full‑stack real estate web application for browsing and discovering residential properties across Europe — from modern city apartments to remote alpine chalets.
-The frontend is built with React and communicates with a custom Node.js/Express REST API. Data is stored in a PostgreSQL database hosted on Supabase.
+HomeSphere is a full-stack real estate platform for property seekers and administrators. Browse listings across Europe, filter by category and deal type, save favorites, and contact agents via email. Admins can manage the entire property catalog through a protected dashboard.
 
-The platform includes user authentication with a secure login system and an admin dashboard for managing property listings, images, and content.
-Contact requests are delivered via email using Resend.
-The application supports English and German through react‑i18next.
+**Tech Stack:** React frontend with a Node.js/Express REST API, PostgreSQL on Supabase, Resend for emails, and react‑i18next for multilingual support (EN/DE).
+
+Built with **security**, **performance**, and **user experience** in mind – featuring JWT authentication, server-side password hashing, lazy loading, and a fully responsive design.
 
 ---
 
@@ -66,66 +67,116 @@ The application supports English and German through react‑i18next.
       <br><em>Mortgage Calculator</em>
     </td>
     <td align="center">
-      <img src="client/public/screenshots/contact-page.png" alt="Contact Page" height="300" width="310" />
-      <br><em>Contact Page on smaller screens</em>
+      <img src="client/public/screenshots/contact-page.png" alt="Contact Page" height="300"  />
+      <br><em>Contact Page</em>
+    </td>
+  </tr>
+
+  <tr>
+    <td align="center">
+      <img src="client/public/screenshots/login-page.png" alt="Login Page" height="320" />
+      <br><em>Login Page</em>
+    </td>
+    <td align="center">
+      <img src="client/public/screenshots/admin-dashboard-page_in-progress.png" alt="Admin Dashboard Page" height="320" />
+      <br><em>Admin Dashbaord - still in progress</em>
     </td>
   </tr>
 </table>
 
 ---
 
+## Table of Contents
+
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [API](#api)
+- [Authentication](#authentication)
+- [Deployment](#deployment)
+- [Getting Started](#getting-started)
+- [Testing](#testing)
+- [Available Scripts](#available-scripts)
+- [Roadmap](#roadmap)
+
+---
+
 ## Features
 
-- **Property listings** fetched from a PostgreSQL database via REST API
-- **Filter by category** (Apartment, Chalet, Residence, Studio, Townhouse)
-- **Filter by deal type** (Rent / Buy)
-- **Favorites system** – save properties via heart icon, persisted in localStorage
-- **Loading & error states** for all API calls
-- **Detail page** per property with full info and stats
-- **Mortgage calculator** – monthly payment calculator with sliders on detail page
-- **Contact agent** via multi-step form with Yup validation and email delivery via Resend
-- **Custom `useFetch` hook** for reusable data fetching
-- **Context API** for global favorites state
-- **Client-side routing** via React Router
-- **Responsive layout** for mobile and desktop
-- **Framer motion**
-- **Multilingual** – English and German via react-i18next, flag icons in Navbar
-- **Map integration** – interactive Leaflet map per property with OpenStreetMap geocoding
-- **Login page** for user authentication
-- **Admin page** providing full CRUD operations
-- **SEO** enhancements such as lazy loading and WebP support
-- **Tested** - Frontend with Vitest + React Testing Library and Backend with Supertest
-- **Separate deployments** – Frontend on Vercel, API on Render.com
-- **PostgreSQL database** hosted on Supabase
+### Property Management
+
+- Property listings fetched from PostgreSQL database via REST API
+- Filter by category (Apartment, Chalet, Residence, Studio, Townhouse)
+- Filter by deal type (Rent / Buy)
+- Detail page with full property info, stats, and interactive map
+- Mortgage calculator on property detail pages
+
+### Authentication & Security
+
+- Secure authentication with JWT tokens and server-side password hashing (bcrypt)
+- Protected admin routes with role-based access
+- Environment-based configuration for dev/prod
+
+### User Experience & User Interface (UX/UI)
+
+- Responsive layout for mobile, tablet, and desktop
+- Modern UI with Phosphor and Lucide icons for clean, professional visuals
+- Smooth animations with Framer Motion for page transitions and interactions
+- Loading and error states for all API calls
+- Multi-language support (EN/DE) with react-i18next
+- Favorites system with localStorage persistence
+
+### Performance
+
+- Optimised images with lazy loading and WebP support
+- Custom `useFetch` hook for efficient data fetching
+- Memoized components to prevent unnecessary re-renders
+
+### Developer Experience
+
+- Modular component structure for easy maintenance
+- Centralised API configuration
+- Testing with Vitest + React Testing Library + Supertest
+- Separate deployments (Vercel for frontend, Render for API)
 
 ---
 
 ## Tech Stack
 
-|              | Tool                           | Version      |
-| ------------ | ------------------------------ | ------------ |
-| **Frontend** | React                          | 19           |
-|              | React Router DOM               | 7            |
-|              | Phosphor Icons                 | 1.4          |
-|              | Yup                            | 1            |
-|              | Vite                           | 8            |
-|              | CSS Custom Properties          |              |
-|              | react-i18next                  | 15           |
-|              | Leaflet + react-leaflet        | 1.9 / 4      |
-|              | Vitest + React Testing Library | 4 / 16       |
-| **Backend**  | Node.js                        |              |
-|              | Express                        | 4            |
-|              | CORS                           | 2            |
-|              | pg (node-postgres)             | 8            |
-|              | dotenv                         | 17           |
-|              | express-rate-limit             | 7            |
-|              | he(XSS sanitization)           | 1            |
-|              | Resend                         | 6            |
-|              | Vitest + Supertest             | 4 / 7        |
-| **Database** | PostgreSQL                     | via Supabase |
-| **Hosting**  | Vercel                         | Frontend     |
-|              | Render.com                     | Backend API  |
-|              | Supabase                       | Database     |
+|              | Tool                           | Version |
+| ------------ | ------------------------------ | ------- |
+| **Frontend** | React                          | 19      |
+|              | React Router DOM               | 7       |
+|              | Phosphor Icons                 | 1       |
+|              | Lucide Icons                   | 1       |
+|              | Yup                            | 1       |
+|              | Vite                           | 8       |
+|              | CSS Custom Properties          |         |
+|              | react-i18next                  | 15      |
+|              | Leaflet + react-leaflet        | 1 / 4   |
+|              | Vitest + React Testing Library | 4 / 16  |
+|              | Framer Motion                  | 12      |
+| **Backend**  | Node.js                        |         |
+|              | Express                        | 4       |
+|              | CORS                           | 2       |
+|              | pg (node-postgres)             | 8       |
+|              | dotenv                         | 17      |
+|              | express-rate-limit             | 7       |
+|              | he(XSS sanitization)           | 1       |
+|              | Resend                         | 6       |
+|              | Vitest + Supertest             | 4 / 7   |
+|              | bcrypt                         | 6       |
+|              | jsonwebtoken                   | 9       |
+| **Database** | PostgreSQL via Supabase        |         |
+| **Hosting**  | Vercel (Frontend)              |         |
+|              | Render (Backend API)           |         |
+|              | Supabase (Database)            |         |
+| **Auth**     | JWT (JSON Web Tokens)          |         |
+|              | bcrypt (password hashing)      |         |
+| **Email**    | Resend                         |         |
+| **Testing**  | Vitest                         |         |
+|              | React Testing Library          |         |
+|              | Supertest                      |         |
 
 ---
 
@@ -144,8 +195,12 @@ homesphere/
 │   │    ├── main.jsx
 │   │    ├── index.html
 │   │    ├── config/
+│   │    │   ├── supabase.js                # Supabase configuration
 │   │    │   └── api.js                     # Central API URL config (dev/prod)
 │   │    ├── context/
+│   │    │   ├── AuthContext.js             # Context object for auth state
+│   │    │   ├── AuthProvider.jsx           # Provides auth state to entire app
+│   │    │   ├── useAuth.js                 # Custom hook for consuming auth context
 │   │    │   └── FavoritesContext.jsx       # Global favorites state with localStorage
 │   │    ├── i18n/                          # i18next configuration
 │   │    │   └── locales/
@@ -162,9 +217,10 @@ homesphere/
 │   │    │   ├── Heading/
 │   │    │   ├── Footer/
 │   │    │   ├── Loadingspinner/            # Spinner for loading time
-│   │    │   ├── MapModal/                  # Leaflet map modal with Nominatim geocoding
+│   │    │   ├── MapModal/                  # Leaflet map modal with Nominatim
 │   │    │   ├── ContactForm/               # Multi-step modal with Yup validation
 │   │    │   ├── MortgageCalculator/        # Monthly payment calculator with useMemo
+│   │    │   ├── ProtectedRoute/            # Protect routes from unauthorized access
 │   │    │   └── Main/
 │   │    │       ├── RealEstate.jsx         # Filter logic + listings
 │   │    │       └── RealEstateCard/
@@ -198,11 +254,41 @@ homesphere/
 
 The backend is a custom Node.js/Express REST API connected to a PostgreSQL database on Supabase, deployed on [Render.com](https://render.com):
 
+### Public Endpoints:
+
 ```
 GET  https://homesphere-kifc.onrender.com/api/entries
 GET  https://homesphere-kifc.onrender.com/api/entries/:id
 POST https://homesphere-kifc.onrender.com/api/contact
+POST https://homesphere-kifc.onrender.com/api/login
 ```
+
+---
+
+## Authentication
+
+The application uses a secure JWT-based authentication system:
+
+1. **Login**: User credentials are sent to `/api/login`
+2. **Password Hashing**: Passwords are hashed server-side using bcrypt
+3. **JWT Generation**: On successful login, a JWT token is generated using `JWT_SECRET`
+4. **Protected Routes**: Admin routes require a valid JWT in the Authorization header
+5. **Session**: Token is stored client-side and sent with each protected request
+
+---
+
+## Deployment
+
+### Frontend (Vercel)
+
+- Automatic deployments on push to main branch
+- Environment variables: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
+
+### Backend (Render)
+
+- Manual or automatic deployments from GitHub
+- Environment variables: `DATABASE_URL`, `RESEND_API_KEY`, `CONTACT_EMAIL`, `JWT_SECRET`
+- Rate limiting: 3 requests/10min for contact endpoint
 
 ---
 
@@ -226,7 +312,9 @@ server/seed.sql     ← inserts all entries
 
 ### 3. Configure environment variables
 
-Create `server/.env`:
+Create `.env` files for both backend and frontend. Use the following templates:
+
+#### Create `server/.env`:
 
 ```
 # Server port (Render sets this automatically in production)
@@ -240,7 +328,20 @@ RESEND_API_KEY=your_resend_api_key
 
 # Email address that receives contact form submissions
 CONTACT_EMAIL=your@email.com
+
+# JWT Secret for authentication tokens (generate with: openssl rand -hex 32)
+JWT_SECRET=your_generated_jwt_secret
 ```
+
+#### Create `client/.env`:
+
+```
+# Supabase configuration (for authentication)
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+> **⚠️ Security Note:** Never commit `.env` files to Git. Both files are already excluded via `.gitignore`. Consider creating `.env.example` files to show required variables without exposing sensitive data.
 
 ### 4. Start the backend
 
@@ -343,10 +444,11 @@ npm run test:run  # run once
 - [x] Backend integration tests for all API endpoints (Supertest)
 - [x] Admin Login for authentication
 - [x] Authentication with Supabase Auth
+- [x] Admin dashboard for CRUD actions
 - [x] SEO improvements: lazy loading + compressed Webp images
+- [x] Security: server-side password hashing with JWT authentication
 
 ### Next Steps
 
-- [ ] Admin dashboard for CRUD actions
 - [ ] Advanced search - Price, rooms, size, combined filters
 - [ ] More SEO improvements

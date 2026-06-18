@@ -18,11 +18,13 @@ const Login = () => {
     e.preventDefault();
     setError(null);
     setLoading(true);
+
     try {
+      // Send plain password - backend will hash it
       await login(email, password);
       navigate("/admin");
     } catch (err) {
-      setError("Invalid email or password.");
+      setError(err.message || "Invalid email or password.");
     } finally {
       setLoading(false);
     }
