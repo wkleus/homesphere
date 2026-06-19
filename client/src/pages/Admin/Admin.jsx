@@ -24,8 +24,7 @@ const EMPTY_FORM = {
 
 const Admin = () => {
   // AUTHENTICATION: Get user data, logout function, and JWT token from AuthContext
-  const { user, logout } = useAuth();
-  const { supabaseToken } = useAuth();
+  const { user, logout, supabaseToken } = useAuth();
 
   // STATE MANAGEMEN for Data & UI states
   const [entries, setEntries] = useState([]);
@@ -46,11 +45,7 @@ const Admin = () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(ENTRIES_URL, {
-        headers: {
-          Authorization: `Bearer ${supabaseToken}`,
-        },
-      });
+      const res = await fetch(ENTRIES_URL);
       if (!res.ok) throw new Error("Failed to fetch entries");
       const data = await res.json();
       setEntries(data || []);
