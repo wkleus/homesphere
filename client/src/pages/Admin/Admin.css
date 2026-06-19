@@ -298,3 +298,115 @@
   background: #f1f5f9;
   color: #334155;
 }
+
+/* MODAL FORM */
+.admin-form {
+  padding: 1.75rem;
+}
+
+.admin-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.admin-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.admin-field.full {
+  grid-column: 1 / -1;
+}
+
+.admin-field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334175;
+  letter-spacing: 0.03em;
+}
+
+.admin-field input,
+.admin-field select {
+  padding: 0.5rem;
+  border: 1px solid #d2e8f0;
+  border-radius: 0.375rem;
+  font-size: 0.85rem;
+  font-family: inherit;
+  background: #ffffff;
+  color: #222;
+  transition: all 0.15s ease;
+  letter-spacing: 0.4px;
+}
+
+.admin-field input:focus,
+.admin-field select:focus {
+  outline: none;
+  border-color: #0f766e;
+  box-shadow: 0 0 0 3px rgba(18, 161, 205, 0.15);
+}
+
+.admin-field input::placeholder {
+  color: #999;
+}
+
+.admin-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: #334175;
+  margin-top: 0.3rem;
+  margin-left: 0.1rem;
+}
+
+.admin-checkbox-label input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  accent-color: #0369a1;
+  cursor: pointer;
+}
+
+/* MODAL FORM ACTIONS (Cancel / Save) */
+.admin-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.8rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #d2e8f0;
+}
+
+.admin-cancel-btn,
+.admin-save-btn {
+  padding: 0.6rem 2rem;
+  border: none;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.admin-cancel-btn {
+  background: #d2e8f0;
+  color: #333;
+}
+
+.admin-cancel-btn:hover {
+  background: #b2e8f0;
+}
+
+.admin-save-btn {
+  background: #0369a1;
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.2);
+}
+
+.admin-save-btn:hover {
+  background: #0379a1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(40, 100, 240, 0.25);
+}
