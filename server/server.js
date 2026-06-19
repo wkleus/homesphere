@@ -122,36 +122,100 @@ app.get("/api/entries/:id", async (req, res) => {
     res.status(500).json({ error: "Database error" });
   }
 });
-(adminLimiter, // Rate limit: 100 requests per 15 minutes
-  /* PUT /api/entries/:id
-   Updates an existing property entry in the database.
-   Protected endpoint – requires valid Supabase JWT token.
-   Returns the updated entry in camelCase format */
-  app.put(
-    "/api/entries/:id",
-    adminLimiter, // Rate limit: 100 requests per 15 minutes  (NOTE: adminLimiter runs before auth check to prevent unlimited attacks with invalid tokens)
-    authenticateSupabase, // Verify JWT token before allowing updates
-    async (req, res) => {
-      // Extract all fields from request body (snake_case matches DB columns)
-      const {
-        address,
-        category,
-        is_available,
-        energy_class,
-        rooms,
-        square_meters,
-        year_built,
-        buy,
-        rent,
-        photo,
-      } = req.body;
 
-      try {
-        /* Execute PostgreSQL UPDATE query with RETURNING clause.
-        $1-$11 are parameterized placeholders to prevent SQL injection.
-        RETURNING * returns the updated row for sending it back to the client. */
-        const result = await pool.query(
-          `UPDATE entries SET
+/* POST /api/entries
+   Creates a new property entry in the db
+   Protected endpoint – requires valid Supabase JWT token
+   Returns the created entry in camelCase format */
+app.post(
+  "/api/entries",
+  adminLimiter, // Rate limit: 100 requests per 15 minutes (before auth check)
+  authenticateSupabase, // Verify JWT token before allowing creation
+  async (req, res) => {
+    // Extract all fields from request body (snake_case matches DB columns)
+    const {
+      address,
+      category,
+      is_available,
+      energy_class,
+      rooms,
+      square_meters,
+      year_built,
+      buy,
+      rent,
+      photo,
+    } = req.body;
+
+    try {
+      /* Execute PostgreSQL INSERT query with RETURNING clause.
+         $1-$10 are parameterized placeholders to prevent SQL injection.
+         RETURNING * returns the newly created row for sending it back to the client. */
+      const result = await pool.query(
+        `INSERT INTO entries (
+          address,
+          category,
+          is_available,
+          energy_class,
+          rooms,
+          square_meters,
+          year_built,
+          buy,
+          rent,
+          photo
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        RETURNING *`,
+        [
+          address,
+          category,
+          is_available,
+          energy_class,
+          rooms,
+          square_meters,
+          year_built,
+          buy,
+          rent,
+          photo,
+        ],
+      );
+
+      // Transform the created row from snake_case (DB) to camelCase (frontend)
+      res.status(201).json(transformKeys(result.rows[0]));
+    } catch (err) {
+      console.error("Database error:", err);
+      res.status(500).json({ error: "Database error" });
+    }
+  },
+);
+
+/* PUT /api/entries/:id
+   Updates an existing property entry in the database
+   Protected endpoint – requires valid Supabase JWT token
+   Returns the updated entry in camelCase format */
+app.put(
+  "/api/entries/:id",
+  adminLimiter, // Rate limit: 100 requests per 15 minutes (before auth check to prevent unlimited attacks with invalid tokens)
+  authenticateSupabase, // Verify JWT token before allowing updates
+  async (req, res) => {
+    // Extract all fields from request body (snake_case matches DB columns)
+    const {
+      address,
+      category,
+      is_available,
+      energy_class,
+      rooms,
+      square_meters,
+      year_built,
+      buy,
+      rent,
+      photo,
+    } = req.body;
+
+    try {
+      /* Execute PostgreSQL UPDATE query with RETURNING clause
+        $1-$11 are parameterized placeholders to prevent SQL injection
+        RETURNING * returns the updated row for sending it back to the client */
+      const result = await pool.query(
+        `UPDATE entries SET
           address = $1, 
           category = $2, 
           is_available = $3, 
@@ -164,39 +228,39 @@ app.get("/api/entries/:id", async (req, res) => {
           photo = $10
         WHERE id = $11 
         RETURNING *`,
-          [
-            address, // $1
-            category, // $2
-            is_available, // $3
-            energy_class, // $4
-            rooms, // $5
-            square_meters, // $6
-            year_built, // $7
-            buy, // $8
-            rent, // $9
-            photo, // $10
-            req.params.id, // $11
-          ],
-        );
+        [
+          address, // $1
+          category, // $2
+          is_available, // $3
+          energy_class, // $4
+          rooms, // $5
+          square_meters, // $6
+          year_built, // $7
+          buy, // $8
+          rent, // $9
+          photo, // $10
+          req.params.id, // $11
+        ],
+      );
 
-        // If no rows were updated, the entry doesn't exist
-        if (result.rows.length === 0) {
-          return res.status(404).json({ error: "Entry not found" });
-        }
-
-        // Transform the updated row from snake_case (DB) to camelCase (frontend)
-        res.json(transformKeys(result.rows[0]));
-      } catch (err) {
-        // Log the error server-side for debugging
-        console.error("Database error:", err);
-        // Send generic error to client (don't expose internal details)
-        res.status(500).json({ error: "Database error" });
+      // If no rows were updated, the entry doesn't exist
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: "Entry not found" });
       }
-    },
-  ));
+
+      // Transform the updated row from snake_case (DB) to camelCase (frontend)
+      res.json(transformKeys(result.rows[0]));
+    } catch (err) {
+      // Log the error server-side for debugging
+      console.error("Database error:", err);
+      // Send generic error to client (don't expose internal details)
+      res.status(500).json({ error: "Database error" });
+    }
+  },
+);
 
 /* DELETE /api/entries/:id
-   Deletes a property entry from the database.
+   Deletes a property entry from the database
    Protected endpoint – requires valid Supabase JWT token */
 app.delete(
   "/api/entries/:id",

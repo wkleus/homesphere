@@ -1,4 +1,4 @@
-import { DeleteIcon, Edit, LogOutIcon, X } from "lucide-react";
+import { DeleteIcon, Edit, LogOutIcon, Plus, X } from "lucide-react";
 import "./Admin.css";
 import useAuth from "../../context/useAuth";
 import { useState, useEffect } from "react";
@@ -45,7 +45,11 @@ const Admin = () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(ENTRIES_URL);
+      const res = await fetch(ENTRIES_URL, {
+        headers: {
+          Authorization: `Bearer ${supabaseToken}`,
+        },
+      });
       if (!res.ok) throw new Error("Failed to fetch entries");
       const data = await res.json();
       setEntries(data || []);
@@ -65,6 +69,15 @@ const Admin = () => {
       await fetchEntries();
     })();
   }, [supabaseToken]);
+
+  /* Open the form modal for adding a new entry.
+     Resets form to EMPTY_FORM and clears editId. */
+  const openAddForm = () => {
+    setForm(EMPTY_FORM);
+    setEditId(null); // null indicates new entry (not editing)
+    setShowForm(true);
+    setFeedback(null);
+  };
 
   /* Populate form with entry data for editing
      Maps backend camelCase to form snake_case for PostgreSQL compatibility */
@@ -142,7 +155,8 @@ const Admin = () => {
     }
   };
 
-  /* PUT updated entry data to the backend
+  /* CREATE new entry OR UPDATE existing entry.
+     If editId is null → POST (create new), otherwise PUT (update existing).
      Sends snake_case payload (matches PostgreSQL column names) */
   const handleSave = async (e) => {
     e.preventDefault();
@@ -164,8 +178,13 @@ const Admin = () => {
         photo: form.photo,
       };
 
-      const res = await fetch(ENTRY_URL(editId), {
-        method: "PUT",
+      // Determine method and URL based on editId (null = create, else update)
+      const isCreating = editId === null;
+      const url = isCreating ? ENTRIES_URL : ENTRY_URL(editId);
+      const method = isCreating ? "POST" : "PUT";
+
+      const res = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${supabaseToken}`,
@@ -176,12 +195,20 @@ const Admin = () => {
       if (!res.ok) {
         if (res.status === 401)
           throw new Error("Session expired. Please login again.");
-        throw new Error("Failed to update entry");
+        throw new Error(
+          isCreating ? "Failed to create entry" : "Failed to update entry",
+        );
       }
 
-      setFeedback({ type: "success", message: "Entry updated successfully!" });
+      // Show success message based on action
+      setFeedback({
+        type: "success",
+        message: isCreating
+          ? "Entry added successfully!"
+          : "Entry updated successfully!",
+      });
       setShowForm(false);
-      await fetchEntries();
+      await fetchEntries(); // Refresh list
     } catch (err) {
       setFeedback({
         type: "error",
@@ -233,6 +260,13 @@ const Admin = () => {
 
       {/* Entries table */}
       <div className="entries-table-wrapper">
+        {/* Add New Entry button */}
+        <div className="admin-table-actions-top">
+          <button className="admin-add-btn" onClick={openAddForm}>
+            <Plus size={18} /> Add New Entry
+          </button>
+        </div>
+
         <table className="entries-table">
           <thead className="entries-table-head">
             <tr>
@@ -302,12 +336,12 @@ const Admin = () => {
         </table>
       </div>
 
-      {/* Edit form modal */}
+      {/* Edit/Add form modal */}
       {showForm && (
         <div className="admin-modal-overlay" onClick={() => setShowForm(false)}>
           <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
             <div className="admin-modal-header">
-              <h2>Edit Entry</h2>
+              <h2>{editId === null ? "Add New Entry" : "Edit Entry"}</h2>
               <button type="button" onClick={() => setShowForm(false)}>
                 <X size={20} />
               </button>
@@ -443,7 +477,7 @@ const Admin = () => {
                   className="admin-save-btn"
                   disabled={saving}
                 >
-                  {saving ? "Saving..." : "Update"}
+                  {saving ? "Saving..." : editId === null ? "Add" : "Update"}
                 </button>
               </div>
             </form>
