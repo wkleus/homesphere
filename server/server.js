@@ -109,12 +109,16 @@ app.get("/api/entries/:id", async (req, res) => {
   }
 });
 
-// PUT /api/entries/:id – update entry (PROTECTED with Supabase Auth)
+/* PUT /api/entries/:id
+   Updates an existing property entry in the database.
+   Protected endpoint – requires valid Supabase JWT token.
+   Returns the updated entry in camelCase format */
 app.put(
   "/api/entries/:id",
-  authenticateSupabase,
-  adminLimiter,
+  authenticateSupabase, // Verify JWT token before allowing updates
+  adminLimiter, // Rate limit: 100 requests per 15 minutes
   async (req, res) => {
+    // Extract all fields from request body (snake_case matches DB columns)
     const {
       address,
       category,
@@ -129,30 +133,79 @@ app.put(
     } = req.body;
 
     try {
+      /* Execute PostgreSQL UPDATE query with RETURNING clause.
+        $1-$11 are parameterized placeholders to prevent SQL injection.
+        RETURNING * returns the updated row for sending it back to the client. */
       const result = await pool.query(
         `UPDATE entries SET
-        address = $1, category = $2, is_available = $3, energy_class = $4,
-        rooms = $5, square_meters = $6, year_built = $7, buy = $8, rent = $9, photo = $10
-       WHERE id = $11 RETURNING *`,
+          address = $1, 
+          category = $2, 
+          is_available = $3, 
+          energy_class = $4,
+          rooms = $5, 
+          square_meters = $6, 
+          year_built = $7, 
+          buy = $8, 
+          rent = $9, 
+          photo = $10
+        WHERE id = $11 
+        RETURNING *`,
         [
-          address,
-          category,
-          is_available,
-          energy_class,
-          rooms,
-          square_meters,
-          year_built,
-          buy,
-          rent,
-          photo,
-          req.params.id,
+          address, // $1
+          category, // $2
+          is_available, // $3
+          energy_class, // $4
+          rooms, // $5
+          square_meters, // $6
+          year_built, // $7
+          buy, // $8
+          rent, // $9
+          photo, // $10
+          req.params.id, // $11
         ],
       );
 
+      // If no rows were updated, the entry doesn't exist
       if (result.rows.length === 0) {
         return res.status(404).json({ error: "Entry not found" });
       }
+
+      // Transform the updated row from snake_case (DB) to camelCase (frontend)
       res.json(transformKeys(result.rows[0]));
+    } catch (err) {
+      // Log the error server-side for debugging
+      console.error("Database error:", err);
+      // Send generic error to client (don't expose internal details)
+      res.status(500).json({ error: "Database error" });
+    }
+  },
+);
+
+/* DELETE /api/entries/:id
+   Deletes a property entry from the database.
+   Protected endpoint – requires valid Supabase JWT token */
+app.delete(
+  "/api/entries/:id",
+  authenticateSupabase, // Verify JWT token before allowing deletion
+  adminLimiter, // Rate limit: 100 requests per 15 minutes
+  async (req, res) => {
+    try {
+      // Execute DELETE query with RETURNING clause to get the deleted row
+      const result = await pool.query(
+        "DELETE FROM entries WHERE id = $1 RETURNING *",
+        [req.params.id],
+      );
+
+      // If no rows were deleted, the entry doesn't exist
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: "Entry not found" });
+      }
+
+      // Transform snake_case DB columns to camelCase for frontend
+      res.json({
+        message: "Entry deleted successfully",
+        deleted: transformKeys(result.rows[0]),
+      });
     } catch (err) {
       console.error("Database error:", err);
       res.status(500).json({ error: "Database error" });

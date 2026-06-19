@@ -1,13 +1,14 @@
-import { Edit, LogOutIcon, X } from "lucide-react";
+import { DeleteIcon, Edit, LogOutIcon, X } from "lucide-react";
 import "./Admin.css";
 import useAuth from "../../context/useAuth";
 import { useState, useEffect } from "react";
 import { ENTRIES_URL, ENTRY_URL } from "../../config/api";
 
+// Available options for dropdown selectors
 const CATEGORIES = ["Apartment", "Chalet", "Residence", "Studio", "Townhouse"];
 const ENERGY_CLASSES = ["A+", "A", "B", "C", "D", "E", "F", "G"];
 
-// Default form state - matches PostgreSQL column names (snake_case)
+// EMPTY_FORM - Default form state matching PostgreSQL snake_case columns as initial state for new entries and resetting the form
 const EMPTY_FORM = {
   address: "",
   category: "Apartment",
@@ -22,27 +23,32 @@ const EMPTY_FORM = {
 };
 
 const Admin = () => {
+  // AUTHENTICATION: Get user data, logout function, and JWT token from AuthContext
   const { user, logout } = useAuth();
-  const { supabaseToken } = useAuth(); // Get Supabase JWT token
+  const { supabaseToken } = useAuth();
 
+  // STATE MANAGEMEN for Data & UI states
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Form & editing states
   const [form, setForm] = useState(EMPTY_FORM);
   const [editId, setEditId] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState(null);
 
-  // Fetch entries with Authorization header
+  /* GET all property entries from the backend
+     Sends JWT token in Authorization header for authentication
+     Called on mount and after CRUD operations to refresh the list */
   const fetchEntries = async () => {
     setLoading(true);
     setError(null);
     try {
       const res = await fetch(ENTRIES_URL, {
         headers: {
-          Authorization: `Bearer ${supabaseToken}`, // add token
+          Authorization: `Bearer ${supabaseToken}`,
         },
       });
       if (!res.ok) throw new Error("Failed to fetch entries");
@@ -56,20 +62,22 @@ const Admin = () => {
     }
   };
 
-  // Load entries on mount - IIFE pattern avoids ESLint setState warning
+  /* Load entries on component mount
+     Re-fetch when token changes (login/refresh)
+     IIFE pattern avoids ESLint setState-in-effect warning */
   useEffect(() => {
     (async () => {
       await fetchEntries();
     })();
   }, [supabaseToken]);
 
-  // Populate form with entry data for editing
-  // Backend returns camelCase, form uses snake_case for DB compatibility
+  /* Populate form with entry data for editing
+     Maps backend camelCase to form snake_case for PostgreSQL compatibility */
   const openEdit = (entry) => {
     setForm({
       address: entry.address,
       category: entry.category,
-      is_available: entry.isAvailable,
+      is_available: entry.isAvailable, // camelCase → snake_case
       energy_class: entry.energyClass,
       rooms: entry.rooms,
       square_meters: entry.squareMeters,
@@ -83,13 +91,71 @@ const Admin = () => {
     setFeedback(null);
   };
 
-  // Save updated entry
+  /* handleDelete - Deletes an entry by ID */
+  const handleDelete = async (id) => {
+    // User confirmation – prevents accidental clicks
+    if (!window.confirm("Are you sure you want to delete this entry?")) {
+      return; // User cancelled – exit early
+    }
+
+    // Show loading state on the button
+    setSaving(true);
+    // Clear any previous feedback messages
+    setFeedback(null);
+
+    try {
+      // Send DELETE request to backend
+      const res = await fetch(ENTRY_URL(id), {
+        method: "DELETE",
+        headers: {
+          // Include JWT token for authentication (required by backend)
+          Authorization: `Bearer ${supabaseToken}`,
+        },
+      });
+
+      // Handle different response status codes
+      if (!res.ok) {
+        // 401 Unauthorized – token expired or invalid
+        if (res.status === 401) {
+          throw new Error("Session expired. Please login again.");
+        }
+        // 404 Not Found – entry doesn't exist (maybe already deleted)
+        if (res.status === 404) {
+          throw new Error("Entry not found.");
+        }
+        // Other errors (500, etc.)
+        throw new Error("Failed to delete entry");
+      }
+
+      // Success – show feedback and refresh list
+      setFeedback({
+        type: "success",
+        message: "Entry deleted successfully!",
+      });
+
+      // Refresh the entries list to reflect changes
+      await fetchEntries();
+    } catch (err) {
+      // Error handling
+      setFeedback({
+        type: "error",
+        message: err.message || "Something went wrong. Please try again.",
+      });
+    } finally {
+      // Always reset the loading state
+      setSaving(false);
+    }
+  };
+
+  /* PUT updated entry data to the backend
+     Sends snake_case payload (matches PostgreSQL column names) */
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
     setFeedback(null);
 
     try {
+      // Build payload with snake_case keys for PostgreSQL compatibility
       const payload = {
         address: form.address,
         category: form.category,
@@ -107,16 +173,14 @@ const Admin = () => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${supabaseToken}`, // add token
+          Authorization: `Bearer ${supabaseToken}`,
         },
         body: JSON.stringify(payload),
       });
 
       if (!res.ok) {
-        // Error handling for different status codes -> only basic for now!
-        if (res.status === 401) {
+        if (res.status === 401)
           throw new Error("Session expired. Please login again.");
-        }
         throw new Error("Failed to update entry");
       }
 
@@ -133,7 +197,7 @@ const Admin = () => {
     }
   };
 
-  // Generic handler for form inputs (text + checkbox)
+  /* Generic input handler for all form fields -> for text inputs, selects, and checkboxes */
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm((prev) => ({
@@ -142,6 +206,7 @@ const Admin = () => {
     }));
   };
 
+  // RENDER
   if (loading) return <div className="admin-loading">Loading entries...</div>;
   if (error) return <div className="admin-loading">Error: {error}</div>;
 
@@ -152,20 +217,10 @@ const Admin = () => {
         <h1>Admin Dashboard</h1>
         <div className="admin-header-actions">
           {/*
-          NOTE:
-          `user.name` works because the Supabase user has a `name` field inside
-          `raw_user_meta_data`. I added this manually via the SQL Editor so the
-          RAW JSON looks like:
-
-          "raw_user_meta_data": {
-            "name": "Max Mustermann",
-            "email_verified": true
-          }
-
-          Supabase automatically maps this to:
-          - user.user_metadata.name
-          - and also exposes it as user.name
-        */}
+          NOTE: `user.name` works because Supabase stores the name in `raw_user_meta_data`.
+          Added via SQL Editor: "raw_user_meta_data": { "name": "Max Mustermann" }
+          Supabase exposes this as: user.user_metadata.name or user.name
+          */}
           <h2 className="admin-user">
             Hello, {user?.user_metadata?.name || user?.email}
           </h2>
@@ -175,7 +230,6 @@ const Admin = () => {
         </div>
       </div>
 
-      {/* Success/error feedback messages */}
       {feedback && (
         <div className={`admin-feedback ${feedback.type}`}>
           {feedback.message}
@@ -237,6 +291,13 @@ const Admin = () => {
                       title="Edit"
                     >
                       <Edit size={18} />
+                    </button>
+                    <button
+                      className="admin-delete-btn"
+                      onClick={() => handleDelete(entry.id)}
+                      title="Delete entry permanently"
+                    >
+                      <DeleteIcon size={18} />
                     </button>
                   </td>
                 </tr>
