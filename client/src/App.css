@@ -39,3 +39,19 @@ body {
   --color-accent: #fb1;
   --color-gold: rgb(205, 137, 12);
 }
+
+/* Ultra-small screens */
+@media screen and (max-width: 384px) {
+  html {
+    font-size: 12.5px; /* guter Kompromiss */
+  }
+
+  .realEstate {
+    padding: 0.5rem 0.7rem;
+    gap: 0.5rem;
+  }
+
+  .filter-bar {
+    padding: 0.8rem 1rem;
+  }
+}

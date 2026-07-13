@@ -70,3 +70,9 @@
 .footer-contact-icon-btn:hover {
   background: rgba(201, 168, 76, 0.2);
 }
+
+@media screen and (max-width: 400px) {
+  .footer {
+    font-size: 0.9rem;
+  }
+}

@@ -1,7 +1,7 @@
 .realEstate {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 1rem;
   padding: 1rem;
   /* new element will be placed on a new line when it doesn't fit */
   flex-wrap: wrap;
@@ -108,5 +108,59 @@
 
   .filter-count {
     margin-left: 0;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .filter-bar {
+    padding: 1rem;
+    gap: 0.8rem;
+  }
+
+  .filter-buttons {
+    gap: 0.35rem;
+  }
+
+  .filter-btn {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.78rem;
+  }
+}
+
+/* Ultra small screens */
+@media screen and (max-width: 384px) {
+  .realEstate {
+    padding: 0.6rem 0.8rem;
+    gap: 0.6rem;
+  }
+
+  .filter-bar {
+    padding: 0.9rem 1rem;
+    gap: 0.7rem;
+  }
+
+  .filter-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    width: 100%;
+  }
+
+  .filter-buttons {
+    gap: 0.3rem;
+    width: 100%;
+  }
+
+  .filter-btn {
+    flex: 1;
+    padding: 0.4rem 0.7rem;
+    font-size: 0.75rem;
+    text-align: center;
+  }
+
+  .filter-count {
+    margin-top: 0.5rem;
+    text-align: center;
+    width: 100%;
   }
 }
