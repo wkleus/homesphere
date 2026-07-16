@@ -4,10 +4,16 @@ name: Keep Render Alive
 
 on:
   schedule:
-    - cron: "*/12 * * * *" # run every 12 minutes
+    - cron: "*/10 * * * *" # run every 10 minutes
 
 jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - run: curl -Is https://homesphere-kifc.onrender.com/api/entries || true
+      - name: Ping Render Backend
+        run: |
+          curl -I -L --fail --retry 3 --retry-delay 5 \
+            https://homesphere-kifc.onrender.com/api/entries \
+            || true
+
+
