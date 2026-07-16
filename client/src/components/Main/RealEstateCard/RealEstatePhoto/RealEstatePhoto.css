@@ -1,9 +1,8 @@
 .realEstate-photo {
   width: 100%;
   height: 20rem;
-  /* background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center; */
+  /* subtle placeholder shown while the image fades in */
+  background-color: #e4e7eb;
 
   /* relative positioning context for children  */
   position: relative;

@@ -101,7 +101,7 @@ const RealEstate = () => {
 
         <div className="realEstate">
           {filtered.length > 0 ? (
-            filtered.map((entry) => (
+            filtered.map((entry, i) => (
               <RealEstateCard key={entry.id} {...entry} />
             ))
           ) : (

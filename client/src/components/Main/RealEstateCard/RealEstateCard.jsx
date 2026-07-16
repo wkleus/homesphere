@@ -8,6 +8,21 @@ import RealEstateDetails from "./RealEstateDetails/RealEstateDetails";
 import { Bed, Buildings, Lightning, Square, Heart } from "phosphor-react";
 import { useFavorites } from "../../../context/FavoritesContext";
 import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
+
+// card glides up + fades in once it scrolls into view
+const cardVariants = {
+  hidden: { opacity: 0, y: 0 },
+  visible: (isAvailable) => ({
+    opacity: isAvailable ? 1 : 0.5,
+    y: 0,
+    transition: {
+      duration: 1,
+      ease: "easeInOut",
+      delay: 0.5,
+    },
+  }),
+};
 
 const RealEstateCard = ({
   id,
@@ -47,11 +62,16 @@ const RealEstateCard = ({
   };
 
   return (
-    <div
+    <motion.div
       className="realEstate-card"
-      style={{ opacity: isAvailable ? 1 : 0.5 }}
       onClick={() => navigate(`/estate/${id}`)}
       title="View details"
+      custom={isAvailable}
+      variants={cardVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+      whileHover={{ y: -6 }}
     >
       <RealEstatePhoto photo={photo} address={address}>
         <RealEstateCategory category={category} />
@@ -109,7 +129,7 @@ const RealEstateCard = ({
           />
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 
