@@ -12,6 +12,7 @@ import Login from "./pages/Login/Login";
 import Admin from "./pages/Admin/Admin";
 import { AuthProvider } from "./context/AuthProvider";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import NotFound from "./pages/NotFound/NotFound";
 
 function App() {
   const location = useLocation(); // Get current location for animations
@@ -41,6 +42,8 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              {/* Catch-all: any unmatched path renders the 404 page */}
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </AnimatePresence>
 

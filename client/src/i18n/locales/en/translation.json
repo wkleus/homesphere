@@ -106,5 +106,9 @@
   },
   "loading": "Loading entries...",
   "error": "Error: {{message}}",
-  "noResults": "No properties match your filters."
+  "noResults": "No properties match your filters.",
+  "notFound": {
+    "message": "This page doesn't exist — maybe it moved, or the link is outdated.",
+    "backHome": "Back to homepage"
+  }
 }

@@ -106,5 +106,9 @@
   },
   "loading": "Einträge werden geladen...",
   "error": "Fehler: {{message}}",
-  "noResults": "Keine Immobilien entsprechen Ihren Filtern."
+  "noResults": "Keine Immobilien entsprechen Ihren Filtern.",
+  "notFound": {
+    "message": "Diese Seite existiert nicht – vielleicht wurde sie verschoben oder der Link ist veraltet.",
+    "backHome": "Zurück zur Startseite"
+  }
 }
