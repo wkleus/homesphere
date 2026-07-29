@@ -17,6 +17,11 @@
   box-shadow: 6px 8px 16px rgba(0, 0, 0, 0.2);
 }
 
+.realEstate-card:focus-visible {
+  outline: 3px solid #4488bb;
+  outline-offset: 2px;
+}
+
 .home-details {
   display: flex;
   flex-direction: row;

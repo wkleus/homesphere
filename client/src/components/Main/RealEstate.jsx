@@ -74,6 +74,7 @@ const RealEstate = () => {
                   key={CATEGORY_KEYS[i]}
                   className={`filter-btn ${activeCategory === CATEGORY_KEYS[i] ? "active" : ""}`}
                   onClick={() => setActiveCategory(CATEGORY_KEYS[i])}
+                  aria-pressed={activeCategory === CATEGORY_KEYS[i]}
                 >
                   {cat}
                 </button>
@@ -88,6 +89,7 @@ const RealEstate = () => {
                   key={DEAL_KEYS[i]}
                   className={`filter-btn ${activeDeal === DEAL_KEYS[i] ? "active" : ""}`}
                   onClick={() => setActiveDeal(DEAL_KEYS[i])}
+                  aria-pressed={activeDeal === DEAL_KEYS[i]}
                 >
                   {deal}
                 </button>

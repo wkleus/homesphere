@@ -61,6 +61,15 @@ const RealEstateCard = ({
     toggleFavorite(entryLabels);
   };
 
+  const handleCardKeyDown = (e) => {
+    // allow keyboard users (Enter/Space) to open the details page,
+    // same as a native <button>/<a> would
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      navigate(`/estate/${id}`);
+    }
+  };
+
   return (
     <motion.div
       className="realEstate-card"
@@ -72,6 +81,10 @@ const RealEstateCard = ({
       whileInView="visible"
       viewport={{ once: true, amount: 0.2 }}
       whileHover={{ y: -6 }}
+      role="button"
+      tabIndex={0}
+      onKeyDown={handleCardKeyDown}
+      aria-label={`${address} – ${t("card.viewDetails")}`}
     >
       <RealEstatePhoto photo={photo} address={address}>
         <RealEstateCategory category={category} />
@@ -80,6 +93,10 @@ const RealEstateCard = ({
         <button
           className={`favorite-btn ${favorited ? "favorited" : ""}`}
           onClick={handleFavorite}
+          aria-label={
+            favorited ? t("card.removeFavorite") : t("card.addFavorite")
+          }
+          aria-pressed={favorited}
           title={favorited ? t("card.removeFavorite") : t("card.addFavorite")}
         >
           <Heart size={20} weight={favorited ? "fill" : "regular"} />

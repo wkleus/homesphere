@@ -17,6 +17,7 @@ import ContactForm from "../../components/ContactForm/ContactForm";
 import MortgageCalculator from "../../components/MortgageCalculator/MortgageCalculator";
 import MapModal from "../../components/MapModal/MapModal";
 import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
 
 const EstateDetails = () => {
   const { id } = useParams();
@@ -55,7 +56,12 @@ const EstateDetails = () => {
   } = entry;
 
   return (
-    <div className="detail-page">
+    <motion.div
+      className="detail-page"
+      initial={{ opacity: 0, y: 0 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
+    >
       <button className="detail-back-btn" onClick={() => navigate(-1)}>
         <ArrowLeft size={18} weight="bold" /> {t("detail.back")}
       </button>
@@ -161,7 +167,7 @@ const EstateDetails = () => {
           onClose={() => setShowMap(false)}
         />
       )}
-    </div>
+    </motion.div>
   );
 };
 

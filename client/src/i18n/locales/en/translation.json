@@ -24,6 +24,7 @@
     "addFavorite": "Save to favorites",
     "removeFavorite": "Remove from favorites",
     "alreadyTaken": "Already taken",
+    "viewDetails": "View details",
     "rooms": "Number of rooms",
     "area": "Living area in square meters",
     "energy": "Energy efficiency class",
