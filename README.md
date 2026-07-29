@@ -280,6 +280,20 @@ The application uses **Supabase Authentication** with JWT-based session manageme
 - Rate limiting: 3 requests/10min for contact endpoint
 - Admin endpoint protected with Supabase Auth middleware
 
+### Keep-Alive / Cold-Start Prevention
+
+The backend runs on Render's free tier, which spins the server down after ~15 minutes
+of inactivity. The first request afterward triggers a "cold start" that can take up
+to 30 seconds.
+
+To prevent this, the service is kept warm via regular pings:
+
+- **Primary:** [cron-job.org](https://cron-job.org) pings
+  `GET https://homesphere-kifc.onrender.com/api/entries` every 10 minutes
+- **Backup:** a GitHub Actions workflow (`.github/workflows/keep-alive.yml`) pings
+  the same endpoint every 10 minutes as well (note: GitHub does not guarantee exact
+  timing for scheduled workflows, so this only serves as redundancy)
+
 ---
 
 ## Getting Started
