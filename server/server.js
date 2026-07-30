@@ -5,6 +5,7 @@ import { Resend } from "resend";
 import he from "he";
 import rateLimit from "express-rate-limit";
 import multer from "multer";
+import sharp from "sharp";
 import { pool, supabaseAdmin } from "./db.js";
 
 dotenv.config();
@@ -116,7 +117,9 @@ const authenticateSupabase = async (req, res, next) => {
 /* POST /api/upload
    Uploads a single property photo to Supabase Storage and returns its
    public URL. Protected endpoint – requires valid Supabase JWT token.
-   Field name expected in the multipart form data: "photo" */
+   Field name expected in the multipart form data: "photo".
+   The image is resized (max 1200px edge) and re-encoded as WebP quality 80
+   via sharp before storage, regardless of the original size/format. */
 app.post("/api/upload", adminLimiter, authenticateSupabase, (req, res) => {
   upload.single("photo")(req, res, async (err) => {
     // Multer errors (wrong type, file too large) are surfaced here
@@ -130,16 +133,33 @@ app.post("/api/upload", adminLimiter, authenticateSupabase, (req, res) => {
     }
 
     try {
-      // Unique, collision-free filename: timestamp + sanitized original name
-      const safeName = req.file.originalname
+      // Unique, collision-free filename: timestamp + sanitized original
+      // name (extension replaced below, since the output is always WebP
+      // regardless of what format was uploaded)
+      const safeBaseName = req.file.originalname
         .toLowerCase()
+        .replace(/\.[^.]+$/, "") // strip original extension
         .replace(/[^a-z0-9.]+/g, "-");
-      const fileName = `${Date.now()}-${safeName}`;
+      const fileName = `${Date.now()}-${safeBaseName}.webp`;
+
+      // Resize (only shrinks, never upscales) + re-encode as WebP before storing;
+      // Uploaded photos are often full camera/stock resolution (several thousand px wide) despite
+      // never being displayed larger than ~1200px anywhere in the app —> this keeps Storage usage and
+      // page load times reasonable regardless of what admin uploads
+      const optimizedBuffer = await sharp(req.file.buffer)
+        .resize({
+          width: 1200,
+          height: 1200,
+          fit: "inside",
+          withoutEnlargement: true,
+        })
+        .webp({ quality: 80 })
+        .toBuffer();
 
       const { error: uploadError } = await supabaseAdmin.storage
         .from(PHOTOS_BUCKET)
-        .upload(fileName, req.file.buffer, {
-          contentType: req.file.mimetype,
+        .upload(fileName, optimizedBuffer, {
+          contentType: "image/webp",
           upsert: false,
         });
 
@@ -148,7 +168,7 @@ app.post("/api/upload", adminLimiter, authenticateSupabase, (req, res) => {
         return res.status(500).json({ error: "Failed to upload photo" });
       }
 
-      // Bucket is public, so we can derive a permanent public URL
+      // Bucket is public -> derive permanent public URL derivable
       const {
         data: { publicUrl },
       } = supabaseAdmin.storage.from(PHOTOS_BUCKET).getPublicUrl(fileName);
