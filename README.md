@@ -57,6 +57,7 @@ Built with **security**, **performance**, and **user experience** in mind – fe
 - Filter by deal type (Rent / Buy)
 - Detail page with full property info, stats, and interactive map
 - Mortgage calculator on property detail pages
+- Photo upload directly in the admin dashboard, stored in Supabase Storage
 
 ### Authentication & Security
 
@@ -112,6 +113,7 @@ Built with **security**, **performance**, and **user experience** in mind – fe
 |              | dotenv                         | 17      |
 |              | express-rate-limit             | 7       |
 |              | he(XSS sanitization)           | 1       |
+|              | multer (file uploads)          | 2       |
 |              | Resend                         | 6       |
 |              | @supabase/supabase-js          | 2       |
 |              | Vitest + Supertest             | 4 / 7   |
@@ -147,18 +149,19 @@ The application follows a clean three‑tier architecture:
 │ ┌─────────────────────────────────────────────────┐     │
 │ │ authenticateSupabase Middleware                 │     │
 │ │ Validates token with Supabase Admin Client      │     │
-│ │ Protects PUT /api/entries/:id                   │     │
+│ │ Protects POST/PUT/DELETE /api/entries           │     │
+│ │ Protects POST /api/upload                       │     │
 │ └─────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────┘
-│
-▼
-┌─────────────────────────────────────────────────────────┐
-│ DATABASE (Supabase)                                     │
-│ ┌─────────────────────────────────────────────────┐     │
-│ │ PostgreSQL with entries table                   │     │
-│ │ No users table needed (Supabase Auth handles)   │     │
-│ └─────────────────────────────────────────────────┘     │
-└─────────────────────────────────────────────────────────┘
+│                                       │
+▼                                       ▼
+┌───────────────────────────┐   ┌───────────────────────────┐
+│ DATABASE (Supabase)       │   │ STORAGE (Supabase)        │
+│ ┌───────────────────────┐ │   │ ┌───────────────────────┐ │
+│ │ PostgreSQL, entries   │ │   │ │ property-photos bucket│ │
+│ │ table, via pg driver  │ │   │ │ (public read access)  │ │
+│ └───────────────────────┘ │   │ └───────────────────────┘ │
+└───────────────────────────┘   └───────────────────────────┘
 ```
 
 ---
@@ -217,7 +220,8 @@ homesphere/
 │   │        ├── Contact/                   # Company contact info page
 │   │        ├── Login/                     # Login page for user authentication
 │   │        ├── Admin/                     # Admin dashboard providing CRUD operations
-│   │        └── Favorites/                 # Saved properties page
+│   │        ├── Favorites/                 # Saved properties page
+│   │        └── NotFound/                  # 404 page (catch-all route)
 │   └── package.json
 └── server/                                 # Node.js / Express Backend
     ├── db.js                               # PostgreSQL connection pool
@@ -248,8 +252,15 @@ POST https://homesphere-kifc.onrender.com/api/contact
 ### Protected Endpoints (require valid Supabase JWT):
 
 ```
-PUT https://homesphere-kifc.onrender.com/api/entries/:id
+POST   https://homesphere-kifc.onrender.com/api/entries
+PUT    https://homesphere-kifc.onrender.com/api/entries/:id
+DELETE https://homesphere-kifc.onrender.com/api/entries/:id
+POST   https://homesphere-kifc.onrender.com/api/upload
 ```
+
+`POST /api/upload` accepts a single image file (`multipart/form-data`, field
+name `photo`, max 5 MB) via Multer, forwards it to a Supabase Storage bucket,
+and returns its public URL for use as a property's `photo` field.
 
 ---
 
@@ -276,7 +287,7 @@ The application uses **Supabase Authentication** with JWT-based session manageme
 ### Backend (Render)
 
 - Manual or automatic deployments from GitHub
-- Environment variables: `DATABASE_URL`, `RESEND_API_KEY`, `CONTACT_EMAIL`, `SUPABASE_URL`, `SUPABASE_SECRET_KEY`
+- Environment variables: `DATABASE_URL`, `RESEND_API_KEY`, `CONTACT_EMAIL`, `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `SUPABASE_STORAGE_BUCKET`
 - Rate limiting: 3 requests/10min for contact endpoint
 - Admin endpoint protected with Supabase Auth middleware
 
@@ -336,6 +347,12 @@ CONTACT_EMAIL=your@email.com
 # Supabase configuration for Auth (get from Supabase Dashboard → Project Settings → API)
 SUPABASE_URL=your_supabase_project_url
 SUPABASE_SECRET_KEY=your_supabase_secret_key
+
+# Supabase Storage bucket for property photo uploads.
+# Create a PUBLIC bucket with this exact name in the Supabase Dashboard
+# (Storage → New bucket) before using the admin photo upload feature.
+# Defaults to "property-photos" if not set.
+SUPABASE_STORAGE_BUCKET=property-photos
 ```
 
 #### Create `client/.env`:
@@ -453,6 +470,8 @@ npm run test:run  # run once
 - [x] SEO improvements: lazy loading + compressed Webp images
 - [x] Security: Supabase Auth with server-side token validation
 - [x] Protected admin routes with Supabase middlewar
+- [x] Photo upload via Supabase Storage in the admin dashboard
+- [x] Custom 404 page for unmatched routes
 
 ### Next Steps
 
