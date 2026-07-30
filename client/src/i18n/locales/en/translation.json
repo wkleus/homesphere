@@ -20,6 +20,11 @@
     "buy": "Buy",
     "found": "{{count}} entries found"
   },
+  "pagination": {
+    "label": "Listing pages",
+    "previous": "Previous page",
+    "next": "Next page"
+  },
   "card": {
     "addFavorite": "Save to favorites",
     "removeFavorite": "Remove from favorites",

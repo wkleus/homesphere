@@ -18,10 +18,14 @@ const CATEGORY_KEYS = [
 ];
 const DEAL_KEYS = ["All", "Rent", "Buy"];
 
+// Number of listings shown per page
+const PAGE_SIZE = 6;
+
 const RealEstate = () => {
   const { data: entries, loading, error } = useFetch(ENTRIES_URL);
   const [activeCategory, setActiveCategory] = useState("All");
   const [activeDeal, setActiveDeal] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
   const { t } = useTranslation();
 
   // Translated labels for display only
@@ -44,6 +48,35 @@ const RealEstate = () => {
       (activeDeal === "Buy" && entry.buy);
     return categoryMatch && dealMatch;
   });
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  // Clamp in case a filter change leaves currentPage beyond the new total
+  // (e.g. user was on page 3, then filters down to only 1 page of results)
+  const safePage = Math.min(currentPage, totalPages);
+  const paginated = filtered.slice(
+    (safePage - 1) * PAGE_SIZE,
+    safePage * PAGE_SIZE,
+  );
+
+  // Changing a filter always jumps back to page 1, so users don't land on
+  // a now out-of-range or confusingly-numbered page
+  const handleCategoryChange = (key) => {
+    setActiveCategory(key);
+    setCurrentPage(1);
+  };
+  const handleDealChange = (key) => {
+    setActiveDeal(key);
+    setCurrentPage(1);
+  };
+
+  const goToPage = (page) => {
+    setCurrentPage(page);
+    // Scroll the listings back into view so the user isn't left staring
+    // at the (now stale) scroll position from the previous page
+    document
+      .querySelector(".realEstate")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   if (loading)
     return (
@@ -73,7 +106,7 @@ const RealEstate = () => {
                 <button
                   key={CATEGORY_KEYS[i]}
                   className={`filter-btn ${activeCategory === CATEGORY_KEYS[i] ? "active" : ""}`}
-                  onClick={() => setActiveCategory(CATEGORY_KEYS[i])}
+                  onClick={() => handleCategoryChange(CATEGORY_KEYS[i])}
                   aria-pressed={activeCategory === CATEGORY_KEYS[i]}
                 >
                   {cat}
@@ -88,7 +121,7 @@ const RealEstate = () => {
                 <button
                   key={DEAL_KEYS[i]}
                   className={`filter-btn ${activeDeal === DEAL_KEYS[i] ? "active" : ""}`}
-                  onClick={() => setActiveDeal(DEAL_KEYS[i])}
+                  onClick={() => handleDealChange(DEAL_KEYS[i])}
                   aria-pressed={activeDeal === DEAL_KEYS[i]}
                 >
                   {deal}
@@ -102,14 +135,47 @@ const RealEstate = () => {
         </div>
 
         <div className="realEstate">
-          {filtered.length > 0 ? (
-            filtered.map((entry, i) => (
+          {paginated.length > 0 ? (
+            paginated.map((entry) => (
               <RealEstateCard key={entry.id} {...entry} />
             ))
           ) : (
             <p className="no-results">{t("noResults")}</p>
           )}
         </div>
+
+        {totalPages > 1 && (
+          <nav className="pagination" aria-label={t("pagination.label")}>
+            <button
+              className="pagination-btn"
+              onClick={() => goToPage(safePage - 1)}
+              disabled={safePage === 1}
+              aria-label={t("pagination.previous")}
+            >
+              ‹
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                className={`pagination-btn ${page === safePage ? "active" : ""}`}
+                onClick={() => goToPage(page)}
+                aria-current={page === safePage ? "page" : undefined}
+              >
+                {page}
+              </button>
+            ))}
+
+            <button
+              className="pagination-btn"
+              onClick={() => goToPage(safePage + 1)}
+              disabled={safePage === totalPages}
+              aria-label={t("pagination.next")}
+            >
+              ›
+            </button>
+          </nav>
+        )}
       </main>
     </>
   );

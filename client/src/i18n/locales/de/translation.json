@@ -20,6 +20,11 @@
     "buy": "Kauf",
     "found": "{{count}} Einträge gefunden"
   },
+  "pagination": {
+    "label": "Seiten der Immobilienliste",
+    "previous": "Vorherige Seite",
+    "next": "Nächste Seite"
+  },
   "card": {
     "addFavorite": "Zu Favoriten hinzufügen",
     "removeFavorite": "Aus Favoriten entfernen",
