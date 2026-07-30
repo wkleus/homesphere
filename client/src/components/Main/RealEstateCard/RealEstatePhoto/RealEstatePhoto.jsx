@@ -9,14 +9,14 @@ const RealEstatePhoto = ({ photo, address, children }) => {
     <div className="realEstate-photo">
       <motion.img
         src={photo}
-        alt={`Immobilie: ${address}`}
+        alt={`Property: ${address}`}
         className="realEstate-img"
         // images outside the viewport are lazy-loaded
         loading="lazy"
         onLoad={() => setLoaded(true)}
         initial={{ opacity: 0 }}
         animate={{ opacity: loaded ? 1 : 0 }}
-        transition={{ duration: 0.8, ease: "easeInOut" }}
+        transition={{ duration: 0.35, ease: "easeOut" }}
       />
       {children}
     </div>

@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { MapPin, X, Buildings, CurrencyEur } from "phosphor-react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
 import "leaflet/dist/leaflet.css";
 import "./MapModal.css";
 import L from "leaflet";
@@ -57,8 +58,22 @@ const MapModal = ({ address, category, rent, buy, onClose }) => {
   if (!modalRoot) return null;
 
   return createPortal(
-    <div className="map-overlay" onClick={onClose}>
-      <div className="map-window" onClick={(e) => e.stopPropagation()}>
+    <motion.div
+      className="map-overlay"
+      onClick={onClose}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+    >
+      <motion.div
+        className="map-window"
+        onClick={(e) => e.stopPropagation()}
+        initial={{ opacity: 0, scale: 0.95, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 12 }}
+        transition={{ duration: 0.25, ease: "easeOut" }}
+      >
         <button type="button" className="map-close" onClick={onClose}>
           <X size={22} />
         </button>
@@ -118,8 +133,8 @@ const MapModal = ({ address, category, rent, buy, onClose }) => {
             </MapContainer>
           )}
         </div>
-      </div>
-    </div>,
+      </motion.div>
+    </motion.div>,
     modalRoot,
   );
 };

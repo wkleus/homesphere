@@ -17,7 +17,7 @@ import ContactForm from "../../components/ContactForm/ContactForm";
 import MortgageCalculator from "../../components/MortgageCalculator/MortgageCalculator";
 import MapModal from "../../components/MapModal/MapModal";
 import { useTranslation } from "react-i18next";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const EstateDetails = () => {
   const { id } = useParams();
@@ -33,7 +33,8 @@ const EstateDetails = () => {
   // Controls visibility of the map modal
   const [showMap, setShowMap] = useState(false);
 
-  if (loading) return <p className="status-msg">{t("loading")}</p>;
+  if (loading)
+    return <p className="status-msg detail-loading">{t("loading")}</p>;
   if (error || !entry)
     return (
       <div className="detail-not-found">
@@ -59,8 +60,8 @@ const EstateDetails = () => {
     <motion.div
       className="detail-page"
       initial={{ opacity: 0, y: 0 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: "easeInOut" }}
     >
       <button className="detail-back-btn" onClick={() => navigate(-1)}>
         <ArrowLeft size={18} weight="bold" /> {t("detail.back")}
@@ -157,16 +158,19 @@ const EstateDetails = () => {
         <ContactForm address={address} onClose={() => setShowModal(false)} />
       )}
 
-      {/* Map modal */}
-      {showMap && (
-        <MapModal
-          address={address}
-          category={category}
-          rent={rent}
-          buy={buy}
-          onClose={() => setShowMap(false)}
-        />
-      )}
+      {/* Map modal — wrapped in AnimatePresence so MapModal's exit
+          animation (fade + scale out) plays instead of vanishing instantly */}
+      <AnimatePresence>
+        {showMap && (
+          <MapModal
+            address={address}
+            category={category}
+            rent={rent}
+            buy={buy}
+            onClose={() => setShowMap(false)}
+          />
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
