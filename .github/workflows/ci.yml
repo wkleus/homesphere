@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Client: React app (lint + unit tests)
+      - name: Install client dependencies
+        working-directory: client
+        run: npm ci
+      - name: Lint client
+        working-directory: client
+        run: npm run lint
+      - name: Test client
+        working-directory: client
+        run: npm run test:run
+
+      # Server: Express API (unit tests only, no lint config exists yet)
+      - name: Install server dependencies
+        working-directory: server
+        run: npm ci
+      - name: Test server
+        working-directory: server
+        run: npm run test:run
