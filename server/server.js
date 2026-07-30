@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { Resend } from "resend";
 import he from "he";
 import rateLimit from "express-rate-limit";
+import multer from "multer";
 import { pool, supabaseAdmin } from "./db.js";
 
 dotenv.config();
@@ -48,6 +49,22 @@ const adminLimiter = rateLimit({
   message: { error: "Too many requests. Please try again later." },
   standardHeaders: true,
   legacyHeaders: false,
+});
+
+// Supabase Storage bucket that holds property photos (public bucket)
+const PHOTOS_BUCKET = process.env.SUPABASE_STORAGE_BUCKET || "property-photos";
+
+// Multer keeps the uploaded file in memory (no disk writes) so it can be
+// forwarded straight to Supabase Storage. Images only, capped at 5 MB.
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
+  fileFilter: (req, file, cb) => {
+    if (!file.mimetype.startsWith("image/")) {
+      return cb(new Error("Only image files are allowed"));
+    }
+    cb(null, true);
+  },
 });
 
 // Converts snake_case DB column names to camelCase for the frontend
@@ -95,6 +112,54 @@ const authenticateSupabase = async (req, res, next) => {
     });
   }
 };
+
+/* POST /api/upload
+   Uploads a single property photo to Supabase Storage and returns its
+   public URL. Protected endpoint – requires valid Supabase JWT token.
+   Field name expected in the multipart form data: "photo" */
+app.post("/api/upload", adminLimiter, authenticateSupabase, (req, res) => {
+  upload.single("photo")(req, res, async (err) => {
+    // Multer errors (wrong type, file too large) are surfaced here
+    // instead of the generic Express error handler.
+    if (err) {
+      return res.status(400).json({ error: err.message });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ error: "No photo file provided" });
+    }
+
+    try {
+      // Unique, collision-free filename: timestamp + sanitized original name
+      const safeName = req.file.originalname
+        .toLowerCase()
+        .replace(/[^a-z0-9.]+/g, "-");
+      const fileName = `${Date.now()}-${safeName}`;
+
+      const { error: uploadError } = await supabaseAdmin.storage
+        .from(PHOTOS_BUCKET)
+        .upload(fileName, req.file.buffer, {
+          contentType: req.file.mimetype,
+          upsert: false,
+        });
+
+      if (uploadError) {
+        console.error("Supabase Storage error:", uploadError);
+        return res.status(500).json({ error: "Failed to upload photo" });
+      }
+
+      // Bucket is public, so we can derive a permanent public URL
+      const {
+        data: { publicUrl },
+      } = supabaseAdmin.storage.from(PHOTOS_BUCKET).getPublicUrl(fileName);
+
+      res.status(201).json({ url: publicUrl });
+    } catch (err) {
+      console.error("Upload error:", err);
+      res.status(500).json({ error: "Failed to upload photo" });
+    }
+  });
+});
 
 // GET /api/entries – returns all property listings (PUBLIC)
 app.get("/api/entries", async (req, res) => {

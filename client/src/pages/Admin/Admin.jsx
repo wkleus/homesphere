@@ -2,7 +2,7 @@ import { DeleteIcon, Edit, LogOutIcon, Plus, X } from "lucide-react";
 import "./Admin.css";
 import useAuth from "../../context/useAuth";
 import { useState, useEffect } from "react";
-import { ENTRIES_URL, ENTRY_URL } from "../../config/api";
+import { ENTRIES_URL, ENTRY_URL, UPLOAD_URL } from "../../config/api";
 
 // Available options for dropdown selectors
 const CATEGORIES = ["Apartment", "Chalet", "Residence", "Studio", "Townhouse"];
@@ -36,6 +36,7 @@ const Admin = () => {
   const [editId, setEditId] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [feedback, setFeedback] = useState(null);
 
   /* GET all property entries from the backend
@@ -226,6 +227,41 @@ const Admin = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+  };
+
+  /* Uploads the selected photo file to the backend (which forwards it to
+     Supabase Storage) and stores the returned public URL in form.photo.
+     Runs immediately on file selection, before the entry itself is saved. */
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setFeedback(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("photo", file);
+
+      const res = await fetch(UPLOAD_URL, {
+        method: "POST",
+        headers: {
+          // NOTE: no Content-Type header here — the browser sets the
+          // correct multipart/form-data boundary automatically.
+          Authorization: `Bearer ${supabaseToken}`,
+        },
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Upload failed");
+
+      setForm((prev) => ({ ...prev, photo: data.url }));
+    } catch (err) {
+      setFeedback({ type: "error", message: err.message });
+    } finally {
+      setUploading(false);
+    }
   };
 
   // RENDER
@@ -441,12 +477,30 @@ const Admin = () => {
                 </div>
 
                 <div className="admin-field full">
-                  <label>Photo path</label>
+                  <label>Photo</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoUpload}
+                    disabled={uploading}
+                  />
+                  {uploading && (
+                    <p className="admin-upload-status">Uploading...</p>
+                  )}
+                  {form.photo && (
+                    <img
+                      src={form.photo}
+                      alt="Preview"
+                      className="admin-photo-preview"
+                    />
+                  )}
+                  {/* Fallback for pasting an existing URL/path directly,
+                      e.g. when re-using one of the seeded demo photos */}
                   <input
                     name="photo"
                     value={form.photo}
                     onChange={handleChange}
-                    placeholder="/photos/residence_1.webp"
+                    placeholder="/photos/residence_1.webp or https://..."
                     required
                   />
                 </div>
@@ -475,7 +529,7 @@ const Admin = () => {
                 <button
                   type="submit"
                   className="admin-save-btn"
-                  disabled={saving}
+                  disabled={saving || uploading}
                 >
                   {saving ? "Saving..." : editId === null ? "Add" : "Update"}
                 </button>
