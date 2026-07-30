@@ -1,7 +1,7 @@
 import { DeleteIcon, Edit, LogOutIcon, Plus, X } from "lucide-react";
 import "./Admin.css";
 import useAuth from "../../context/useAuth";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ENTRIES_URL, ENTRY_URL, UPLOAD_URL } from "../../config/api";
 
 // Available options for dropdown selectors
@@ -42,7 +42,7 @@ const Admin = () => {
   /* GET all property entries from the backend
      Sends JWT token in Authorization header for authentication
      Called on mount and after CRUD operations to refresh the list */
-  const fetchEntries = async () => {
+  const fetchEntries = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -60,7 +60,7 @@ const Admin = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [supabaseToken]);
 
   /* Load entries on component mount
      Re-fetch when token changes (login/refresh)
@@ -69,7 +69,7 @@ const Admin = () => {
     (async () => {
       await fetchEntries();
     })();
-  }, [supabaseToken]);
+  }, [fetchEntries]);
 
   /* Open the form modal for adding a new entry.
      Resets form to EMPTY_FORM and clears editId. */
