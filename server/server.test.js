@@ -14,6 +14,12 @@ vi.mock("../db.js", () => ({
   default: { query: mockQuery },
 }));
 
+// Mock the database pool and Supabase Admin Client
+vi.mock("./db.js", () => ({
+  pool: { query: mockQuery },
+  supabaseAdmin: { auth: { getUser: vi.fn() } },
+}));
+
 // Mock Resend – no real emails sent
 vi.mock("resend", () => {
   const mockSend = vi.fn().mockResolvedValue({ id: "mock-id" });
