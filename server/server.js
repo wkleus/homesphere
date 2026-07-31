@@ -9,11 +9,14 @@ import sharp from "sharp";
 import { pool, supabaseAdmin } from "./db.js";
 import { contactSchema, entrySchema, idParamSchema } from "./validation.js";
 import { validate, validateParams } from "./middleware/validate.js";
+import helmet from "helmet";
 
 dotenv.config();
 
 const app = express();
-const resend = new Resend(process.env.RESEND_API_KEY);
+
+// Security headers (XSS, clickjacking, MIME sniffing, HSTS, etc.)
+app.use(helmet());
 
 app.use(
   cors({
@@ -35,6 +38,8 @@ app.use(
   }),
 );
 app.use(express.json());
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Rate limiter for contact endpoint – max 3 requests per 10 minutes per IP
 const contactLimiter = rateLimit({
