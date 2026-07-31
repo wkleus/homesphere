@@ -7,6 +7,8 @@ import rateLimit from "express-rate-limit";
 import multer from "multer";
 import sharp from "sharp";
 import { pool, supabaseAdmin } from "./db.js";
+import { contactSchema, entrySchema, idParamSchema } from "./validation.js";
+import { validate, validateParams } from "./middleware/validate.js";
 
 dotenv.config();
 
@@ -193,7 +195,7 @@ app.get("/api/entries", async (req, res) => {
 });
 
 // GET /api/entries/:id – returns a single property by ID (PUBLIC)
-app.get("/api/entries/:id", async (req, res) => {
+app.get("/api/entries/:id", validateParams(idParamSchema), async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM entries WHERE id = $1", [
       req.params.id,
@@ -216,6 +218,7 @@ app.post(
   "/api/entries",
   adminLimiter, // Rate limit: 100 requests per 15 minutes (before auth check)
   authenticateSupabase, // Verify JWT token before allowing creation
+  validate(entrySchema),
   async (req, res) => {
     // Extract all fields from request body (snake_case matches DB columns)
     const {
@@ -280,6 +283,8 @@ app.put(
   "/api/entries/:id",
   adminLimiter, // Rate limit: 100 requests per 15 minutes (before auth check to prevent unlimited attacks with invalid tokens)
   authenticateSupabase, // Verify JWT token before allowing updates
+  validateParams(idParamSchema),
+  validate(entrySchema),
   async (req, res) => {
     // Extract all fields from request body (snake_case matches DB columns)
     const {
@@ -351,6 +356,7 @@ app.delete(
   "/api/entries/:id",
   adminLimiter, // Rate limit: 100 requests per 15 minutes (before auth check to prevent unlimited attacks with invalid tokens)
   authenticateSupabase, // Verify JWT token before allowing deletion
+  validateParams(idParamSchema),
   async (req, res) => {
     try {
       // Execute DELETE query with RETURNING clause to get the deleted row
@@ -376,29 +382,28 @@ app.delete(
   },
 );
 
-// POST /api/contact – sends a contact email via Resend (rate limited)
-app.post("/api/contact", contactLimiter, async (req, res) => {
-  const { name, email, message, property } = req.body;
+// POST /api/contact – sends a contact email via Resend (rate limited + validated)
+app.post(
+  "/api/contact",
+  contactLimiter,
+  validate(contactSchema),
+  async (req, res) => {
+    // req.body already validated and sanitized by Zod
+    const { name, email, message, property } = req.body;
 
-  // Basic validation – all fields required
-  if (!name || !email || !message) {
-    return res
-      .status(400)
-      .json({ error: "Name, email and message are required" });
-  }
+    // Defense-in-depth: escape before inserting into HTML email template
+    // Sanitize all user input before inserting into HTML to prevent XSS
+    const safeName = he.escape(name);
+    const safeEmail = he.escape(email);
+    const safeMessage = he.escape(message);
+    const safeProperty = he.escape(property || "HomeSphere");
 
-  // Sanitize all user input before inserting into HTML to prevent XSS
-  const safeName = he.escape(name);
-  const safeEmail = he.escape(email);
-  const safeMessage = he.escape(message);
-  const safeProperty = he.escape(property || "HomeSphere");
-
-  try {
-    await resend.emails.send({
-      from: "HomeSphere <onboarding@resend.dev>",
-      to: process.env.CONTACT_EMAIL,
-      subject: `New enquiry: ${safeProperty}`,
-      html: `
+    try {
+      await resend.emails.send({
+        from: "HomeSphere <onboarding@resend.dev>",
+        to: process.env.CONTACT_EMAIL,
+        subject: `New enquiry: ${safeProperty}`,
+        html: `
         <h2>New Contact Request – HomeSphere</h2>
         <p><strong>Property:</strong> ${safeProperty}</p>
         <hr />
@@ -407,13 +412,14 @@ app.post("/api/contact", contactLimiter, async (req, res) => {
         <p><strong>Message:</strong></p>
         <p>${safeMessage}</p>
       `,
-    });
+      });
 
-    res.status(200).json({ message: "Email sent successfully" });
-  } catch (err) {
-    console.error("Email error:", err);
-    res.status(500).json({ error: "Failed to send email" });
-  }
-});
+      res.status(200).json({ message: "Email sent successfully" });
+    } catch (err) {
+      console.error("Email error:", err);
+      res.status(500).json({ error: "Failed to send email" });
+    }
+  },
+);
 
 export default app;
