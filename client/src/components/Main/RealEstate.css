@@ -207,6 +207,10 @@
   font-weight: 600;
 }
 
+.filter-input--price {
+  width: 6rem;
+}
+
 .filter-reset {
   padding: 0.35rem 0.75rem;
   border: 2px solid #ccc;

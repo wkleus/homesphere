@@ -32,6 +32,8 @@ const RealEstate = () => {
   const [maxRooms, setMaxRooms] = useState("");
   const [minSqm, setMinSqm] = useState("");
   const [maxSqm, setMaxSqm] = useState("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   // Translated labels for display only
@@ -47,15 +49,20 @@ const RealEstate = () => {
   // True when at least one room or sqm bound is set (for the badge on the toggle)
   const hasRoomsFilter = minRooms !== "" || maxRooms !== "";
   const hasSqmFilter = minSqm !== "" || maxSqm !== "";
-  const activeAdvancedCount = [hasRoomsFilter, hasSqmFilter].filter(
-    Boolean,
-  ).length;
+  const hasPriceFilter = minPrice !== "" || maxPrice !== "";
+  const activeAdvancedCount = [
+    hasRoomsFilter,
+    hasSqmFilter,
+    hasPriceFilter,
+  ].filter(Boolean).length;
 
   const resetAdvancedFilters = () => {
     setMinRooms("");
     setMaxRooms("");
     setMinSqm("");
     setMaxSqm("");
+    setMinPrice("");
+    setMaxPrice("");
     setCurrentPage(1);
   };
 
@@ -77,7 +84,27 @@ const RealEstate = () => {
       (minSqm === "" || entry.squareMeters >= Number(minSqm)) &&
       (maxSqm === "" || entry.squareMeters <= Number(maxSqm));
 
-    return categoryMatch && dealMatch && roomsMatch && sqmMatch;
+    const priceMatch = (() => {
+      if (minPrice === "" && maxPrice === "") return true;
+
+      const min = minPrice === "" ? 0 : Number(minPrice);
+      const max = maxPrice === "" ? Infinity : Number(maxPrice);
+
+      // Use the price field that matches the active deal type
+      if (activeDeal === "Rent") {
+        return entry.rent != null && entry.rent >= min && entry.rent <= max;
+      }
+      if (activeDeal === "Buy") {
+        return entry.buy != null && entry.buy >= min && entry.buy <= max;
+      }
+      // "All": match if either rent or buy falls in range
+      const rentOk =
+        entry.rent != null && entry.rent >= min && entry.rent <= max;
+      const buyOk = entry.buy != null && entry.buy >= min && entry.buy <= max;
+      return rentOk || buyOk;
+    })();
+
+    return categoryMatch && dealMatch && roomsMatch && sqmMatch && priceMatch;
   });
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
@@ -113,6 +140,14 @@ const RealEstate = () => {
   };
   const handleMaxSqmChange = (value) => {
     setMaxSqm(value);
+    setCurrentPage(1);
+  };
+  const handleMinPriceChange = (value) => {
+    setMinPrice(value);
+    setCurrentPage(1);
+  };
+  const handleMaxPriceChange = (value) => {
+    setMaxPrice(value);
     setCurrentPage(1);
   };
 
@@ -254,6 +289,36 @@ const RealEstate = () => {
                 />
               </div>
             </div>
+
+            {/* Price */}
+            <div className="filter-group">
+              <span className="filter-label">{t("filter.price")}</span>
+              <div className="filter-range">
+                <input
+                  type="number"
+                  className="filter-input filter-input--price"
+                  min="0"
+                  step="100"
+                  placeholder={t("filter.min")}
+                  value={minPrice}
+                  onChange={(e) => handleMinPriceChange(e.target.value)}
+                  aria-label={t("filter.minPrice")}
+                />
+                <span className="filter-range-sep">–</span>
+                <input
+                  type="number"
+                  className="filter-input filter-input--price"
+                  min="0"
+                  step="100"
+                  placeholder={t("filter.max")}
+                  value={maxPrice}
+                  onChange={(e) => handleMaxPriceChange(e.target.value)}
+                  aria-label={t("filter.maxPrice")}
+                />
+              </div>
+            </div>
+
+            {/* Reset button */}
             {activeAdvancedCount > 0 && (
               <button
                 type="button"

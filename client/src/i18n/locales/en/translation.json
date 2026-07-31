@@ -28,7 +28,10 @@
     "reset": "Reset",
     "area": "Area (m²)",
     "minArea": "Minimum area in m²",
-    "maxArea": "Maximum area in m²"
+    "maxArea": "Maximum area in m²",
+    "price": "Price",
+    "minPrice": "Minimum price",
+    "maxPrice": "Maximum price"
   },
   "pagination": {
     "label": "Listing pages",

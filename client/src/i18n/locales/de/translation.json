@@ -28,7 +28,10 @@
     "reset": "Zurücksetzen",
     "area": "Fläche (m²)",
     "minArea": "Mindestfläche in m²",
-    "maxArea": "Maximalfläche in m²"
+    "maxArea": "Maximalfläche in m²",
+    "price": "Preis",
+    "minPrice": "Mindestpreis",
+    "maxPrice": "Höchstpreis"
   },
   "pagination": {
     "label": "Seiten der Immobilienliste",
