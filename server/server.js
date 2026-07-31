@@ -37,7 +37,8 @@ app.use(
     },
   }),
 );
-app.use(express.json());
+// Cap request body size to reduce risk of oversized payload attacks
+app.use(express.json({ limit: "100kb" }));
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -120,6 +121,25 @@ const authenticateSupabase = async (req, res, next) => {
     });
   }
 };
+
+// Liveness probe for deploys and uptime monitors (Render, etc.)
+app.get("/api/health", async (req, res) => {
+  try {
+    // Cheap query to confirm database connection is alive
+    await pool.query("SELECT 1");
+    res.status(200).json({
+      status: "ok",
+      timestamp: new Date().toISOString(),
+    });
+  } catch (err) {
+    console.error("Health check failed:", err);
+    // 503 = service unavailable – signals that app is up but dependencies are not
+    res.status(503).json({
+      status: "error",
+      timestamp: new Date().toISOString(),
+    });
+  }
+});
 
 /* POST /api/upload
    Uploads a single property photo to Supabase Storage and returns its
