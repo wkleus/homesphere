@@ -25,7 +25,10 @@
     "max": "Max",
     "minRooms": "Mindestanzahl Zimmer",
     "maxRooms": "Maximalanzahl Zimmer",
-    "reset": "Zurücksetzen"
+    "reset": "Zurücksetzen",
+    "area": "Fläche (m²)",
+    "minArea": "Mindestfläche in m²",
+    "maxArea": "Maximalfläche in m²"
   },
   "pagination": {
     "label": "Seiten der Immobilienliste",

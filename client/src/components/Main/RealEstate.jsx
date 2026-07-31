@@ -30,6 +30,8 @@ const RealEstate = () => {
 
   const [minRooms, setMinRooms] = useState("");
   const [maxRooms, setMaxRooms] = useState("");
+  const [minSqm, setMinSqm] = useState("");
+  const [maxSqm, setMaxSqm] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   // Translated labels for display only
@@ -42,13 +44,26 @@ const RealEstate = () => {
     ? entries.filter((e) => e.isAvailable).length
     : null;
 
-  // True when at least one rooms bound is set (for the badge on the toggle)
+  // True when at least one room or sqm bound is set (for the badge on the toggle)
   const hasRoomsFilter = minRooms !== "" || maxRooms !== "";
+  const hasSqmFilter = minSqm !== "" || maxSqm !== "";
+  const activeAdvancedCount = [hasRoomsFilter, hasSqmFilter].filter(
+    Boolean,
+  ).length;
+
+  const resetAdvancedFilters = () => {
+    setMinRooms("");
+    setMaxRooms("");
+    setMinSqm("");
+    setMaxSqm("");
+    setCurrentPage(1);
+  };
 
   // Filter always compares against English keys, not translated strings
   const filtered = (entries || []).filter((entry) => {
     const categoryMatch =
       activeCategory === "All" || entry.category === activeCategory;
+
     const dealMatch =
       activeDeal === "All" ||
       (activeDeal === "Rent" && entry.rent) ||
@@ -57,7 +72,12 @@ const RealEstate = () => {
     const roomsMatch =
       (minRooms === "" || entry.rooms >= Number(minRooms)) &&
       (maxRooms === "" || entry.rooms <= Number(maxRooms));
-    return categoryMatch && dealMatch && roomsMatch;
+
+    const sqmMatch =
+      (minSqm === "" || entry.squareMeters >= Number(minSqm)) &&
+      (maxSqm === "" || entry.squareMeters <= Number(maxSqm));
+
+    return categoryMatch && dealMatch && roomsMatch && sqmMatch;
   });
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
@@ -87,9 +107,12 @@ const RealEstate = () => {
     setMaxRooms(value);
     setCurrentPage(1);
   };
-  const resetRoomsFilter = () => {
-    setMinRooms("");
-    setMaxRooms("");
+  const handleMinSqmChange = (value) => {
+    setMinSqm(value);
+    setCurrentPage(1);
+  };
+  const handleMaxSqmChange = (value) => {
+    setMaxSqm(value);
     setCurrentPage(1);
   };
 
@@ -156,12 +179,14 @@ const RealEstate = () => {
 
           <button
             type="button"
-            className={`filter-advanced-toggle ${showAdvanced ? "open" : ""} ${hasRoomsFilter ? "has-active" : ""}`}
+            className={`filter-advanced-toggle ${showAdvanced ? "open" : ""} ${activeAdvancedCount > 0 ? "has-active" : ""}`}
             onClick={() => setShowAdvanced((prev) => !prev)}
             aria-expanded={showAdvanced}
           >
             {t("filter.moreFilters")}
-            {hasRoomsFilter && <span className="filter-badge">1</span>}
+            {activeAdvancedCount > 0 && (
+              <span className="filter-badge">{activeAdvancedCount}</span>
+            )}
             <span className="filter-chevron" aria-hidden="true">
               {showAdvanced ? "▴" : "▾"}
             </span>
@@ -174,6 +199,7 @@ const RealEstate = () => {
 
         {showAdvanced && (
           <div className="filter-advanced">
+            {/* Rooms */}
             <div className="filter-group">
               <span className="filter-label">{t("filter.rooms")}</span>
               <div className="filter-range">
@@ -198,18 +224,45 @@ const RealEstate = () => {
                   onChange={(e) => handleMaxRoomsChange(e.target.value)}
                   aria-label={t("filter.maxRooms")}
                 />
-
-                {hasRoomsFilter && (
-                  <button
-                    type="button"
-                    className="filter-reset"
-                    onClick={resetRoomsFilter}
-                  >
-                    {t("filter.reset")}
-                  </button>
-                )}
               </div>
             </div>
+
+            {/* Square meters */}
+            <div className="filter-group">
+              <span className="filter-label">{t("filter.area")}</span>
+              <div className="filter-range">
+                <input
+                  type="number"
+                  className="filter-input"
+                  min="1"
+                  max="10000"
+                  placeholder={t("filter.min")}
+                  value={minSqm}
+                  onChange={(e) => handleMinSqmChange(e.target.value)}
+                  aria-label={t("filter.minArea")}
+                />
+                <span className="filter-range-sep">–</span>
+                <input
+                  type="number"
+                  className="filter-input"
+                  min="1"
+                  max="10000"
+                  placeholder={t("filter.max")}
+                  value={maxSqm}
+                  onChange={(e) => handleMaxSqmChange(e.target.value)}
+                  aria-label={t("filter.maxArea")}
+                />
+              </div>
+            </div>
+            {activeAdvancedCount > 0 && (
+              <button
+                type="button"
+                className="filter-reset"
+                onClick={resetAdvancedFilters}
+              >
+                {t("filter.reset")}
+              </button>
+            )}
           </div>
         )}
 

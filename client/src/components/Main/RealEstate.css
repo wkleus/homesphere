@@ -1,5 +1,7 @@
 .realEstate {
   display: flex;
+  max-width: 1800px;
+  margin: 0 auto;
   justify-content: center;
   gap: 1rem;
   padding: 1rem;
@@ -12,7 +14,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 1.5rem;
+  gap: 2.5rem;
   padding: 1.2rem 2rem;
   background: white;
   border-bottom: 2px solid #eee;
@@ -89,7 +91,7 @@
   width: 100%;
 }
 
-/* --- Advanced filters (collapsible) --- */
+/* Advanced filters (collapsible) */
 .filter-advanced-toggle {
   display: inline-flex;
   align-items: center;
@@ -104,16 +106,19 @@
   cursor: pointer;
   transition: all 0.2s;
   font-family: inherit;
+  background-color: #355fa7;
+  border-color: #355fa7;
+  color: white;
 }
 
 .filter-advanced-toggle:hover {
-  border-color: #355fa7;
-  color: #355fa7;
+  color: white;
+  background-color: #163c7e;
 }
 
 .filter-advanced-toggle.open {
   border-color: #355fa7;
-  color: #355fa7;
+  color: white;
 }
 
 .filter-advanced-toggle.has-active {
@@ -126,8 +131,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 1.2rem;
-  height: 1.2rem;
+  min-width: 1rem;
+  height: 1rem;
   padding: 0 0.3rem;
   border-radius: 50%;
   background: #355fa7;
@@ -137,7 +142,7 @@
 }
 
 .filter-chevron {
-  font-size: 0.7rem;
+  font-size: 1rem;
   line-height: 1;
 }
 
@@ -145,11 +150,17 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: 1.5rem;
   padding: 1rem 2rem;
   background: #f8f9fb;
   border-bottom: 2px solid #eee;
   animation: slideDown 0.3s ease-out;
+}
+
+.filter-advanced .filter-group {
+  margin-left: 0;
+  margin-right: 0;
 }
 
 @keyframes slideDown {
@@ -197,11 +208,11 @@
 }
 
 .filter-reset {
-  padding: 0.3rem 0.75rem;
+  padding: 0.35rem 0.75rem;
   border: 2px solid #ccc;
   border-radius: 20px;
   background: white;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: #888;
   cursor: pointer;
@@ -214,17 +225,55 @@
   color: #c0392b;
 }
 
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 2rem 0 1rem;
+  flex-wrap: wrap;
+}
+
+.pagination-btn {
+  min-width: 2.2rem;
+  height: 2.2rem;
+  padding: 0 0.6rem;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  background: white;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  border-color: #355fa7;
+  color: #355fa7;
+}
+
+.pagination-btn.active {
+  background-color: #355fa7;
+  border-color: #355fa7;
+  color: white;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Media Queries */
 @media screen and (min-width: 1200px) {
-  .filter-group {
+  .filter-bar > .filter-group {
     margin-left: auto;
   }
 
   .filter-count {
     margin-right: auto;
-  }
-
-  .filter-advanced .filter-group {
-    margin: 0 auto;
   }
 }
 
@@ -304,45 +353,4 @@
     text-align: center;
     width: 100%;
   }
-}
-
-/* --- Pagination --- */
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  margin: 2rem 0 1rem;
-  flex-wrap: wrap;
-}
-
-.pagination-btn {
-  min-width: 2.2rem;
-  height: 2.2rem;
-  padding: 0 0.6rem;
-  border: 2px solid #ccc;
-  border-radius: 50%;
-  background: white;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #555;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: inherit;
-}
-
-.pagination-btn:hover:not(:disabled) {
-  border-color: #355fa7;
-  color: #355fa7;
-}
-
-.pagination-btn.active {
-  background-color: #355fa7;
-  border-color: #355fa7;
-  color: white;
-}
-
-.pagination-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
 }

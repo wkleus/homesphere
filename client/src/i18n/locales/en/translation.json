@@ -25,7 +25,10 @@
     "max": "Max",
     "minRooms": "Minimum rooms",
     "maxRooms": "Maximum rooms",
-    "reset": "Reset"
+    "reset": "Reset",
+    "area": "Area (m²)",
+    "minArea": "Minimum area in m²",
+    "maxArea": "Maximum area in m²"
   },
   "pagination": {
     "label": "Listing pages",
