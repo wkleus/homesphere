@@ -40,6 +40,15 @@ const Admin = () => {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [feedback, setFeedback] = useState(null);
+
+  // Auto-dismiss the feedback banner after 4 seconds so it doesn't
+  // linger indefinitely on screen.
+  useEffect(() => {
+    if (!feedback) return;
+    const timer = setTimeout(() => setFeedback(null), 4000);
+    return () => clearTimeout(timer); // prevent an old timer from prematurely clearing away a newer notification
+  }, [feedback]);
+
   // Holds entry pending deletion (or null when the confirm modal is closed)
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
