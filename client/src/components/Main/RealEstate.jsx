@@ -19,7 +19,7 @@ const CATEGORY_KEYS = [
 const DEAL_KEYS = ["All", "Rent", "Buy"];
 
 // Number of listings shown per page
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 9;
 
 const RealEstate = () => {
   const { data: entries, loading, error } = useFetch(ENTRIES_URL);
@@ -27,6 +27,10 @@ const RealEstate = () => {
   const [activeDeal, setActiveDeal] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const { t } = useTranslation();
+
+  const [minRooms, setMinRooms] = useState("");
+  const [maxRooms, setMaxRooms] = useState("");
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   // Translated labels for display only
   const CATEGORIES = CATEGORY_KEYS.map((key) =>
@@ -38,6 +42,9 @@ const RealEstate = () => {
     ? entries.filter((e) => e.isAvailable).length
     : null;
 
+  // True when at least one rooms bound is set (for the badge on the toggle)
+  const hasRoomsFilter = minRooms !== "" || maxRooms !== "";
+
   // Filter always compares against English keys, not translated strings
   const filtered = (entries || []).filter((entry) => {
     const categoryMatch =
@@ -46,7 +53,11 @@ const RealEstate = () => {
       activeDeal === "All" ||
       (activeDeal === "Rent" && entry.rent) ||
       (activeDeal === "Buy" && entry.buy);
-    return categoryMatch && dealMatch;
+
+    const roomsMatch =
+      (minRooms === "" || entry.rooms >= Number(minRooms)) &&
+      (maxRooms === "" || entry.rooms <= Number(maxRooms));
+    return categoryMatch && dealMatch && roomsMatch;
   });
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
@@ -66,6 +77,19 @@ const RealEstate = () => {
   };
   const handleDealChange = (key) => {
     setActiveDeal(key);
+    setCurrentPage(1);
+  };
+  const handleMinRoomsChange = (value) => {
+    setMinRooms(value);
+    setCurrentPage(1);
+  };
+  const handleMaxRoomsChange = (value) => {
+    setMaxRooms(value);
+    setCurrentPage(1);
+  };
+  const resetRoomsFilter = () => {
+    setMinRooms("");
+    setMaxRooms("");
     setCurrentPage(1);
   };
 
@@ -129,10 +153,65 @@ const RealEstate = () => {
               ))}
             </div>
           </div>
+
+          <button
+            type="button"
+            className={`filter-advanced-toggle ${showAdvanced ? "open" : ""} ${hasRoomsFilter ? "has-active" : ""}`}
+            onClick={() => setShowAdvanced((prev) => !prev)}
+            aria-expanded={showAdvanced}
+          >
+            {t("filter.moreFilters")}
+            {hasRoomsFilter && <span className="filter-badge">1</span>}
+            <span className="filter-chevron" aria-hidden="true">
+              {showAdvanced ? "▴" : "▾"}
+            </span>
+          </button>
+
           <span className="filter-count">
             {t("filter.found", { count: filtered.length })}
           </span>
         </div>
+
+        {showAdvanced && (
+          <div className="filter-advanced">
+            <div className="filter-group">
+              <span className="filter-label">{t("filter.rooms")}</span>
+              <div className="filter-range">
+                <input
+                  type="number"
+                  className="filter-input"
+                  min="1"
+                  max="50"
+                  placeholder={t("filter.min")}
+                  value={minRooms}
+                  onChange={(e) => handleMinRoomsChange(e.target.value)}
+                  aria-label={t("filter.minRooms")}
+                />
+                <span className="filter-range-sep">–</span>
+                <input
+                  type="number"
+                  className="filter-input"
+                  min="1"
+                  max="50"
+                  placeholder={t("filter.max")}
+                  value={maxRooms}
+                  onChange={(e) => handleMaxRoomsChange(e.target.value)}
+                  aria-label={t("filter.maxRooms")}
+                />
+
+                {hasRoomsFilter && (
+                  <button
+                    type="button"
+                    className="filter-reset"
+                    onClick={resetRoomsFilter}
+                  >
+                    {t("filter.reset")}
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="realEstate">
           {paginated.length > 0 ? (

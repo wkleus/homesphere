@@ -18,7 +18,14 @@
     "all": "Alle",
     "rent": "Miete",
     "buy": "Kauf",
-    "found": "{{count}} Einträge gefunden"
+    "found": "{{count}} Einträge gefunden",
+    "moreFilters": "Weitere Filter",
+    "rooms": "Zimmer",
+    "min": "Min",
+    "max": "Max",
+    "minRooms": "Mindestanzahl Zimmer",
+    "maxRooms": "Maximalanzahl Zimmer",
+    "reset": "Zurücksetzen"
   },
   "pagination": {
     "label": "Seiten der Immobilienliste",

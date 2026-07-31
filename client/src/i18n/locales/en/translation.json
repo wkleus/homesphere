@@ -18,7 +18,14 @@
     "all": "All",
     "rent": "Rent",
     "buy": "Buy",
-    "found": "{{count}} entries found"
+    "found": "{{count}} entries found",
+    "moreFilters": "More filters",
+    "rooms": "Rooms",
+    "min": "Min",
+    "max": "Max",
+    "minRooms": "Minimum rooms",
+    "maxRooms": "Maximum rooms",
+    "reset": "Reset"
   },
   "pagination": {
     "label": "Listing pages",
