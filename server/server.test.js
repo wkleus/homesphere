@@ -81,7 +81,15 @@ describe("GET /api/entries/:id", () => {
 describe("POST /api/contact", () => {
   test("returns 400 when required fields are missing", async () => {
     const res = await request(app).post("/api/contact").send({});
+
     expect(res.status).toBe(400);
-    expect(res.body).toEqual({ error: "Name, email and message are required" });
+    expect(res.body).toMatchObject({
+      error: "Validation failed",
+      details: {
+        name: expect.any(Array),
+        email: expect.any(Array),
+        message: expect.any(Array),
+      },
+    });
   });
 });
