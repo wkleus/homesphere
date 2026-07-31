@@ -31,7 +31,8 @@
     "maxArea": "Maximalfläche in m²",
     "price": "Preis",
     "minPrice": "Mindestpreis",
-    "maxPrice": "Höchstpreis"
+    "maxPrice": "Höchstpreis",
+    "energy": "Energieklasse"
   },
   "pagination": {
     "label": "Seiten der Immobilienliste",

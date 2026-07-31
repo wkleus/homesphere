@@ -211,6 +211,25 @@
   width: 6rem;
 }
 
+.filter-select {
+  padding: 0.35rem 0.75rem;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-family: inherit;
+  font-weight: 600;
+  color: #333;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  min-width: 5rem;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #355fa7;
+}
+
 .filter-reset {
   padding: 0.35rem 0.75rem;
   border: 2px solid #ccc;

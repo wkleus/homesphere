@@ -17,6 +17,7 @@ const CATEGORY_KEYS = [
   "Townhouse",
 ];
 const DEAL_KEYS = ["All", "Rent", "Buy"];
+const ENERGY_CLASS_OPTIONS = ["", "A+", "A", "B", "C", "D", "E", "F", "G", "H"];
 
 // Number of listings shown per page
 const PAGE_SIZE = 9;
@@ -34,6 +35,7 @@ const RealEstate = () => {
   const [maxSqm, setMaxSqm] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+  const [energyClass, setEnergyClass] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   // Translated labels for display only
@@ -50,10 +52,12 @@ const RealEstate = () => {
   const hasRoomsFilter = minRooms !== "" || maxRooms !== "";
   const hasSqmFilter = minSqm !== "" || maxSqm !== "";
   const hasPriceFilter = minPrice !== "" || maxPrice !== "";
+  const hasEnergyFilter = energyClass !== "";
   const activeAdvancedCount = [
     hasRoomsFilter,
     hasSqmFilter,
     hasPriceFilter,
+    hasEnergyFilter,
   ].filter(Boolean).length;
 
   const resetAdvancedFilters = () => {
@@ -63,6 +67,7 @@ const RealEstate = () => {
     setMaxSqm("");
     setMinPrice("");
     setMaxPrice("");
+    setEnergyClass("");
     setCurrentPage(1);
   };
 
@@ -104,7 +109,16 @@ const RealEstate = () => {
       return rentOk || buyOk;
     })();
 
-    return categoryMatch && dealMatch && roomsMatch && sqmMatch && priceMatch;
+    const energyMatch = energyClass === "" || entry.energyClass === energyClass;
+
+    return (
+      categoryMatch &&
+      dealMatch &&
+      roomsMatch &&
+      sqmMatch &&
+      priceMatch &&
+      energyMatch
+    );
   });
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
@@ -148,6 +162,11 @@ const RealEstate = () => {
   };
   const handleMaxPriceChange = (value) => {
     setMaxPrice(value);
+    setCurrentPage(1);
+  };
+
+  const handleEnergyClassChange = (value) => {
+    setEnergyClass(value);
     setCurrentPage(1);
   };
 
@@ -316,6 +335,24 @@ const RealEstate = () => {
                   aria-label={t("filter.maxPrice")}
                 />
               </div>
+            </div>
+
+            {/* Energy class */}
+            <div className="filter-group">
+              <span className="filter-label">{t("filter.energy")}</span>
+              <select
+                className="filter-select"
+                value={energyClass}
+                onChange={(e) => handleEnergyClassChange(e.target.value)}
+                aria-label={t("filter.energy")}
+              >
+                <option value="">{t("filter.all")}</option>
+                {ENERGY_CLASS_OPTIONS.filter(Boolean).map((cls) => (
+                  <option key={cls} value={cls}>
+                    {cls}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Reset button */}

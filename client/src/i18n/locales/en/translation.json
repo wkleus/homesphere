@@ -31,7 +31,8 @@
     "maxArea": "Maximum area in m²",
     "price": "Price",
     "minPrice": "Minimum price",
-    "maxPrice": "Maximum price"
+    "maxPrice": "Maximum price",
+    "energy": "Energy class"
   },
   "pagination": {
     "label": "Listing pages",
