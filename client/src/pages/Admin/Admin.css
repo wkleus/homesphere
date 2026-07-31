@@ -192,6 +192,28 @@
   transform: scale(1.05);
 }
 
+/* FEEDBACK BANNER (success/error messages after save/delete actions) */
+.admin-feedback {
+  padding: 0.7rem 1rem;
+  border-radius: 0.375rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+}
+
+.admin-feedback.success {
+  background: #f0fdf4;
+  color: #156c0e;
+  border-color: #bbf7d0;
+}
+
+.admin-feedback.error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+
 .admin-edit-btn:active,
 .admin-delete-btn:active {
   transform: scale(0.95);

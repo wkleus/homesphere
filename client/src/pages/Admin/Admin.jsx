@@ -3,6 +3,8 @@ import "./Admin.css";
 import useAuth from "../../context/useAuth";
 import { useState, useEffect, useCallback } from "react";
 import { ENTRIES_URL, ENTRY_URL, UPLOAD_URL } from "../../config/api";
+import ConfirmModal from "../../components/ConfirmModal/ConfirmModal";
+import { AnimatePresence } from "framer-motion";
 
 // Available options for dropdown selectors
 const CATEGORIES = ["Apartment", "Chalet", "Residence", "Studio", "Townhouse"];
@@ -38,6 +40,9 @@ const Admin = () => {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [feedback, setFeedback] = useState(null);
+  // Holds entry pending deletion (or null when the confirm modal is closed)
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   /* GET all property entries from the backend
      Sends JWT token in Authorization header for authentication
@@ -100,15 +105,10 @@ const Admin = () => {
     setFeedback(null);
   };
 
-  /* handleDelete - Deletes an entry by ID */
+  /* handleDelete - Deletes an entry by ID - called only after user confirms in ConfirmModal */
   const handleDelete = async (id) => {
-    // User confirmation – prevents accidental clicks
-    if (!window.confirm("Are you sure you want to delete this entry?")) {
-      return; // User cancelled – exit early
-    }
-
-    // Show loading state on the button
-    setSaving(true);
+    // Show loading state on the modal's confirm button
+    setDeleting(true);
     // Clear any previous feedback messages
     setFeedback(null);
 
@@ -151,8 +151,9 @@ const Admin = () => {
         message: err.message || "Something went wrong. Please try again.",
       });
     } finally {
-      // Always reset the loading state
-      setSaving(false);
+      // Always reset loading state and close confirm modal
+      setDeleting(false);
+      setDeleteTarget(null);
     }
   };
 
@@ -359,7 +360,7 @@ const Admin = () => {
                     </button>
                     <button
                       className="admin-delete-btn"
-                      onClick={() => handleDelete(entry.id)}
+                      onClick={() => setDeleteTarget(entry)}
                       title="Delete entry permanently"
                     >
                       <DeleteIcon size={18} />
@@ -538,6 +539,20 @@ const Admin = () => {
           </div>
         </div>
       )}
+
+      {/* Delete confirmation modal */}
+      <AnimatePresence>
+        {deleteTarget && (
+          <ConfirmModal
+            title="Delete this property?"
+            message={`"${deleteTarget.address}" will be permanently removed. This cannot be undone.`}
+            confirmLabel="Delete"
+            confirming={deleting}
+            onConfirm={() => handleDelete(deleteTarget.id)}
+            onCancel={() => setDeleteTarget(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };
