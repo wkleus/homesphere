@@ -449,3 +449,54 @@
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(40, 100, 240, 0.25);
 }
+
+/* Inquiries section */
+.inquiries-section {
+  margin-top: 2.5rem;
+  padding: 0 0 2rem;
+}
+
+.inquiries-heading {
+  font-size: 1.25rem;
+  color: #355fa7;
+  margin: 0 0 1rem;
+}
+
+.inquiries-status {
+  color: #888;
+  font-size: 0.95rem;
+  padding: 1rem 0;
+}
+
+.inquiries-error {
+  color: #c0392b;
+}
+
+.inquiries-empty {
+  text-align: center;
+  padding: 2rem !important;
+  color: #888;
+}
+
+.inquiries-date {
+  white-space: nowrap;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.inquiries-email {
+  color: #355fa7;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.inquiries-email:hover {
+  text-decoration: underline;
+}
+
+.inquiries-message {
+  max-width: 280px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 0.9rem;
+}

@@ -455,4 +455,24 @@ app.post(
   },
 );
 
+// GET /api/inquiries – admin only
+app.get(
+  "/api/inquiries",
+  adminLimiter,
+  authenticateSupabase,
+  async (req, res) => {
+    try {
+      const result = await pool.query(
+        `SELECT id, name, email, message, property, entry_id, created_at
+         FROM inquiries
+         ORDER BY created_at DESC`,
+      );
+      res.json(result.rows.map(transformKeys));
+    } catch (err) {
+      console.error("Database error:", err);
+      res.status(500).json({ error: "Database error" });
+    }
+  },
+);
+
 export default app;

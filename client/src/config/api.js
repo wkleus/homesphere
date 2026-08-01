@@ -7,3 +7,4 @@ export const ENTRIES_URL = `${API_BASE}/entries`;
 export const ENTRY_URL = (id) => `${API_BASE}/entries/${id}`;
 export const CONTACT_URL = `${API_BASE}/contact`;
 export const UPLOAD_URL = `${API_BASE}/upload`;
+export const INQUIRIES_URL = `${API_BASE}/inquiries`;

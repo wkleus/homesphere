@@ -2,9 +2,15 @@ import { DeleteIcon, Edit, LogOutIcon, Plus, X } from "lucide-react";
 import "./Admin.css";
 import useAuth from "../../context/useAuth";
 import { useState, useEffect, useCallback } from "react";
-import { ENTRIES_URL, ENTRY_URL, UPLOAD_URL } from "../../config/api";
+import {
+  ENTRIES_URL,
+  ENTRY_URL,
+  UPLOAD_URL,
+  INQUIRIES_URL,
+} from "../../config/api";
 import ConfirmModal from "../../components/ConfirmModal/ConfirmModal";
 import { AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 // Available options for dropdown selectors
 const CATEGORIES = ["Apartment", "Chalet", "Residence", "Studio", "Townhouse"];
@@ -40,6 +46,11 @@ const Admin = () => {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [feedback, setFeedback] = useState(null);
+  const [inquiries, setInquiries] = useState([]);
+  const [inquiriesLoading, setInquiriesLoading] = useState(true);
+  const [inquiriesError, setInquiriesError] = useState(null);
+
+  const { t } = useTranslation();
 
   // Auto-dismiss the feedback banner after 4 seconds so it doesn't
   // linger indefinitely on screen.
@@ -274,6 +285,33 @@ const Admin = () => {
     }
   };
 
+  const fetchInquiries = useCallback(async () => {
+    if (!supabaseToken) return;
+    setInquiriesLoading(true);
+    setInquiriesError(null);
+    try {
+      const res = await fetch(INQUIRIES_URL, {
+        headers: { Authorization: `Bearer ${supabaseToken}` },
+      });
+      if (res.status === 401) {
+        throw new Error(t("admin.inquiries.sessionExpired"));
+      }
+      if (!res.ok) throw new Error(t("admin.inquiries.loadError"));
+      const data = await res.json();
+      setInquiries(data || []);
+    } catch (err) {
+      setInquiriesError(err.message);
+    } finally {
+      setInquiriesLoading(false);
+    }
+  }, [supabaseToken, t]);
+
+  useEffect(() => {
+    (async () => {
+      await fetchInquiries();
+    })();
+  }, [fetchInquiries]);
+
   // RENDER
   if (loading) return <div className="admin-loading">Loading entries...</div>;
   if (error) return <div className="admin-loading">Error: {error}</div>;
@@ -381,6 +419,64 @@ const Admin = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Contact inquiries */}
+      <section className="inquiries-section">
+        <h2 className="inquiries-heading">{t("admin.inquiries.title")}</h2>
+
+        {inquiriesLoading && (
+          <p className="inquiries-status">{t("admin.inquiries.loading")}</p>
+        )}
+
+        {inquiriesError && (
+          <p className="inquiries-status inquiries-error">{inquiriesError}</p>
+        )}
+
+        {!inquiriesLoading && !inquiriesError && (
+          <div className="entries-table-wrapper">
+            <table className="entries-table inquiries-table">
+              <thead className="entries-table-head">
+                <tr>
+                  <th>{t("admin.inquiries.date")}</th>
+                  <th>{t("admin.inquiries.name")}</th>
+                  <th>{t("admin.inquiries.email")}</th>
+                  <th>{t("admin.inquiries.property")}</th>
+                  <th>{t("admin.inquiries.message")}</th>
+                </tr>
+              </thead>
+              <tbody className="entries-table-body">
+                {inquiries.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" className="inquiries-empty">
+                      {t("admin.inquiries.empty")}
+                    </td>
+                  </tr>
+                ) : (
+                  inquiries.map((inq) => (
+                    <tr key={inq.id}>
+                      <td className="inquiries-date">
+                        {new Date(inq.createdAt).toLocaleDateString()} (hard
+                        coded for demo)
+                      </td>
+                      <td>{inq.name}</td>
+                      <td>
+                        <a
+                          href={`mailto:${inq.email}`}
+                          className="inquiries-email"
+                        >
+                          {inq.email}
+                        </a>
+                      </td>
+                      <td>{inq.property || "—"}</td>
+                      <td className="inquiries-message">{inq.message}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
 
       {/* Edit/Add form modal */}
       {showForm && (

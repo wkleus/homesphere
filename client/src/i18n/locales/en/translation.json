@@ -129,5 +129,19 @@
   "notFound": {
     "message": "This page doesn't exist — maybe it moved, or the link is outdated.",
     "backHome": "Back to homepage"
+  },
+  "admin": {
+    "inquiries": {
+      "title": "Contact inquiries",
+      "loading": "Loading inquiries...",
+      "loadError": "Failed to load inquiries",
+      "sessionExpired": "Session expired. Please login again.",
+      "empty": "No inquiries yet.",
+      "date": "Date",
+      "name": "Name",
+      "email": "Email",
+      "property": "Property",
+      "message": "Message"
+    }
   }
 }

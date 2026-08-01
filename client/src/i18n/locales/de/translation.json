@@ -129,5 +129,19 @@
   "notFound": {
     "message": "Diese Seite existiert nicht – vielleicht wurde sie verschoben oder der Link ist veraltet.",
     "backHome": "Zurück zur Startseite"
+  },
+  "admin": {
+    "inquiries": {
+      "title": "Kontaktanfragen",
+      "loading": "Anfragen werden geladen...",
+      "loadError": "Anfragen konnten nicht geladen werden",
+      "sessionExpired": "Sitzung abgelaufen. Bitte erneut anmelden.",
+      "empty": "Noch keine Anfragen.",
+      "date": "Datum",
+      "name": "Name",
+      "email": "E-Mail",
+      "property": "Immobilie",
+      "message": "Nachricht"
+    }
   }
 }
