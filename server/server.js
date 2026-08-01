@@ -416,14 +416,22 @@ app.post(
     // req.body already validated and sanitized by Zod
     const { name, email, message, property } = req.body;
 
-    // Defense-in-depth: escape before inserting into HTML email template
-    // Sanitize all user input before inserting into HTML to prevent XSS
-    const safeName = he.escape(name);
-    const safeEmail = he.escape(email);
-    const safeMessage = he.escape(message);
-    const safeProperty = he.escape(property || "HomeSphere");
-
     try {
+      // 1) Persist inquiry in DB
+      await pool.query(
+        `INSERT INTO inquiries (name, email, message, property)
+         VALUES ($1, $2, $3, $4)`,
+        [name, email, message, property || "HomeSphere"],
+      );
+
+      // 2) Send email (defense-in-depth escaping for HTML - escape before
+      // inserting into HTML email template
+      // -> Sanitize all user input before inserting into HTML to prevent XSS
+      const safeName = he.escape(name);
+      const safeEmail = he.escape(email);
+      const safeMessage = he.escape(message);
+      const safeProperty = he.escape(property || "HomeSphere");
+
       await resend.emails.send({
         from: "HomeSphere <onboarding@resend.dev>",
         to: process.env.CONTACT_EMAIL,

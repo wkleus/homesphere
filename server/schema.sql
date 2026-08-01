@@ -11,3 +11,18 @@ CREATE TABLE IF NOT EXISTS entries (
   category  VARCHAR(50) NOT NULL,
   year_built INTEGER NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS inquiries (
+  id         SERIAL PRIMARY KEY,
+  name       TEXT NOT NULL, -- Form fields
+  email      TEXT NOT NULL,
+  message    TEXT NOT NULL,
+  property   TEXT,   -- e.g. address from form
+  entry_id   INTEGER REFERENCES entries(id) ON DELETE SET NULL, -- Link to property if ID is sent along later; when property is deleted, request remains, entry_id just becomes NULL
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW() -- Timestamp (automatic)
+);
+
+-- Block direct client access via anon/authenticated keys
+ALTER TABLE inquiries ENABLE ROW LEVEL SECURITY;
+-- No policies = no access through Supabase client keys
+-- Server still works via DATABASE_URL / service connection
