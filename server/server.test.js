@@ -9,10 +9,10 @@ import request from "supertest";
 // vi.hoisted ensures the mock function is created before imports are processed
 const mockQuery = vi.hoisted(() => vi.fn());
 
-// Mock the database pool
-vi.mock("../db.js", () => ({
-  default: { query: mockQuery },
-}));
+// // Mock the database pool
+// vi.mock("../db.js", () => ({
+//   default: { query: mockQuery },
+// }));
 
 // Mock the database pool and Supabase Admin Client
 vi.mock("./db.js", () => ({

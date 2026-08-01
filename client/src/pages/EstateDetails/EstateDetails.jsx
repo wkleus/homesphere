@@ -19,6 +19,18 @@ import MapModal from "../../components/MapModal/MapModal";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 
+/* Create or update <meta> tag by property name (e.g. og:title). */
+function setMetaTag(property, content) {
+  if (!content) return;
+  let el = document.querySelector(`meta[property="${property}"]`);
+  if (!el) {
+    el = document.createElement("meta");
+    el.setAttribute("property", property);
+    document.head.appendChild(el);
+  }
+  el.setAttribute("content", content);
+}
+
 const EstateDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -44,7 +56,8 @@ const EstateDetails = () => {
           ? `€${entry.rent.toLocaleString()}/mo`
           : "";
       const titleParts = [entry.address, price, "HomeSphere"].filter(Boolean);
-      document.title = titleParts.join(" · ");
+      const pageTitle = titleParts.join(" · ");
+      document.title = pageTitle;
 
       const description = [
         entry.category,
@@ -55,18 +68,31 @@ const EstateDetails = () => {
         .filter(Boolean)
         .join(" · ");
 
+      const descContent = description
+        ? `${description}. ${entry.address}`
+        : `Property listing: ${entry.address}`;
+
+      // Standard meta description
       let meta = document.querySelector('meta[name="description"]');
       if (!meta) {
         meta = document.createElement("meta");
         meta.setAttribute("name", "description");
         document.head.appendChild(meta);
       }
-      meta.setAttribute(
-        "content",
-        description
-          ? `${description}. ${entry.address}`
-          : `Property listing: ${entry.address}`,
-      );
+      meta.setAttribute("content", descContent);
+
+      // OpenGraph meta tags
+      setMetaTag("og:type", "website");
+      setMetaTag("og:title", pageTitle);
+      setMetaTag("og:description", descContent);
+
+      // Absolute URL required for social previews (relative paths are ignored)
+      const imageUrl = entry.photo.startsWith("http")
+        ? entry.photo
+        : `${window.location.origin}${entry.photo}`;
+      setMetaTag("og:image", imageUrl);
+
+      setMetaTag("og:url", window.location.href);
     }
 
     // Restore default title when leaving the detail page
