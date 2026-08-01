@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Bed,
@@ -32,6 +32,48 @@ const EstateDetails = () => {
 
   // Controls visibility of the map modal
   const [showMap, setShowMap] = useState(false);
+
+  // Dynamic document title + meta description for SEO
+  useEffect(() => {
+    const prevTitle = document.title;
+
+    if (entry) {
+      const price = entry.buy
+        ? `€${entry.buy.toLocaleString()}`
+        : entry.rent
+          ? `€${entry.rent.toLocaleString()}/mo`
+          : "";
+      const titleParts = [entry.address, price, "HomeSphere"].filter(Boolean);
+      document.title = titleParts.join(" · ");
+
+      const description = [
+        entry.category,
+        entry.rooms && `${entry.rooms} rooms`,
+        entry.squareMeters && `${entry.squareMeters} m²`,
+        entry.energyClass && `Energy ${entry.energyClass}`,
+      ]
+        .filter(Boolean)
+        .join(" · ");
+
+      let meta = document.querySelector('meta[name="description"]');
+      if (!meta) {
+        meta = document.createElement("meta");
+        meta.setAttribute("name", "description");
+        document.head.appendChild(meta);
+      }
+      meta.setAttribute(
+        "content",
+        description
+          ? `${description}. ${entry.address}`
+          : `Property listing: ${entry.address}`,
+      );
+    }
+
+    // Restore default title when leaving the detail page
+    return () => {
+      document.title = prevTitle || "HomeSphere";
+    };
+  }, [entry]);
 
   if (loading)
     return <p className="status-msg detail-loading">{t("loading")}</p>;
