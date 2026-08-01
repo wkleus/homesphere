@@ -15,7 +15,7 @@
 
 🔗 [Live Demo](https://homesphere-web.vercel.app)
 
-HomeSphere is a full-stack real estate platform for property seekers and administrators. Browse listings across Europe, filter by category and deal type, save favorites, and contact agents via email. Admins can manage the entire property catalog through a protected dashboard.
+HomeSphere is a full-stack real estate platform for property seekers and administrators. Browse listings across Europe, filter by category and deal type, save favorites, and contact agents via email. Admins can manage the entire property catalog through a protected dashboard. An advanced search enables combined filtering across key property attributes for fast, precise results.
 
 **Tech Stack:** React frontend with a Node.js/Express REST API, PostgreSQL on Supabase, Resend for emails, and react‑i18next for multilingual support (EN/DE).
 
@@ -23,13 +23,15 @@ Built with **security**, **performance**, and **user experience** in mind – fe
 
 ## Screenshots
 
-|                                                                                  |                                                                               |
-| -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| ![Home](client/public/screenshots/home.png)<br>_Home Page_                       | ![Main](client/public/screenshots/main.png)<br>_Main Listings_                |
-| ![Footer](client/public/screenshots/footer.png)<br>_Footer_                      | ![Details](client/public/screenshots/details.png)<br>_Property Details_       |
-| ![Contact Form](client/public/screenshots/contact-form.png)<br>_Contact Form_    | ![Favorites](client/public/screenshots/favorites-page.png)<br>_Favorites_     |
-| ![Calculator](client/public/screenshots/calculator.png)<br>_Mortgage Calculator_ | ![Contact Page](client/public/screenshots/contact-page.png)<br>_Contact Page_ |
-| ![Login](client/public/screenshots/login-page.png)<br>_Login_                    | ![Admin](client/public/screenshots/admin-page.png)<br>_Admin Dashboard_       |
+|                                                                                          |                                                                                    |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| ![Home](client/public/screenshots/home.png)<br>_Home Page with Advanced Filter_          | ![Main](client/public/screenshots/main.png)<br>_Main Listings_                     |
+| ![Footer](client/public/screenshots/footer.png)<br>_Footer_                              | ![Details](client/public/screenshots/details.png)<br>_Property Details_            |
+| ![Contact Form](client/public/screenshots/contact-form.png)<br>_Contact Form_            | ![Favorites](client/public/screenshots/favorites-page.png)<br>_Favorites_          |
+| ![Calculator](client/public/screenshots/calculator.png)<br>_Mortgage Calculator_         | ![Contact Page](client/public/screenshots/contact-page.png)<br>_Contact Page_      |
+| ![Login](client/public/screenshots/login-page.png)<br>_Login_                            | ![Admin](client/public/screenshots/admin-page.png)<br>_Admin Dashboard_            |
+| ![Add Entry](client/public/screenshots/add-new-entry-modal.png)<br>_Add New Entry Modal_ | ![Edit Entry](client/public/screenshots/edit-entry-modal.png)<br>_Add Entry Modal_ |
+| ![Delete Entry](client/public/screenshots/delete-entry-modal.png)<br>_Delete Entry_      |                                                                                    |
 
 ---
 
@@ -55,17 +57,22 @@ Built with **security**, **performance**, and **user experience** in mind – fe
 - Property listings fetched from PostgreSQL database via REST API
 - Filter by category (Apartment, Chalet, Residence, Studio, Townhouse)
 - Filter by deal type (Rent / Buy)
+- Advanced Search with multi‑criteria filtering for precise property discovery
 - Detail page with full property info, stats, and interactive map
 - Mortgage calculator on property detail pages
 - Photo upload directly in the admin dashboard, stored in Supabase Storage
+- Pagination for property listings
+- Confirmation modal before deleting a property
 
 ### Authentication & Security
 
 - **Supabase Authentication** with JWT-based session management
 - **Protected admin routes** with token validation middleware
 - **Server-side token verification** using Supabase Admin Client
+- **Server-side request validation** with Zod schemas (entries, contact form, and `:id` route params) — invalid requests return 400 with field-level error details
+- **Security headers** via Helmet
 - Environment-based configuration for dev/prod
-- Rate limiting on contact endpoint (3 requests per 10 minutes)
+- Rate limiting on contact endpoint (3 requests per 10 minutes) and admin endpoints (100 requests per 15 minutes)
 
 ### User Experience & User Interface (UX/UI)
 
@@ -75,10 +82,14 @@ Built with **security**, **performance**, and **user experience** in mind – fe
 - Loading and error states for all API calls
 - Multi-language support (EN/DE) with react-i18next
 - Favorites system with localStorage persistence
+- Accessibility: keyboard-navigable property cards, ARIA labels on interactive controls, visible focus states
+- Custom 404 page for unmatched routes
 
 ### Performance
 
 - Optimised images with lazy loading and WebP support
+- Uploaded photos are automatically resized (max 1200px) and re-encoded as WebP (quality 80) via Sharp before storage
+- One-off `optimize-photos.js` script to compress existing property photos in bulk
 - Custom `useFetch` hook for efficient data fetching
 - Memoized components to prevent unnecessary re-renders
 
@@ -87,9 +98,8 @@ Built with **security**, **performance**, and **user experience** in mind – fe
 - Modular component structure for easy maintenance
 - Centralised API configuration
 - Testing with Vitest + React Testing Library + Supertest
+- CI workflow (`.github/workflows/ci.yml`) runs lint + tests for client and server on every push/PR to `main`
 - Separate deployments (Vercel for frontend, Render for API)
-
----
 
 ## Tech Stack
 
@@ -102,7 +112,8 @@ Built with **security**, **performance**, and **user experience** in mind – fe
 |              | Yup                            | 1       |
 |              | Vite                           | 8       |
 |              | CSS Custom Properties          |         |
-|              | react-i18next                  | 15      |
+|              | react-i18next                  | 17      |
+|              | i18next                        | 26      |
 |              | Leaflet + react-leaflet        | 1 / 4   |
 |              | Vitest + React Testing Library | 4 / 16  |
 |              | Framer Motion                  | 12      |
@@ -114,6 +125,9 @@ Built with **security**, **performance**, and **user experience** in mind – fe
 |              | express-rate-limit             | 7       |
 |              | he(XSS sanitization)           | 1       |
 |              | multer (file uploads)          | 2       |
+|              | sharp (image processing)       | 0.35    |
+|              | zod (validation)               | 4       |
+|              | helmet (security headers)      | 8       |
 |              | Resend                         | 6       |
 |              | @supabase/supabase-js          | 2       |
 |              | Vitest + Supertest             | 4 / 7   |
@@ -202,11 +216,12 @@ homesphere/
 │   │    │   ├── Navbar/
 │   │    │   ├── Heading/
 │   │    │   ├── Footer/
-│   │    │   ├── Loadingspinner/            # Spinner for loading time
+│   │    │   ├── LoadingSpinner/            # Spinner for loading time
 │   │    │   ├── MapModal/                  # Leaflet map modal with Nominatim
 │   │    │   ├── ContactForm/               # Multi-step modal with Yup validation
 │   │    │   ├── MortgageCalculator/        # Monthly payment calculator with useMemo
 │   │    │   ├── ProtectedRoute/            # Protect routes from unauthorized access
+│   │    │   ├── ConfirmModal/              # Reusable confirm dialog (e.g. delete confirmation)
 │   │    │   └── Main/
 │   │    │       ├── RealEstate.jsx         # Filter logic + listings
 │   │    │       └── RealEstateCard/
@@ -228,7 +243,12 @@ homesphere/
     ├── server.js                           # Express server & routes
     ├── server.start.js                     # Entry point – starts the Express server
     ├── server.test.js                      # Backend integration tests (Supertest)
-    ├── vitest.connfig.js                   # Vitest config for server
+    ├── vitest.config.js                    # Vitest config for server
+    ├── validation.js                       # Zod schemas (entries, contact, :id params)
+    ├── middleware/
+    │   └── validate.js                     # Express middleware applying Zod schemas
+    ├── scripts/
+    │   └── optimize-photos.js              # Bulk-compress existing property photos
     ├── schema.sql                          # Database table definition
     ├── seed.sql                            # Initial data (entries)
     ├── .env
@@ -259,8 +279,16 @@ POST   https://homesphere-kifc.onrender.com/api/upload
 ```
 
 `POST /api/upload` accepts a single image file (`multipart/form-data`, field
-name `photo`, max 5 MB) via Multer, forwards it to a Supabase Storage bucket,
+name `photo`, max 5 MB) via Multer, resizes it (max 1200px) and re-encodes it
+as WebP (quality 80) via Sharp, forwards it to a Supabase Storage bucket,
 and returns its public URL for use as a property's `photo` field.
+
+### Request Validation
+
+`POST`/`PUT /api/entries` and `POST /api/contact` validate the request body
+against [Zod](https://zod.dev) schemas (`server/validation.js`); `:id` route
+params are validated as positive integers. Invalid requests return `400`
+with field-level error details instead of reaching the database.
 
 ---
 
@@ -290,6 +318,13 @@ The application uses **Supabase Authentication** with JWT-based session manageme
 - Environment variables: `DATABASE_URL`, `RESEND_API_KEY`, `CONTACT_EMAIL`, `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `SUPABASE_STORAGE_BUCKET`
 - Rate limiting: 3 requests/10min for contact endpoint
 - Admin endpoint protected with Supabase Auth middleware
+
+### Continuous Integration
+
+A GitHub Actions workflow (`.github/workflows/ci.yml`) runs on every push and
+pull request to `main`: it installs dependencies, lints the client, and runs
+the client and server test suites. This is separate from the keep-alive
+workflow below.
 
 ### Keep-Alive / Cold-Start Prevention
 
@@ -472,8 +507,16 @@ npm run test:run  # run once
 - [x] Protected admin routes with Supabase middlewar
 - [x] Photo upload via Supabase Storage in the admin dashboard
 - [x] Custom 404 page for unmatched routes
+- [x] Pagination for property listings
+- [x] Server-side request validation with Zod schemas
+- [x] Security headers via Helmet
+- [x] Accessibility improvements: keyboard navigation, ARIA labels, focus states
+- [x] Custom delete-confirmation modal (replacing native `window.confirm()`)
+- [x] CI workflow for automated linting and testing (`.github/workflows/ci.yml`)
+- [x] Automatic photo resizing/compression on upload + bulk optimization script
+- [x] Advanced search - Price, rooms, size, combined filters
 
 ### Next Steps
 
-- [ ] Advanced search - Price, rooms, size, combined filters
 - [ ] More SEO improvements
+- [ ] Store Contact Email Inquiries in DB
