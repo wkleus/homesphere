@@ -10,10 +10,25 @@
 ![Vercel](https://img.shields.io/badge/Frontend-Vercel-orange?logo=vercel)
 ![i18n](https://img.shields.io/badge/i18n-EN%20%7C%20DE%20-blue)
 ![Supabase Auth](https://img.shields.io/badge/Supabase%20Auth-Enabled-3ECF8E?logo=supabase&logoColor=white)
+![CI](https://github.com/wkleus/homesphere/actions/workflows/ci.yml/badge.svg)
 ![Tests](https://img.shields.io/badge/Tests-Passing-brightgreen?logo=vitest)
-![Status](https://img.shields.io/badge/Status-In_Progress-yellow)
+![Status](https://img.shields.io/badge/Status-Active-success)
 
 🔗 [Live Demo](https://homesphere-web.vercel.app)
+
+### Demo login (read-only admin)
+
+Interested users who simply want to test the app can explore the admin dashboard—but without modifying production data:
+
+|              |                                                                                    |
+| ------------ | ---------------------------------------------------------------------------------- |
+| **URL**      | [https://homesphere-web.vercel.app/login](https://homesphere-web.vercel.app/login) |
+| **Email**    | `demo@homesphere.app`                                                              |
+| **Password** | `123456`                                                                           |
+
+The demo account is **read-only**: listing and inquiry views work; create, edit, delete, and photo upload are blocked in the UI and enforced on the API (`blockDemoWrites`).
+
+---
 
 HomeSphere is a full-stack real estate platform for property seekers and administrators. Browse listings across Europe, filter by category and deal type, save favorites, and contact agents via email. Admins can manage the entire property catalog through a protected dashboard. An advanced search enables combined filtering across key property attributes for fast, precise results.
 
@@ -57,12 +72,13 @@ Built with **security**, **performance**, and **user experience** in mind – fe
 - Property listings fetched from PostgreSQL database via REST API
 - Filter by category (Apartment, Chalet, Residence, Studio, Townhouse)
 - Filter by deal type (Rent / Buy)
-- Advanced Search with multi‑criteria filtering for precise property discovery
+- Advanced search (collapsible): rooms, area (m²), price, energy class, with reset
 - Detail page with full property info, stats, and interactive map
 - Mortgage calculator on property detail pages
 - Photo upload directly in the admin dashboard, stored in Supabase Storage
 - Pagination for property listings
 - Confirmation modal before deleting a property
+- Contact inquiries persisted in PostgreSQL and listed in the admin dashboard
 
 ### Authentication & Security
 
@@ -73,6 +89,9 @@ Built with **security**, **performance**, and **user experience** in mind – fe
 - **Security headers** via Helmet
 - Environment-based configuration for dev/prod
 - Rate limiting on contact endpoint (3 requests per 10 minutes) and admin endpoints (100 requests per 15 minutes)
+- **Demo role**: read-only admin for interested users (UI disabled + server-side write block)
+- **JSON body size limit** (`express.json({ limit: "100kb" })`)
+- **`GET /api/health`** – liveness probe including database check
 
 ### User Experience & User Interface (UX/UI)
 
@@ -81,9 +100,11 @@ Built with **security**, **performance**, and **user experience** in mind – fe
 - Smooth animations with Framer Motion for page transitions and interactions
 - Loading and error states for all API calls
 - Multi-language support (EN/DE) with react-i18next
+- Admin UI also fully internationalized (EN/DE), including demo-mode banner and messages
 - Favorites system with localStorage persistence
 - Accessibility: keyboard-navigable property cards, ARIA labels on interactive controls, visible focus states
 - Custom 404 page for unmatched routes
+- Animated `ConfirmModal` (Framer Motion) before permanent entry deletion
 
 ### Performance
 
@@ -98,8 +119,13 @@ Built with **security**, **performance**, and **user experience** in mind – fe
 - Modular component structure for easy maintenance
 - Centralised API configuration
 - Testing with Vitest + React Testing Library + Supertest
-- CI workflow (`.github/workflows/ci.yml`) runs lint + tests for client and server on every push/PR to `main`
 - Separate deployments (Vercel for frontend, Render for API)
+- CI workflow (`.github/workflows/ci.yml`) runs lint + tests on every push/PR to `main` (GitHub Actions secrets for environment config where needed)
+
+### SEO
+
+- Dynamic document title and meta description on property detail pages
+- Open Graph tags on detail pages (`og:title`, `og:description`, `og:image`, `og:url`, `og:type`) with absolute image URLs
 
 ## Tech Stack
 
@@ -515,8 +541,11 @@ npm run test:run  # run once
 - [x] CI workflow for automated linting and testing (`.github/workflows/ci.yml`)
 - [x] Automatic photo resizing/compression on upload + bulk optimization script
 - [x] Advanced search - Price, rooms, size, combined filters
+- [x] Contact inquiries persisted in PostgreSQL and listed in the admin dashboard
+- [x] Demo login (read-only admin)
 
 ### Next Steps
 
-- [ ] More SEO improvements
-- [ ] Store Contact Email Inquiries in DB
+- [ ] AI Agent to help customers
+- [ ] Further SEO / SSR improvements
+- [ ] Expanded API test coverage
