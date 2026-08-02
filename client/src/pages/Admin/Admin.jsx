@@ -50,7 +50,7 @@ const Admin = () => {
   const [inquiriesLoading, setInquiriesLoading] = useState(true);
   const [inquiriesError, setInquiriesError] = useState(null);
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   // Auto-dismiss the feedback banner after 4 seconds so it doesn't
   // linger indefinitely on screen.
@@ -312,6 +312,17 @@ const Admin = () => {
     })();
   }, [fetchInquiries]);
 
+  const formatInquiryDate = (iso) => {
+    if (!iso) return "—";
+    return new Date(iso).toLocaleString(
+      i18n.language === "de" ? "de-DE" : "en-GB",
+      {
+        dateStyle: "short",
+        timeStyle: "short",
+      },
+    );
+  };
+
   // RENDER
   if (loading) return <div className="admin-loading">Loading entries...</div>;
   if (error) return <div className="admin-loading">Error: {error}</div>;
@@ -455,8 +466,7 @@ const Admin = () => {
                   inquiries.map((inq) => (
                     <tr key={inq.id}>
                       <td className="inquiries-date">
-                        {new Date(inq.createdAt).toLocaleDateString()} (hard
-                        coded for demo)
+                        {formatInquiryDate(inq.createdAt)}
                       </td>
                       <td>{inq.name}</td>
                       <td>
