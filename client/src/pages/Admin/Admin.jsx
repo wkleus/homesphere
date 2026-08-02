@@ -76,16 +76,16 @@ const Admin = () => {
           Authorization: `Bearer ${supabaseToken}`,
         },
       });
-      if (!res.ok) throw new Error("Failed to fetch entries");
+      if (!res.ok) throw new Error(t("admin.errors.fetchEntries"));
       const data = await res.json();
       setEntries(data || []);
     } catch (err) {
       setError(err.message);
-      setFeedback({ type: "error", message: "Failed to load entries" });
+      setFeedback({ type: "error", message: t("admin.errors.loadEntries") });
     } finally {
       setLoading(false);
     }
-  }, [supabaseToken]);
+  }, [supabaseToken, t]);
 
   /* Load entries on component mount
      Re-fetch when token changes (login/refresh)
@@ -146,20 +146,20 @@ const Admin = () => {
       if (!res.ok) {
         // 401 Unauthorized – token expired or invalid
         if (res.status === 401) {
-          throw new Error("Session expired. Please login again.");
+          throw new Error(t("admin.errors.sessionExpired"));
         }
         // 404 Not Found – entry doesn't exist (maybe already deleted)
         if (res.status === 404) {
-          throw new Error("Entry not found.");
+          throw new Error(t("admin.errors.entryNotFound"));
         }
         // Other errors (500, etc.)
-        throw new Error("Failed to delete entry");
+        throw new Error(t("admin.errors.deleteEntry"));
       }
 
       // Success – show feedback and refresh list
       setFeedback({
         type: "success",
-        message: "Entry deleted successfully!",
+        message: t("admin.success.deleted"),
       });
 
       // Refresh the entries list to reflect changes
@@ -168,7 +168,7 @@ const Admin = () => {
       // Error handling
       setFeedback({
         type: "error",
-        message: err.message || "Something went wrong. Please try again.",
+        message: err.message || t("admin.errors.generic"),
       });
     } finally {
       // Always reset loading state and close confirm modal
@@ -216,9 +216,11 @@ const Admin = () => {
 
       if (!res.ok) {
         if (res.status === 401)
-          throw new Error("Session expired. Please login again.");
+          throw new Error(t("admin.errors.sessionExpired"));
         throw new Error(
-          isCreating ? "Failed to create entry" : "Failed to update entry",
+          isCreating
+            ? t("admin.errors.createEntry")
+            : t("admin.errors.updateEntry"),
         );
       }
 
@@ -226,15 +228,15 @@ const Admin = () => {
       setFeedback({
         type: "success",
         message: isCreating
-          ? "Entry added successfully!"
-          : "Entry updated successfully!",
+          ? t("admin.success.created")
+          : t("admin.success.updated"),
       });
       setShowForm(false);
       await fetchEntries(); // Refresh list
     } catch (err) {
       setFeedback({
         type: "error",
-        message: err.message || "Something went wrong. Please try again.",
+        message: err.message || t("admin.errors.generic"),
       });
     } finally {
       setSaving(false);
@@ -275,7 +277,7 @@ const Admin = () => {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Upload failed");
+      if (!res.ok) throw new Error(data.error || t("admin.errors.upload"));
 
       setForm((prev) => ({ ...prev, photo: data.url }));
     } catch (err) {
@@ -324,14 +326,20 @@ const Admin = () => {
   };
 
   // RENDER
-  if (loading) return <div className="admin-loading">Loading entries...</div>;
-  if (error) return <div className="admin-loading">Error: {error}</div>;
+  if (loading)
+    return <div className="admin-loading">{t("admin.loadingEntries")}</div>;
+  if (error)
+    return (
+      <div className="admin-loading">
+        {t("admin.error", { message: error })}
+      </div>
+    );
 
   return (
     <div className="admin-page">
       {/* Header with user greeting and logout */}
       <div className="admin-header">
-        <h1>Admin Dashboard</h1>
+        <h1>{t("admin.title")}</h1>
         <div className="admin-header-actions">
           {/*
           NOTE: `user.name` works because Supabase stores the name in `raw_user_meta_data`.
@@ -339,10 +347,16 @@ const Admin = () => {
           Supabase exposes this as: user.user_metadata.name or user.name
           */}
           <h2 className="admin-user">
-            Hello, {user?.user_metadata?.name || user?.email}
+            {t("admin.hello", {
+              name: user?.user_metadata?.name || user?.email,
+            })}
           </h2>
-          <button className="admin-logout-btn" onClick={logout} title="Logout">
-            <LogOutIcon size={18} /> Logout
+          <button
+            className="admin-logout-btn"
+            onClick={logout}
+            title={t("admin.logout")}
+          >
+            <LogOutIcon size={18} /> {t("admin.logout")}
           </button>
         </div>
       </div>
@@ -358,23 +372,23 @@ const Admin = () => {
         {/* Add New Entry button */}
         <div className="admin-table-actions-top">
           <button className="admin-add-btn" onClick={openAddForm}>
-            <Plus size={18} /> Add New Entry
+            <Plus size={18} /> {t("admin.addEntry")}
           </button>
         </div>
 
         <table className="entries-table">
           <thead className="entries-table-head">
             <tr>
-              <th>ID</th>
-              <th>Address</th>
-              <th>Category</th>
-              <th>Rooms</th>
-              <th>m²</th>
-              <th>Year</th>
-              <th>Energy</th>
-              <th>Available</th>
-              <th>Price</th>
-              <th>Actions</th>
+              <th>{t("admin.table.id")}</th>
+              <th>{t("admin.table.address")}</th>
+              <th>{t("admin.table.category")}</th>
+              <th>{t("admin.table.rooms")}</th>
+              <th>{t("admin.table.sqm")}</th>
+              <th>{t("admin.table.year")}</th>
+              <th>{t("admin.table.energy")}</th>
+              <th>{t("admin.table.available")}</th>
+              <th>{t("admin.table.price")}</th>
+              <th>{t("admin.table.actions")}</th>
             </tr>
           </thead>
           <tbody className="entries-table-body">
@@ -384,7 +398,7 @@ const Admin = () => {
                   colSpan="10"
                   style={{ textAlign: "center", padding: "2rem" }}
                 >
-                  No entries found.
+                  {t("admin.noEntries")}
                 </td>
               </tr>
             ) : (
@@ -401,25 +415,33 @@ const Admin = () => {
                     <span
                       className={`admin-badge ${entry.isAvailable ? "available" : "unavailable"}`}
                     >
-                      {entry.isAvailable ? "Yes" : "No"}
+                      {entry.isAvailable ? t("admin.yes") : t("admin.no")}
                     </span>
                   </td>
                   <td>
-                    {entry.buy ? `EUR ${entry.buy.toLocaleString()}` : ""}
-                    {entry.rent ? `EUR ${entry.rent}/mo` : ""}
+                    {entry.buy
+                      ? t("admin.priceBuy", {
+                          price: entry.buy.toLocaleString(),
+                        })
+                      : ""}
+                    {entry.rent
+                      ? t("admin.priceRent", {
+                          price: entry.rent.toLocaleString(),
+                        })
+                      : ""}
                   </td>
                   <td className="admin-table-actions">
                     <button
                       className="admin-edit-btn"
                       onClick={() => openEdit(entry)}
-                      title="Edit"
+                      title={t("admin.edit")}
                     >
                       <Edit size={18} />
                     </button>
                     <button
                       className="admin-delete-btn"
                       onClick={() => setDeleteTarget(entry)}
-                      title="Delete entry permanently"
+                      title={t("admin.deleteTitle")}
                     >
                       <DeleteIcon size={18} />
                     </button>
@@ -493,7 +515,11 @@ const Admin = () => {
         <div className="admin-modal-overlay" onClick={() => setShowForm(false)}>
           <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
             <div className="admin-modal-header">
-              <h2>{editId === null ? "Add New Entry" : "Edit Entry"}</h2>
+              <h2>
+                {editId === null
+                  ? t("admin.form.addTitle")
+                  : t("admin.form.editTitle")}
+              </h2>
               <button type="button" onClick={() => setShowForm(false)}>
                 <X size={20} />
               </button>
@@ -502,7 +528,7 @@ const Admin = () => {
             <form className="admin-form" onSubmit={handleSave}>
               <div className="admin-form-grid">
                 <div className="admin-field full">
-                  <label>Address</label>
+                  <label>{t("admin.form.address")}</label>{" "}
                   <input
                     name="address"
                     value={form.address}
@@ -512,7 +538,7 @@ const Admin = () => {
                 </div>
 
                 <div className="admin-field">
-                  <label>Category</label>
+                  <label>{t("admin.form.category")}</label>{" "}
                   <select
                     name="category"
                     value={form.category}
@@ -525,7 +551,7 @@ const Admin = () => {
                 </div>
 
                 <div className="admin-field">
-                  <label>Energy Class</label>
+                  <label>{t("admin.form.energyClass")}</label>{" "}
                   <select
                     name="energy_class"
                     value={form.energy_class}
@@ -538,7 +564,7 @@ const Admin = () => {
                 </div>
 
                 <div className="admin-field">
-                  <label>Rooms</label>
+                  <label>{t("admin.form.rooms")}</label>{" "}
                   <input
                     type="number"
                     name="rooms"
@@ -549,7 +575,7 @@ const Admin = () => {
                 </div>
 
                 <div className="admin-field">
-                  <label>Square Meters</label>
+                  <label>{t("admin.form.squareMeters")}</label>{" "}
                   <input
                     type="number"
                     name="square_meters"
@@ -560,7 +586,7 @@ const Admin = () => {
                 </div>
 
                 <div className="admin-field">
-                  <label>Year Built</label>
+                  <label>{t("admin.form.yearBuilt")}</label>{" "}
                   <input
                     type="number"
                     name="year_built"
@@ -571,29 +597,29 @@ const Admin = () => {
                 </div>
 
                 <div className="admin-field">
-                  <label>Buy Price (EUR)</label>
+                  <label>{t("admin.form.buyPrice")}</label>{" "}
                   <input
                     type="number"
                     name="buy"
                     value={form.buy}
                     onChange={handleChange}
-                    placeholder="Leave empty if rent only"
+                    placeholder={t("admin.form.buyPlaceholder")}
                   />
                 </div>
 
                 <div className="admin-field">
-                  <label>Monthly Rent (EUR)</label>
+                  <label>{t("admin.form.rentPrice")}</label>{" "}
                   <input
                     type="number"
                     name="rent"
                     value={form.rent}
                     onChange={handleChange}
-                    placeholder="Leave empty if buy only"
+                    placeholder={t("admin.form.rentPlaceholder")}
                   />
                 </div>
 
                 <div className="admin-field full">
-                  <label>Photo</label>
+                  <label>{t("admin.form.photo")}</label>{" "}
                   <input
                     type="file"
                     accept="image/*"
@@ -601,12 +627,14 @@ const Admin = () => {
                     disabled={uploading}
                   />
                   {uploading && (
-                    <p className="admin-upload-status">Uploading...</p>
+                    <p className="admin-upload-status">
+                      {t("admin.form.uploading")}
+                    </p>
                   )}
                   {form.photo && (
                     <img
                       src={form.photo}
-                      alt="Preview"
+                      alt={t("admin.form.preview")}
                       className="admin-photo-preview"
                     />
                   )}
@@ -616,7 +644,7 @@ const Admin = () => {
                     name="photo"
                     value={form.photo}
                     onChange={handleChange}
-                    placeholder="/photos/residence_1.webp or https://..."
+                    placeholder={t("admin.form.photoPlaceholder")}
                     required
                   />
                 </div>
@@ -629,7 +657,7 @@ const Admin = () => {
                       checked={form.is_available}
                       onChange={handleChange}
                     />
-                    Available
+                    {t("admin.form.available")}
                   </label>
                 </div>
               </div>
@@ -640,14 +668,18 @@ const Admin = () => {
                   className="admin-cancel-btn"
                   onClick={() => setShowForm(false)}
                 >
-                  Cancel
+                  {t("admin.form.cancel")}
                 </button>
                 <button
                   type="submit"
                   className="admin-save-btn"
                   disabled={saving || uploading}
                 >
-                  {saving ? "Saving..." : editId === null ? "Add" : "Update"}
+                  {saving
+                    ? t("admin.form.saving")
+                    : editId === null
+                      ? t("admin.form.add")
+                      : t("admin.form.update")}{" "}
                 </button>
               </div>
             </form>
@@ -659,9 +691,12 @@ const Admin = () => {
       <AnimatePresence>
         {deleteTarget && (
           <ConfirmModal
-            title="Delete this property?"
-            message={`"${deleteTarget.address}" will be permanently removed. This cannot be undone.`}
-            confirmLabel="Delete"
+            title={t("admin.deleteConfirm.title")}
+            message={t("admin.deleteConfirm.message", {
+              address: deleteTarget.address,
+            })}
+            confirmLabel={t("admin.deleteConfirm.confirm")}
+            cancelLabel={t("admin.deleteConfirm.cancel")}
             confirming={deleting}
             onConfirm={() => handleDelete(deleteTarget.id)}
             onCancel={() => setDeleteTarget(null)}
