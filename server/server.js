@@ -122,6 +122,16 @@ const authenticateSupabase = async (req, res, next) => {
   }
 };
 
+/*  Block write operations for demo accounts; must run after authenticateSupabase, since it relies on req.user; user is treated as  demo account if their Supabase user_metadata contains { role: "demo" } - enforced server-side so demo user can't bypass  restriction by calling  API directly with their own valid token  */
+const blockDemoWrites = (req, res, next) => {
+  if (req.user?.user_metadata?.role === "demo") {
+    return res.status(403).json({
+      error: "Demo accounts cannot make changes. This is a read-only demo.",
+    });
+  }
+  next();
+};
+
 // Liveness probe for deploys and uptime monitors (Render, etc.)
 app.get("/api/health", async (req, res) => {
   try {
@@ -147,66 +157,72 @@ app.get("/api/health", async (req, res) => {
    Field name expected in the multipart form data: "photo".
    The image is resized (max 1200px edge) and re-encoded as WebP quality 80
    via sharp before storage, regardless of the original size/format. */
-app.post("/api/upload", adminLimiter, authenticateSupabase, (req, res) => {
-  upload.single("photo")(req, res, async (err) => {
-    // Multer errors (wrong type, file too large) are surfaced here
-    // instead of the generic Express error handler.
-    if (err) {
-      return res.status(400).json({ error: err.message });
-    }
-
-    if (!req.file) {
-      return res.status(400).json({ error: "No photo file provided" });
-    }
-
-    try {
-      // Unique, collision-free filename: timestamp + sanitized original
-      // name (extension replaced below, since the output is always WebP
-      // regardless of what format was uploaded)
-      const safeBaseName = req.file.originalname
-        .toLowerCase()
-        .replace(/\.[^.]+$/, "") // strip original extension
-        .replace(/[^a-z0-9.]+/g, "-");
-      const fileName = `${Date.now()}-${safeBaseName}.webp`;
-
-      // Resize (only shrinks, never upscales) + re-encode as WebP before storing;
-      // Uploaded photos are often full camera/stock resolution (several thousand px wide) despite
-      // never being displayed larger than ~1200px anywhere in the app —> this keeps Storage usage and
-      // page load times reasonable regardless of what admin uploads
-      const optimizedBuffer = await sharp(req.file.buffer)
-        .resize({
-          width: 1200,
-          height: 1200,
-          fit: "inside",
-          withoutEnlargement: true,
-        })
-        .webp({ quality: 80 })
-        .toBuffer();
-
-      const { error: uploadError } = await supabaseAdmin.storage
-        .from(PHOTOS_BUCKET)
-        .upload(fileName, optimizedBuffer, {
-          contentType: "image/webp",
-          upsert: false,
-        });
-
-      if (uploadError) {
-        console.error("Supabase Storage error:", uploadError);
-        return res.status(500).json({ error: "Failed to upload photo" });
+app.post(
+  "/api/upload",
+  adminLimiter,
+  authenticateSupabase,
+  blockDemoWrites, // Demo accounts get 403 message instead of uploading photo to DB 
+  (req, res) => {
+    upload.single("photo")(req, res, async (err) => {
+      // Multer errors (wrong type, file too large) are surfaced here
+      // instead of the generic Express error handler.
+      if (err) {
+        return res.status(400).json({ error: err.message });
       }
 
-      // Bucket is public -> derive permanent public URL derivable
-      const {
-        data: { publicUrl },
-      } = supabaseAdmin.storage.from(PHOTOS_BUCKET).getPublicUrl(fileName);
+      if (!req.file) {
+        return res.status(400).json({ error: "No photo file provided" });
+      }
 
-      res.status(201).json({ url: publicUrl });
-    } catch (err) {
-      console.error("Upload error:", err);
-      res.status(500).json({ error: "Failed to upload photo" });
-    }
-  });
-});
+      try {
+        // Unique, collision-free filename: timestamp + sanitized original
+        // name (extension replaced below, since the output is always WebP
+        // regardless of what format was uploaded)
+        const safeBaseName = req.file.originalname
+          .toLowerCase()
+          .replace(/\.[^.]+$/, "") // strip original extension
+          .replace(/[^a-z0-9.]+/g, "-");
+        const fileName = `${Date.now()}-${safeBaseName}.webp`;
+
+        // Resize (only shrinks, never upscales) + re-encode as WebP before storing;
+        // Uploaded photos are often full camera/stock resolution (several thousand px wide) despite
+        // never being displayed larger than ~1200px anywhere in the app —> this keeps Storage usage and
+        // page load times reasonable regardless of what admin uploads
+        const optimizedBuffer = await sharp(req.file.buffer)
+          .resize({
+            width: 1200,
+            height: 1200,
+            fit: "inside",
+            withoutEnlargement: true,
+          })
+          .webp({ quality: 80 })
+          .toBuffer();
+
+        const { error: uploadError } = await supabaseAdmin.storage
+          .from(PHOTOS_BUCKET)
+          .upload(fileName, optimizedBuffer, {
+            contentType: "image/webp",
+            upsert: false,
+          });
+
+        if (uploadError) {
+          console.error("Supabase Storage error:", uploadError);
+          return res.status(500).json({ error: "Failed to upload photo" });
+        }
+
+        // Bucket is public -> derive permanent public URL derivable
+        const {
+          data: { publicUrl },
+        } = supabaseAdmin.storage.from(PHOTOS_BUCKET).getPublicUrl(fileName);
+
+        res.status(201).json({ url: publicUrl });
+      } catch (err) {
+        console.error("Upload error:", err);
+        res.status(500).json({ error: "Failed to upload photo" });
+      }
+    });
+  },
+);
 
 // GET /api/entries – returns all property listings (PUBLIC)
 app.get("/api/entries", async (req, res) => {
@@ -243,6 +259,7 @@ app.post(
   "/api/entries",
   adminLimiter, // Rate limit: 100 requests per 15 minutes (before auth check)
   authenticateSupabase, // Verify JWT token before allowing creation
+  blockDemoWrites, // Demo accounts get 403 instead of touching DB
   validate(entrySchema),
   async (req, res) => {
     // Extract all fields from request body (snake_case matches DB columns)
@@ -308,6 +325,7 @@ app.put(
   "/api/entries/:id",
   adminLimiter, // Rate limit: 100 requests per 15 minutes (before auth check to prevent unlimited attacks with invalid tokens)
   authenticateSupabase, // Verify JWT token before allowing updates
+  blockDemoWrites,
   validateParams(idParamSchema),
   validate(entrySchema),
   async (req, res) => {
@@ -379,8 +397,9 @@ app.put(
    Protected endpoint – requires valid Supabase JWT token */
 app.delete(
   "/api/entries/:id",
-  adminLimiter, // Rate limit: 100 requests per 15 minutes (before auth check to prevent unlimited attacks with invalid tokens)
+  adminLimiter, // Rate limit
   authenticateSupabase, // Verify JWT token before allowing deletion
+  blockDemoWrites,
   validateParams(idParamSchema),
   async (req, res) => {
     try {

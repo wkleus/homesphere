@@ -32,7 +32,7 @@ const EMPTY_FORM = {
 
 const Admin = () => {
   // AUTHENTICATION: Get user data, logout function, and JWT token from AuthContext
-  const { user, logout, supabaseToken } = useAuth();
+  const { user, logout, supabaseToken, isDemo } = useAuth();
 
   // STATE MANAGEMEN for Data & UI states
   const [entries, setEntries] = useState([]);
@@ -127,6 +127,16 @@ const Admin = () => {
 
   /* handleDelete - Deletes an entry by ID - called only after user confirms in ConfirmModal */
   const handleDelete = async (id) => {
+    // Frontend defense-in-depth —> real enforcement is blockDemoWrites on backend
+    if (isDemo) {
+      setFeedback({
+        type: "error",
+        message: "Demo accounts cannot delete entries.",
+      });
+      setDeleteTarget(null);
+      return;
+    }
+
     // Show loading state on the modal's confirm button
     setDeleting(true);
     // Clear any previous feedback messages
@@ -182,6 +192,18 @@ const Admin = () => {
      Sends snake_case payload (matches PostgreSQL column names) */
   const handleSave = async (e) => {
     e.preventDefault();
+
+    // Frontend defense-in-depth —> buttons that open this form already disabled
+    // for demo accounts; but actual security boundary is blockDemoWrites on backend,
+    // which rejects request regardless of this check
+    if (isDemo) {
+      setFeedback({
+        type: "error",
+        message: "Demo accounts cannot make changes.",
+      });
+      return;
+    }
+
     setSaving(true);
     setFeedback(null);
 
@@ -258,6 +280,15 @@ const Admin = () => {
   const handlePhotoUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // Frontend defense-in-depth
+    if (isDemo) {
+      setFeedback({
+        type: "error",
+        message: "Demo accounts cannot upload photos.",
+      });
+      return;
+    }
 
     setUploading(true);
     setFeedback(null);
@@ -361,6 +392,13 @@ const Admin = () => {
         </div>
       </div>
 
+      {isDemo && (
+        <div className="admin-demo-banner">
+          DEMO MODE &mdash; you're viewing a read-only demo account. Adding,
+          editing, deleting, and photo uploads are disabled.
+        </div>
+      )}
+
       {feedback && (
         <div className={`admin-feedback ${feedback.type}`}>
           {feedback.message}
@@ -371,7 +409,12 @@ const Admin = () => {
       <div className="entries-table-wrapper">
         {/* Add New Entry button */}
         <div className="admin-table-actions-top">
-          <button className="admin-add-btn" onClick={openAddForm}>
+          <button
+            className="admin-add-btn"
+            onClick={openAddForm}
+            disabled={isDemo}
+            title={isDemo ? "Disabled in demo mode" : undefined}
+          >
             <Plus size={18} /> {t("admin.addEntry")}
           </button>
         </div>
@@ -434,14 +477,20 @@ const Admin = () => {
                     <button
                       className="admin-edit-btn"
                       onClick={() => openEdit(entry)}
-                      title={t("admin.edit")}
+                      disabled={isDemo}
+                      title={isDemo ? "Disabled in demo mode" : "Edit"}
                     >
                       <Edit size={18} />
                     </button>
                     <button
                       className="admin-delete-btn"
                       onClick={() => setDeleteTarget(entry)}
-                      title={t("admin.deleteTitle")}
+                      disabled={isDemo}
+                      title={
+                        isDemo
+                          ? "Disabled in demo mode"
+                          : "Delete entry permanently"
+                      }
                     >
                       <DeleteIcon size={18} />
                     </button>

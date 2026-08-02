@@ -78,11 +78,16 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // True for demo accounts (Supabase user_metadata.role === "demo"); used to show read-only
+  // banner and disable write actions in UI; backend independently enforces this too
+  // (-> blockDemoWrites in server.js), so this is UX nicety (not actual security boundary)
+  const isDemo = user?.user_metadata?.role === "demo";
+
   // Provide auth context to all children components
   return (
     // Provide supabaseToken in the context
     <AuthContext.Provider
-      value={{ user, supabaseToken, loading, login, logout }}
+      value={{ user, supabaseToken, loading, login, logout, isDemo }}
     >
       {children}
     </AuthContext.Provider>
