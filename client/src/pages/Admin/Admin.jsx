@@ -131,7 +131,7 @@ const Admin = () => {
     if (isDemo) {
       setFeedback({
         type: "error",
-        message: "Demo accounts cannot delete entries.",
+        message: t("admin.demoCannotDelete"),
       });
       setDeleteTarget(null);
       return;
@@ -199,7 +199,7 @@ const Admin = () => {
     if (isDemo) {
       setFeedback({
         type: "error",
-        message: "Demo accounts cannot make changes.",
+        message: t("admin.demoCannotChange"),
       });
       return;
     }
@@ -285,7 +285,7 @@ const Admin = () => {
     if (isDemo) {
       setFeedback({
         type: "error",
-        message: "Demo accounts cannot upload photos.",
+        message: t("admin.demoCannotUpload"),
       });
       return;
     }
@@ -393,10 +393,7 @@ const Admin = () => {
       </div>
 
       {isDemo && (
-        <div className="admin-demo-banner">
-          DEMO MODE &mdash; you're viewing a read-only demo account. Adding,
-          editing, deleting, and photo uploads are disabled.
-        </div>
+        <div className="admin-demo-banner">{t("admin.demoBanner")}</div>
       )}
 
       {feedback && (
@@ -413,7 +410,7 @@ const Admin = () => {
             className="admin-add-btn"
             onClick={openAddForm}
             disabled={isDemo}
-            title={isDemo ? "Disabled in demo mode" : undefined}
+            title={isDemo ? t("admin.demoDisabledTitle") : undefined}
           >
             <Plus size={18} /> {t("admin.addEntry")}
           </button>
@@ -478,7 +475,9 @@ const Admin = () => {
                       className="admin-edit-btn"
                       onClick={() => openEdit(entry)}
                       disabled={isDemo}
-                      title={isDemo ? "Disabled in demo mode" : "Edit"}
+                      title={
+                        isDemo ? t("admin.demoDisabledTitle") : t("admin.edit")
+                      }
                     >
                       <Edit size={18} />
                     </button>
@@ -488,8 +487,8 @@ const Admin = () => {
                       disabled={isDemo}
                       title={
                         isDemo
-                          ? "Disabled in demo mode"
-                          : "Delete entry permanently"
+                          ? t("admin.demoDisabledTitle")
+                          : t("admin.deleteTitle")
                       }
                     >
                       <DeleteIcon size={18} />

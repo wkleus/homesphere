@@ -144,6 +144,11 @@
     "deleteTitle": "Eintrag endgültig löschen",
     "priceBuy": "EUR {{price}}",
     "priceRent": "EUR {{price}}/Monat",
+    "demoBanner": "DEMO-MODUS — Sie sehen ein schreibgeschütztes Demo-Konto. Hinzufügen, Bearbeiten, Löschen und Foto-Uploads sind deaktiviert.",
+    "demoDisabledTitle": "Im Demo-Modus deaktiviert",
+    "demoCannotDelete": "Demo-Konten können keine Einträge löschen.",
+    "demoCannotChange": "Demo-Konten können keine Änderungen vornehmen.",
+    "demoCannotUpload": "Demo-Konten können keine Fotos hochladen.",
     "table": {
       "id": "ID",
       "address": "Adresse",

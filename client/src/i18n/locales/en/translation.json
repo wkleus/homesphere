@@ -144,6 +144,11 @@
     "deleteTitle": "Delete entry permanently",
     "priceBuy": "EUR {{price}}",
     "priceRent": "EUR {{price}}/mo",
+    "demoBanner": "DEMO MODE — you're viewing a read-only demo account. Adding, editing, deleting, and photo uploads are disabled.",
+    "demoDisabledTitle": "Disabled in demo mode",
+    "demoCannotDelete": "Demo accounts cannot delete entries.",
+    "demoCannotChange": "Demo accounts cannot make changes.",
+    "demoCannotUpload": "Demo accounts cannot upload photos.",
     "table": {
       "id": "ID",
       "address": "Address",
