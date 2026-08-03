@@ -55,3 +55,101 @@ body {
     padding: 0.8rem 1rem;
   }
 }
+
+/* AI Chat Toggle Button */
+.ai-chat-toggle {
+  position: fixed;
+  bottom: 18px;
+  right: 18px;
+  z-index: 999;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-chat-toggle__avatar-wrapper {
+  position: relative;
+  width: 50px;
+  height: 50px;
+}
+
+/* Pulsating ring – with pause between each pulse */
+.ai-chat-toggle__ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: #1c15aa;
+  opacity: 0.3;
+  animation: pulse-ring 7s ease-out infinite;
+  will-change: transform, opacity;
+}
+
+.ai-chat-toggle__avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1c15aa, #3aa8ed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.4);
+  transition: transform 0.3s;
+  position: relative;
+  z-index: 1;
+}
+
+.ai-chat-toggle__avatar:hover {
+  transform: scale(1.05);
+}
+
+.ai-chat-toggle__label {
+  color: #6b7280;
+  font-size: 11px;
+  font-weight: 500;
+  background: white;
+  padding: 4px 6px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* AI Chat Button Animations */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.25;
+  }
+  5% {
+    /* Expand quickly */
+    transform: scale(1.3);
+    opacity: 0.15;
+  }
+  15% {
+    /* Maximum radius */
+    transform: scale(1.5);
+    opacity: 0.05;
+  }
+  30% {
+    /* Soft fade-out */
+    transform: scale(1.6);
+    opacity: 0.01;
+  }
+  50% {
+    /* Almost gone */
+    transform: scale(1.7);
+    opacity: 0.002;
+  }
+  75% {
+    /* Almost gone */
+    transform: scale(1.8);
+    opacity: 0.0005;
+  }
+  100% {
+    /* Fully disappeared */
+    transform: scale(1);
+    opacity: 0;
+  }
+}

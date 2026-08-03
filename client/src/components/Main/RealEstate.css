@@ -3,7 +3,7 @@
   max-width: 1800px;
   margin: 0 auto;
   justify-content: center;
-  gap: 1rem;
+  /* gap: 1rem; */
   padding: 1rem;
   /* new element will be placed on a new line when it doesn't fit */
   flex-wrap: wrap;

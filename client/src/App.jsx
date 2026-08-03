@@ -13,9 +13,13 @@ import Admin from "./pages/Admin/Admin";
 import { AuthProvider } from "./context/AuthProvider";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import NotFound from "./pages/NotFound/NotFound";
+import { useState } from "react";
+import AIAgentChat from "./components/AIAgent/AIAgentChat";
+import { House, X } from "lucide-react"; //
 
 function App() {
   const location = useLocation(); // Get current location for animations
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   return (
     // AuthProvider wraps everything to provide auth state globally
@@ -48,6 +52,33 @@ function App() {
           </AnimatePresence>
 
           <Footer />
+
+          {/* AI Chat Button – completely hidden when chat is open */}
+          {!isChatOpen && (
+            <button
+              onClick={() => setIsChatOpen(true)}
+              className="ai-chat-toggle"
+              aria-label="Open AI assistant"
+              aria-expanded={false}
+            >
+              {/* Avatar with pulsating ring */}
+              <div className="ai-chat-toggle__avatar-wrapper">
+                <div className="ai-chat-toggle__ring" />
+                <div className="ai-chat-toggle__avatar">
+                  <House size={28} color="white" strokeWidth={1.5} />
+                </div>
+              </div>
+
+              {/* Label */}
+              <span className="ai-chat-toggle__label">House‑hunting?</span>
+            </button>
+          )}
+
+          {/* AI Chat Component */}
+          <AIAgentChat
+            isOpen={isChatOpen}
+            onClose={() => setIsChatOpen(false)}
+          />
         </div>
       </FavoritesProvider>
     </AuthProvider>
