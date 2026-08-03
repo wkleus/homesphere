@@ -18,7 +18,7 @@
 
 ### Demo login (read-only admin)
 
-Interested users who simply want to test the app can explore the admin dashboard—but without modifying production data:
+Interested users who simply want to test the admin part of this app can explore the admin dashboard — but without modifying production data:
 
 |              |                                                                                    |
 | ------------ | ---------------------------------------------------------------------------------- |
@@ -38,15 +38,15 @@ Built with **security**, **performance**, and **user experience** in mind – fe
 
 ## Screenshots
 
-|                                                                                          |                                                                                    |
-| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| ![Home](client/public/screenshots/home.png)<br>_Home Page with Advanced Filter_          | ![Main](client/public/screenshots/main.png)<br>_Main Listings_                     |
-| ![Footer](client/public/screenshots/footer.png)<br>_Footer_                              | ![Details](client/public/screenshots/details.png)<br>_Property Details_            |
-| ![Contact Form](client/public/screenshots/contact-form.png)<br>_Contact Form_            | ![Favorites](client/public/screenshots/favorites-page.png)<br>_Favorites_          |
-| ![Calculator](client/public/screenshots/calculator.png)<br>_Mortgage Calculator_         | ![Contact Page](client/public/screenshots/contact-page.png)<br>_Contact Page_      |
-| ![Login](client/public/screenshots/login-page.png)<br>_Login_                            | ![Admin](client/public/screenshots/admin-page.png)<br>_Admin Dashboard_            |
-| ![Add Entry](client/public/screenshots/add-new-entry-modal.png)<br>_Add New Entry Modal_ | ![Edit Entry](client/public/screenshots/edit-entry-modal.png)<br>_Add Entry Modal_ |
-| ![Delete Entry](client/public/screenshots/delete-entry-modal.png)<br>_Delete Entry_      |                                                                                    |
+|                                                                                             |                                                                                    |
+| ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| ![Home](client/public/screenshots/home.png)<br>_Home Page with Advanced Filter & AI Button_ | ![Main](client/public/screenshots/main.png)<br>_Main Listings_                     |
+| ![Footer](client/public/screenshots/footer.png)<br>_Footer_                                 | ![Details](client/public/screenshots/details.png)<br>_Property Details_            |
+| ![Contact Form](client/public/screenshots/contact-form.png)<br>_Contact Form_               | ![Favorites](client/public/screenshots/favorites-page.png)<br>_Favorites_          |
+| ![Calculator](client/public/screenshots/calculator.png)<br>_Mortgage Calculator_            | ![Contact Page](client/public/screenshots/contact-page.png)<br>_Contact Page_      |
+| ![Login](client/public/screenshots/login-page.png)<br>_Login_                               | ![Admin](client/public/screenshots/admin-page.png)<br>_Admin Dashboard_            |
+| ![Add Entry](client/public/screenshots/add-new-entry-modal.png)<br>_Add New Entry Modal_    | ![Edit Entry](client/public/screenshots/edit-entry-modal.png)<br>_Add Entry Modal_ |
+| ![Delete Entry](client/public/screenshots/delete-entry-modal.png)<br>_Delete Entry_         | ![Not Found](client/public/screenshots/404.png)<br>_Not Found Page_                |
 
 ---
 
