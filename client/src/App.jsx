@@ -15,7 +15,7 @@ import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import NotFound from "./pages/NotFound/NotFound";
 import { useState } from "react";
 import AIAgentChat from "./components/AIAgent/AIAgentChat";
-import { House, X } from "lucide-react"; //
+import { House } from "lucide-react"; //
 
 function App() {
   const location = useLocation(); // Get current location for animations
