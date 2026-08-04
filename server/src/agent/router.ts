@@ -2,8 +2,16 @@ import { Router } from "express";
 import { z } from "zod";
 import { runAgent } from "./graph.js";
 import type { PropertyRow } from "./searchProperties.js";
+import rateLimit from "express-rate-limit";
 
 const router = Router();
+
+// Limit how often one IP can call agent
+const agentLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 20,
+  message: { error: "Too many AI requests, please try again later." },
+});
 
 // Body must contain non-empty message string; empty or extremely long text → 400
 const matchBodySchema = z.object({
@@ -31,7 +39,7 @@ function toSuggestion(row: PropertyRow) {
 /** POST /match
  *  Body: { message: string, locale?: "en" | "de" }
  *  Runs parse → search and returns status + suggestions */
-router.post("/match", async (req, res) => {
+router.post("/match", agentLimiter, async (req, res) => {
   const parsed = matchBodySchema.safeParse(req.body);
 
   if (!parsed.success) {
