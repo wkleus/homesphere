@@ -3,6 +3,8 @@ import { X, Bot } from "lucide-react";
 import "./AIAgentChat.css";
 import { MdOutlineForwardToInbox, MdPersonOutline } from "react-icons/md";
 import { MdHourglassEmpty } from "react-icons/md";
+import { Link } from "react-router-dom";
+import { AGENT_MATCH_URL } from "../../config/api";
 
 export default function AIAgentChat({ isOpen, onClose }) {
   const [messages, setMessages] = useState([
@@ -20,23 +22,78 @@ export default function AIAgentChat({ isOpen, onClose }) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const sendMessage = (e) => {
+  /** Map API status/payload to chat text and optional listing links */
+  function formatAgentReply(data) {
+    if (data.status === "need_more_info") {
+      return {
+        content:
+          data.followUpQuestion ||
+          "Could you share a bit more (city, rooms, or budget)?",
+        suggestions: [],
+      };
+    }
+
+    if (data.status === "no_match") {
+      return {
+        content:
+          "I couldn't find a matching property. Try different rooms, budget, or city.",
+        suggestions: [],
+      };
+    }
+
+    const list = data.suggestions ?? [];
+    if (list.length === 0) {
+      return { content: "No listings to show.", suggestions: [] };
+    }
+
+    return {
+      content: `I found ${list.length} listing(s) that match your request:`,
+      suggestions: list,
+    };
+  }
+
+  // Call server agent (DeepSeek + DB stay on backend)
+  const sendMessage = async (e) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
-    const userMessage = { role: "user", content: input };
+    const text = input.trim();
+    const userMessage = { role: "user", content: text };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
 
-    setTimeout(() => {
-      const mockResponse = {
-        role: "assistant",
-        content: `I have received your request: "${userMessage.content}". The AI assistant will soon search for real estate and present suitable listings to you!`,
-      };
-      setMessages((prev) => [...prev, mockResponse]);
+    try {
+      const res = await fetch(AGENT_MATCH_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Request failed");
+      }
+
+      const { content, suggestions } = formatAgentReply(data);
+
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content, suggestions },
+      ]);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: "Sorry, something went wrong. Please try again.",
+          suggestions: [],
+        },
+      ]);
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   if (!isOpen) return null;
@@ -78,6 +135,26 @@ export default function AIAgentChat({ isOpen, onClose }) {
                     <p key={i}>{line}</p>
                   ))}
                 </div>
+
+                {/* Clickable matches → property detail; close chat panel */}
+                {msg.suggestions?.length > 0 && (
+                  <ul className="ai-suggestions">
+                    {msg.suggestions.map((s) => (
+                      <li key={s.id}>
+                        <Link
+                          to={`/estate/${s.id}`}
+                          className="ai-suggestion-link"
+                          onClick={onClose}
+                        >
+                          {s.category} · {s.rooms} rooms · {s.address}
+                          {s.buy != null && ` · €${s.buy.toLocaleString()}`}
+                          {s.rent != null &&
+                            ` · €${s.rent.toLocaleString()}/mo`}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </div>
           ))}

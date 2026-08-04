@@ -226,6 +226,31 @@
   cursor: not-allowed;
 }
 
+.ai-suggestions {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ai-suggestion-link {
+  display: block;
+  font-size: 12px;
+  line-height: 1.35;
+  color: #1c15aa;
+  text-decoration: none;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: #eef2ff;
+}
+
+.ai-suggestion-link:hover {
+  background: #e0e7ff;
+  text-decoration: underline;
+}
+
 /* Mobile */
 @media (max-width: 640px) {
   .ai-chat-overlay {
