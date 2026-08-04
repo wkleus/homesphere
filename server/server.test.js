@@ -15,7 +15,7 @@ const mockQuery = vi.hoisted(() => vi.fn());
 // }));
 
 // Mock the database pool and Supabase Admin Client
-vi.mock("./db.js", () => ({
+vi.mock("./src/db.js", () => ({
   pool: { query: mockQuery },
   supabaseAdmin: { auth: { getUser: vi.fn() } },
 }));
