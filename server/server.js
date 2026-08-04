@@ -6,10 +6,11 @@ import he from "he";
 import rateLimit from "express-rate-limit";
 import multer from "multer";
 import sharp from "sharp";
-import { pool, supabaseAdmin } from "./db.js";
+import { pool, supabaseAdmin } from "./src/db.js";
 import { contactSchema, entrySchema, idParamSchema } from "./validation.js";
 import { validate, validateParams } from "./middleware/validate.js";
 import helmet from "helmet";
+import agentRouter from "./src/agent/router.ts";
 
 dotenv.config();
 
@@ -39,6 +40,8 @@ app.use(
 );
 // Cap request body size to reduce risk of oversized payload attacks
 app.use(express.json({ limit: "100kb" }));
+
+app.use("/api/agent", agentRouter);
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -161,7 +164,7 @@ app.post(
   "/api/upload",
   adminLimiter,
   authenticateSupabase,
-  blockDemoWrites, // Demo accounts get 403 message instead of uploading photo to DB 
+  blockDemoWrites, // Demo accounts get 403 message instead of uploading photo to DB
   (req, res) => {
     upload.single("photo")(req, res, async (err) => {
       // Multer errors (wrong type, file too large) are surfaced here
