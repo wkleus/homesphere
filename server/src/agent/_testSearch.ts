@@ -1,6 +1,6 @@
 import "dotenv/config";
-import { searchProperties } from "./searchProperties.js";
-import type { SearchCriteria } from "./criteriaSchema.js";
+import { searchProperties } from "./searchProperties.ts";
+import type { SearchCriteria } from "./criteriaSchema.ts";
 
 const criteria: SearchCriteria = {
   dealType: "buy",

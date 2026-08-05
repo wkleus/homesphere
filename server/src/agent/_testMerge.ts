@@ -1,5 +1,5 @@
-import { mergeCriteria } from "./mergeCriteria.js";
-import type { SearchCriteria } from "./criteriaSchema.js";
+import { mergeCriteria } from "./mergeCriteria.ts";
+import type { SearchCriteria } from "./criteriaSchema.ts";
 
 const previous: SearchCriteria = {
   dealType: "buy",

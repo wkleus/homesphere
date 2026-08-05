@@ -1,14 +1,27 @@
 import { Annotation, END, START, StateGraph } from "@langchain/langgraph";
-import { parseIntent } from "./parseIntent.js";
-import { searchProperties, type PropertyRow } from "./searchProperties.js";
-import type { SearchCriteria } from "./criteriaSchema.js";
+import { type ChatTurn, parseIntent } from "./parseIntent.ts";
+import { searchProperties, type PropertyRow } from "./searchProperties.ts";
+import type { SearchCriteria } from "./criteriaSchema.ts";
+import { mergeCriteria } from "./mergeCriteria.ts";
 
 /** Shared state that flows through every node in graph */
 const AgentState = Annotation.Root({
   // Input from user
   message: Annotation<string>,
 
-  // Filled by parse node
+  // Optional short chat history BEFORE current message
+  history: Annotation<ChatTurn[]>({
+    reducer: (_prev, next) => next,
+    default: () => [],
+  }),
+
+  // Last criteria from previous turn (client sends this back)
+  previousCriteria: Annotation<SearchCriteria | null>({
+    reducer: (_prev, next) => next,
+    default: () => null,
+  }),
+
+  // Filled by parse node (after merge)
   criteria: Annotation<SearchCriteria | null>({
     reducer: (_prev, next) => next,
     default: () => null,
@@ -35,7 +48,13 @@ const AgentState = Annotation.Root({
 async function parseNode(
   state: typeof AgentState.State,
 ): Promise<Partial<typeof AgentState.State>> {
-  const criteria = await parseIntent(state.message);
+  const raw = await parseIntent(
+    state.message,
+    state.history ?? [],
+    state.previousCriteria ?? null,
+  );
+
+  const criteria = mergeCriteria(state.previousCriteria, raw);
 
   return {
     criteria,
@@ -82,13 +101,27 @@ const workflow = new StateGraph(AgentState)
 /** Compiled graph -> result: executable object */
 const agentGraph = workflow.compile();
 
+export type RunAgentInput = {
+  message: string;
+  history?: ChatTurn[];
+  previousCriteria?: SearchCriteria | null;
+};
+
 /**
  * Run full pipeline: parse intent, then search listings
+ * Accepts plain string or { message, history, previousCriteria }
  */
-export async function runAgent(message: string) {
-  const finalState = await agentGraph.invoke({
-    message,
-  });
+export async function runAgent(input: string | RunAgentInput) {
+  const payload =
+    typeof input === "string"
+      ? { message: input, history: [] as ChatTurn[], previousCriteria: null }
+      : {
+          message: input.message,
+          history: input.history ?? [],
+          previousCriteria: input.previousCriteria ?? null,
+        };
+
+  const finalState = await agentGraph.invoke(payload);
 
   return {
     status: finalState.status,

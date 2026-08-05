@@ -1,6 +1,6 @@
 import "dotenv/config";
-import { parseIntent } from "./parseIntent.js";
-import { searchProperties } from "./searchProperties.js";
+import { parseIntent } from "./parseIntent.ts";
+import { searchProperties } from "./searchProperties.ts";
 
 // → locationHints: null → should yield results if seeds match
 const message = "3-room apartment, buy under 500000 euros";

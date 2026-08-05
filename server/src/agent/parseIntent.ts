@@ -1,5 +1,7 @@
-import { llm } from "./llm.js";
-import { criteriaSchema, type SearchCriteria } from "./criteriaSchema.js";
+import { llm } from "./llm.ts";
+import { criteriaSchema, type SearchCriteria } from "./criteriaSchema.ts";
+
+export type ChatTurn = { role: "user" | "assistant"; content: string };
 
 // Fixed rules for model
 const SYSTEM_PROMPT = `You extract real-estate search criteria from the user message.
@@ -15,9 +17,8 @@ Rules:
 - If the request is too vague to search (no place, size, type, or budget at all), set needMoreInfo to true and set followUpQuestion to one short clarifying question in the same language as the user.
 - If you can search with what was given, needMoreInfo must be false and followUpQuestion null.
 - Never invent addresses, listing IDs, or facts not implied by the user message.
-- Follow-ups may refer to earlier messages (e.g. "rent instead").
-Set fields the user did not change to null so the server can keep previous values.
-Do not invent listings.
+- Follow-ups may refer to earlier messages (e.g. "rent instead", "lieber zur Miete").
+- For fields the user did not change in this turn, return null so the server can keep previous values.
 
 Example JSON shape:
 {
@@ -35,8 +36,6 @@ Example JSON shape:
   "needMoreInfo": false,
   "followUpQuestion": null
 }`;
-
-export type ChatTurn = { role: "user" | "assistant"; content: string };
 
 /**
  * Turn natural-language request into SearchCriteria via DeepSeek
@@ -72,5 +71,7 @@ export async function parseIntent(
 
   turns.push({ role: "user", content: message });
 
-  return structured.invoke(turns);
+  const result = await structured.invoke(turns);
+
+  return result;
 }

@@ -1,4 +1,4 @@
-import type { SearchCriteria } from "./criteriaSchema.js";
+import type { SearchCriteria } from "./criteriaSchema.ts";
 
 /**
  * Merge the most recently known criteria with the LLM extraction from this run

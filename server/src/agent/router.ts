@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { z } from "zod";
-import { runAgent } from "./graph.js";
-import type { PropertyRow } from "./searchProperties.js";
+import { runAgent } from "./graph.ts";
+import type { PropertyRow } from "./searchProperties.ts";
 import rateLimit from "express-rate-limit";
 import { criteriaSchema } from "./criteriaSchema.ts";
 

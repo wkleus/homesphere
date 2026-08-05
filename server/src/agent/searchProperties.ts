@@ -1,5 +1,5 @@
 import { pool } from "../db.js";
-import type { SearchCriteria } from "./criteriaSchema.js";
+import type { SearchCriteria } from "./criteriaSchema.ts";
 
 export type PropertyRow = {
   id: number;

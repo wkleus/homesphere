@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { parseIntent } from "./parseIntent.js";
+import { parseIntent } from "./parseIntent.ts";
 
 const criteria = await parseIntent(
   "lieber zur Miete",
