@@ -15,6 +15,9 @@ Rules:
 - If the request is too vague to search (no place, size, type, or budget at all), set needMoreInfo to true and set followUpQuestion to one short clarifying question in the same language as the user.
 - If you can search with what was given, needMoreInfo must be false and followUpQuestion null.
 - Never invent addresses, listing IDs, or facts not implied by the user message.
+- Follow-ups may refer to earlier messages (e.g. "rent instead").
+Set fields the user did not change to null so the server can keep previous values.
+Do not invent listings.
 
 Example JSON shape:
 {
@@ -33,20 +36,41 @@ Example JSON shape:
   "followUpQuestion": null
 }`;
 
+export type ChatTurn = { role: "user" | "assistant"; content: string };
+
 /**
  * Turn natural-language request into SearchCriteria via DeepSeek
  */
-export async function parseIntent(message: string): Promise<SearchCriteria> {
+export async function parseIntent(
+  message: string,
+  history: ChatTurn[] = [],
+  previousCriteria: SearchCriteria | null = null,
+): Promise<SearchCriteria> {
   // Wrap LLM in such way that response conforms to Zod schema -> invalid
   // formats are avoided or intercepted and LLM model must return matching JSON
   const structured = llm.withStructuredOutput(criteriaSchema, {
     method: "jsonMode", // NOTE: // DeepSeek supports only json_object, not json_schema → method: "jsonMode"
   });
 
-  const result = await structured.invoke([
+  const turns: { role: "system" | "user" | "assistant"; content: string }[] = [
     { role: "system", content: SYSTEM_PROMPT },
-    { role: "user", content: message },
-  ]);
+  ];
 
-  return result;
+  // Optional context: previous filters (merge still happens later in the graph)
+  if (previousCriteria) {
+    turns.push({
+      role: "system",
+      content:
+        "Last known search criteria (JSON). For unchanged fields the model should return null so they can be merged:\n" +
+        JSON.stringify(previousCriteria),
+    });
+  }
+
+  for (const h of history) {
+    turns.push({ role: h.role, content: h.content });
+  }
+
+  turns.push({ role: "user", content: message });
+
+  return structured.invoke(turns);
 }
