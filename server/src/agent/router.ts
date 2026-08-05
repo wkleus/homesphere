@@ -3,6 +3,7 @@ import { z } from "zod";
 import { runAgent } from "./graph.js";
 import type { PropertyRow } from "./searchProperties.js";
 import rateLimit from "express-rate-limit";
+import { criteriaSchema } from "./criteriaSchema.ts";
 
 const router = Router();
 
@@ -13,10 +14,19 @@ const agentLimiter = rateLimit({
   message: { error: "Too many AI requests, please try again later." },
 });
 
+const historyItemSchema = z.object({
+  role: z.enum(["user", "assistant"]),
+  content: z.string().trim().min(1).max(2000),
+});
+
 // Body must contain non-empty message string; empty or extremely long text → 400
 const matchBodySchema = z.object({
   message: z.string().trim().min(1).max(1000),
   locale: z.enum(["en", "de"]).optional(),
+  // Last few turns BEFORE the current message (current text is `message` only)
+  history: z.array(historyItemSchema).max(6).optional(),
+  // Last criteria returned by the API (same shape as SearchCriteria)
+  previousCriteria: criteriaSchema.nullable().optional(),
 });
 
 /** Map DB snake_case row → camelCase for React client */
