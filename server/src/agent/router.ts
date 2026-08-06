@@ -7,11 +7,20 @@ import { criteriaSchema } from "./criteriaSchema.ts";
 
 const router = Router();
 
-// Limit how often one IP can call agent
-const agentLimiter = rateLimit({
+// Short window: stop bursts / rapid spam
+const agentBurstLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 20,
+  max: 5,
   message: { error: "Too many AI requests, please try again later." },
+});
+
+// Long window: daily budget per IP (in-memory; resets on server restart)
+const agentDailyLimiter = rateLimit({
+  windowMs: 24 * 60 * 60 * 1000, // 24 hours
+  max: 10,
+  message: {
+    error: "Daily AI request limit reached. Please try again tomorrow.",
+  },
 });
 
 const historyItemSchema = z.object({
@@ -49,39 +58,44 @@ function toSuggestion(row: PropertyRow) {
 /** POST /match
  *  Body: { message, history?, previousCriteria?, locale? }
  *  Runs parse → search and returns status + suggestions */
-router.post("/match", agentLimiter, async (req, res) => {
-  const parsed = matchBodySchema.safeParse(req.body);
+router.post(
+  "/match",
+  agentBurstLimiter,
+  agentDailyLimiter,
+  async (req, res) => {
+    const parsed = matchBodySchema.safeParse(req.body);
 
-  if (!parsed.success) {
-    return res.status(400).json({
-      error: "Validation failed",
-      details: z.flattenError(parsed.error),
-    });
-  }
+    if (!parsed.success) {
+      return res.status(400).json({
+        error: "Validation failed",
+        details: z.flattenError(parsed.error),
+      });
+    }
 
-  const { message, history, previousCriteria } = parsed.data;
+    const { message, history, previousCriteria } = parsed.data;
 
-  try {
-    // Pass short memory so follow-ups keep prior filters
-    const result = await runAgent({
-      message,
-      history,
-      previousCriteria,
-    });
+    try {
+      // Pass short memory so follow-ups keep prior filters
+      const result = await runAgent({
+        message,
+        history,
+        previousCriteria,
+      });
 
-    return res.status(200).json({
-      status: result.status,
-      criteria: result.criteria,
-      suggestions: (result.suggestions ?? []).map(toSuggestion),
-      followUpQuestion: result.followUpQuestion,
-    });
-  } catch (err) {
-    console.error("Agent error:", err);
-    return res.status(500).json({
-      error: "Agent failed to process the request",
-    });
-  }
-});
+      return res.status(200).json({
+        status: result.status,
+        criteria: result.criteria,
+        suggestions: (result.suggestions ?? []).map(toSuggestion),
+        followUpQuestion: result.followUpQuestion,
+      });
+    } catch (err) {
+      console.error("Agent error:", err);
+      return res.status(500).json({
+        error: "Agent failed to process the request",
+      });
+    }
+  },
+);
 
 export default router;
 

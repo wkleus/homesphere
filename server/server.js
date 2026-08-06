@@ -16,6 +16,9 @@ dotenv.config();
 
 const app = express();
 
+// Trust proxy so Express uses the real client IP behind Vercel/Render
+app.set("trust proxy", 1);
+
 // Security headers (XSS, clickjacking, MIME sniffing, HSTS, etc.)
 app.use(helmet());
 
