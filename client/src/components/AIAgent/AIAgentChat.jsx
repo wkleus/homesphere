@@ -11,7 +11,7 @@ export default function AIAgentChat({ isOpen, onClose }) {
     {
       role: "assistant",
       content:
-        'Hello! I’m your personal real estate assistant. Just describe what you’re looking for – e.g.:\n• "3-room apartment in Berlin"\n• "House in Munich, max. €500,000"\n• "Rental apartment in Hamburg with a garden"',
+        'Hello! I’m your personal real estate assistant. Just describe what you’re looking for – e.g.:\n• "House in Portugal, max. €500,000"\n• "4-room rental apartment in Segovia"',
     },
   ]);
   const [input, setInput] = useState("");
@@ -65,7 +65,8 @@ export default function AIAgentChat({ isOpen, onClose }) {
 
     // Short history BEFORE this message (text only — no suggestion payloads)
     const history = messages
-      .slice(-6)
+      .slice(1) // skip initial assistant greeting message (for cost reasons)
+      .slice(-4) // keep only last 4 turns
       .map(({ role, content }) => ({ role, content }));
 
     setMessages((prev) => [...prev, userMessage]);
