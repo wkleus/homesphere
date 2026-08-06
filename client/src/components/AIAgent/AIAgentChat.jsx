@@ -16,6 +16,9 @@ export default function AIAgentChat({ isOpen, onClose }) {
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  // Last search criteria from API — sent back so follow-ups keep filters
+  const [lastCriteria, setLastCriteria] = useState(null);
+
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -59,6 +62,12 @@ export default function AIAgentChat({ isOpen, onClose }) {
 
     const text = input.trim();
     const userMessage = { role: "user", content: text };
+
+    // Short history BEFORE this message (text only — no suggestion payloads)
+    const history = messages
+      .slice(-6)
+      .map(({ role, content }) => ({ role, content }));
+
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
@@ -67,13 +76,22 @@ export default function AIAgentChat({ isOpen, onClose }) {
       const res = await fetch(AGENT_MATCH_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text }),
+        body: JSON.stringify({
+          message: text,
+          history,
+          previousCriteria: lastCriteria,
+        }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
         throw new Error(data.error || "Request failed");
+      }
+
+      // Remember criteria for next follow-up turn
+      if (data.criteria) {
+        setLastCriteria(data.criteria);
       }
 
       const { content, suggestions } = formatAgentReply(data);
