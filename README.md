@@ -30,9 +30,9 @@ The demo account is **read-only**: listing and inquiry views work; create, edit,
 
 ---
 
-HomeSphere is a full-stack real estate platform for property seekers and administrators. Browse listings across Europe, filter by category and deal type, save favorites, and contact agents via email. Admins can manage the entire property catalog through a protected dashboard. An advanced search enables combined filtering across key property attributes for fast, precise results.
+HomeSphere is a full-stack real estate platform for property seekers and administrators. Browse listings across Europe, filter by category and deal type, save favorites, and contact agents via email.An advanced search enables combined filtering across key property attributes for fast, precise results. A conversational AI Property Matching Agent (DeepSeek + LangGraph) lets users describe what they're looking for in plain language and get matching listings. Admins can manage the entire property catalog through a protected dashboard.
 
-**Tech Stack:** React frontend with a Node.js/Express REST API, PostgreSQL on Supabase, Resend for emails, and react‑i18next for multilingual support (EN/DE).
+**Tech Stack:** React frontend with a Node.js/Express REST API, PostgreSQL on Supabase, DeepSeek (via LangGraph) for AI-powered search, Resend for emails, and react‑i18next for multilingual support (EN/DE).
 
 Built with **security**, **performance**, and **user experience** in mind – featuring Supabase Authentication, JWT-based session management, lazy loading, and a fully responsive design.
 
@@ -79,6 +79,15 @@ Built with **security**, **performance**, and **user experience** in mind – fe
 - Pagination for property listings
 - Confirmation modal before deleting a property
 - Contact inquiries persisted in PostgreSQL and listed in the admin dashboard
+
+### AI Property Matching Agent
+
+- Conversational search: describe what you're looking for in plain language (EN/DE) and get matching listings
+- `POST /api/agent/match` runs a LangGraph pipeline (`parse` → `search`): DeepSeek extracts structured search criteria from the message, then a parameterized SQL query searches `entries`
+- Multi-turn follow-ups (e.g. "rent instead") merge with the previous turn's criteria server-side, so the model only needs to return what changed
+- Clarifying questions (`needMoreInfo` / `followUpQuestion`) when a request is too vague to search
+- Rate limited to 20 requests / 10 minutes per IP
+- Cost-optimized: fixed, byte-identical system prompt kept as the first message so DeepSeek's automatic prompt caching applies, plus a trimmed client-side chat history (last 4 turns, greeting excluded)
 
 ### Authentication & Security
 
@@ -129,44 +138,48 @@ Built with **security**, **performance**, and **user experience** in mind – fe
 
 ## Tech Stack
 
-|              | Tool                           | Version |
-| ------------ | ------------------------------ | ------- |
-| **Frontend** | React                          | 19      |
-|              | React Router DOM               | 7       |
-|              | Phosphor Icons                 | 1       |
-|              | Lucide Icons                   | 1       |
-|              | Yup                            | 1       |
-|              | Vite                           | 8       |
-|              | CSS Custom Properties          |         |
-|              | react-i18next                  | 17      |
-|              | i18next                        | 26      |
-|              | Leaflet + react-leaflet        | 1 / 4   |
-|              | Vitest + React Testing Library | 4 / 16  |
-|              | Framer Motion                  | 12      |
-| **Backend**  | Node.js                        |         |
-|              | Express                        | 4       |
-|              | CORS                           | 2       |
-|              | pg (node-postgres)             | 8       |
-|              | dotenv                         | 17      |
-|              | express-rate-limit             | 7       |
-|              | he(XSS sanitization)           | 1       |
-|              | multer (file uploads)          | 2       |
-|              | sharp (image processing)       | 0.35    |
-|              | zod (validation)               | 4       |
-|              | helmet (security headers)      | 8       |
-|              | Resend                         | 6       |
-|              | @supabase/supabase-js          | 2       |
-|              | Vitest + Supertest             | 4 / 7   |
-| **Database** | PostgreSQL via Supabase        |         |
-| **Hosting**  | Vercel (Frontend)              |         |
-|              | Render (Backend API)           |         |
-|              | Supabase (Database + Auth)     |         |
-| **Auth**     | Supabase Auth                  |         |
-|              | JWT (JSON Web Tokens)          |         |
-| **Email**    | Resend                         |         |
-| **Testing**  | Vitest                         |         |
-|              | React Testing Library          |         |
-|              | Supertest                      |         |
+|              | Tool                                 | Version  |
+| ------------ | ------------------------------------ | -------- |
+| **Frontend** | React                                | 19       |
+|              | React Router DOM                     | 7        |
+|              | Phosphor Icons                       | 1        |
+|              | Lucide Icons                         | 1        |
+|              | Yup                                  | 1        |
+|              | Vite                                 | 8        |
+|              | CSS Custom Properties                |          |
+|              | react-i18next                        | 17       |
+|              | i18next                              | 26       |
+|              | Leaflet + react-leaflet              | 1 / 4    |
+|              | Vitest + React Testing Library       | 4 / 16   |
+|              | Framer Motion                        | 12       |
+| **Backend**  | Node.js                              |          |
+|              | Express                              | 4        |
+|              | CORS                                 | 2        |
+|              | pg (node-postgres)                   | 8        |
+|              | dotenv                               | 17       |
+|              | express-rate-limit                   | 7        |
+|              | he(XSS sanitization)                 | 1        |
+|              | multer (file uploads)                | 2        |
+|              | sharp (image processing)             | 0.35     |
+|              | zod (validation)                     | 4        |
+|              | helmet (security headers)            | 8        |
+|              | Resend                               | 6        |
+|              | @supabase/supabase-js                | 2        |
+|              | Vitest + Supertest                   | 4 / 7    |
+| **AI**       | DeepSeek (via OpenAI-compatible API) | v4-flash |
+|              | @langchain/core                      | 1        |
+|              | @langchain/langgraph                 | 1        |
+|              | @langchain/openai                    | 1        |
+| **Database** | PostgreSQL via Supabase              |          |
+| **Hosting**  | Vercel (Frontend)                    |          |
+|              | Render (Backend API)                 |          |
+|              | Supabase (Database + Auth)           |          |
+| **Auth**     | Supabase Auth                        |          |
+|              | JWT (JSON Web Tokens)                |          |
+| **Email**    | Resend                               |          |
+| **Testing**  | Vitest                               |          |
+|              | React Testing Library                |          |
+|              | Supertest                            |          |
 
 ---
 
@@ -248,6 +261,9 @@ homesphere/
 │   │    │   ├── MortgageCalculator/        # Monthly payment calculator with useMemo
 │   │    │   ├── ProtectedRoute/            # Protect routes from unauthorized access
 │   │    │   ├── ConfirmModal/              # Reusable confirm dialog (e.g. delete confirmation)
+│   │    │   ├── AIAgent/                   # Conversational property-matching chat widget
+│   │    │   │    ├── AIAgentChat.jsx       # Chat UI, calls POST /api/agent/match
+│   │    │   │    └── AIAgentChat.css
 │   │    │   └── Main/
 │   │    │       ├── RealEstate.jsx         # Filter logic + listings
 │   │    │       └── RealEstateCard/
@@ -275,6 +291,15 @@ homesphere/
     │   └── validate.js                     # Express middleware applying Zod schemas
     ├── scripts/
     │   └── optimize-photos.js              # Bulk-compress existing property photos
+    ├── src/
+    │   └── agent/                          # AI Property Matching Agent (LangGraph pipeline)
+    │       ├── router.ts                    # POST /api/agent/match, rate limiters, request validation
+    │       ├── graph.ts                     # LangGraph pipeline: parse -> search
+    │       ├── parseIntent.ts                # DeepSeek call: message -> structured SearchCriteria
+    │       ├── mergeCriteria.ts              # Merges new criteria with previous turn's criteria
+    │       ├── searchProperties.ts           # Parameterized SQL search against `entries`
+    │       ├── criteriaSchema.ts             # Zod schema for extracted search criteria
+    │       └── llm.ts                        # DeepSeek chat model config (OpenAI-compatible)
     ├── schema.sql                          # Database table definition
     ├── seed.sql                            # Initial data (entries)
     ├── .env
@@ -293,6 +318,7 @@ The backend is a custom Node.js/Express REST API connected to a PostgreSQL datab
 GET  https://homesphere-kifc.onrender.com/api/entries
 GET  https://homesphere-kifc.onrender.com/api/entries/:id
 POST https://homesphere-kifc.onrender.com/api/contact
+POST https://homesphere-kifc.onrender.com/api/agent/match
 ```
 
 ### Protected Endpoints (require valid Supabase JWT):
@@ -341,8 +367,8 @@ The application uses **Supabase Authentication** with JWT-based session manageme
 ### Backend (Render)
 
 - Manual or automatic deployments from GitHub
-- Environment variables: `DATABASE_URL`, `RESEND_API_KEY`, `CONTACT_EMAIL`, `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `SUPABASE_STORAGE_BUCKET`
-- Rate limiting: 3 requests/10min for contact endpoint
+- Environment variables: `DATABASE_URL`, `RESEND_API_KEY`, `CONTACT_EMAIL`, `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `SUPABASE_STORAGE_BUCKET`, `AI_API_KEY`, `AI_MODEL` (optional, see [Configure environment variables](#3-configure-environment-variables))
+- Rate limiting: 3 requests/10min for contact endpoint; AI agent endpoint limited to 5 requests/10min (burst) and 10 requests/24h (daily) per IP
 - Admin endpoint protected with Supabase Auth middleware
 
 ### Continuous Integration
@@ -411,9 +437,15 @@ SUPABASE_SECRET_KEY=your_supabase_secret_key
 
 # Supabase Storage bucket for property photo uploads.
 # Create a PUBLIC bucket with this exact name in the Supabase Dashboard
-# (Storage → New bucket) before using the admin photo upload feature.
+# (Storage → New bucket) before using the admin photo upload feature
 # Defaults to "property-photos" if not set.
 SUPABASE_STORAGE_BUCKET=property-photos
+
+# DeepSeek API key for the AI Property Matching Agent (POST /api/agent/match).
+AI_API_KEY=your_deepseek_api_key
+
+# DeepSeek model used for criteria extraction. Optional, defaults to
+AI_MODEL=deepseek-v4-flash
 ```
 
 #### Create `client/.env`:
@@ -543,9 +575,11 @@ npm run test:run  # run once
 - [x] Advanced search - Price, rooms, size, combined filters
 - [x] Contact inquiries persisted in PostgreSQL and listed in the admin dashboard
 - [x] Demo login (read-only admin)
+- [x] AI Property Matching Agent (conversational search via DeepSeek + LangGraph)
+- [x] Cost-optimized AI prompt (DeepSeek prompt caching + trimmed client-side chat
 
 ### Next Steps
 
-- [ ] AI Agent to help customers
+- [ ] Improved AI Agent
 - [ ] Further SEO / SSR improvements
 - [ ] Expanded API test coverage
