@@ -87,15 +87,29 @@ export default function AIAgentChat({ isOpen, onClose }) {
       const data = await res.json();
 
       if (!res.ok) {
+        // Rate limit (burst or daily) — show the server message in the chat
+        if (res.status === 429) {
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: "assistant",
+              content:
+                data.error || "Too many requests. Please try again later.",
+              suggestions: [],
+            },
+            
+          ]);
+          return;
+        }
         throw new Error(data.error || "Request failed");
       }
+
+      const { content, suggestions } = formatAgentReply(data);
 
       // Remember criteria for next follow-up turn
       if (data.criteria) {
         setLastCriteria(data.criteria);
       }
-
-      const { content, suggestions } = formatAgentReply(data);
 
       setMessages((prev) => [
         ...prev,
