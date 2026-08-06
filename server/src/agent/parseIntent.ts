@@ -6,7 +6,7 @@ export type ChatTurn = { role: "user" | "assistant"; content: string };
 // Fixed rules for model
 // NOTE: this string must stay byte-for-byte identical across requests and remain the very // first "system" turn  -> DeepSeek caches repeated prompt PREFIXES automatically
 // and bills cache hits at a fraction of normal input price
-const SYSTEM_PROMPT = `Extract real-estate search criteria as one JSON object matching the schema. No markdown.
+const SYSTEM_PROMPT = `Extract real-estate search criteria as one JSON object matching the schema. No markdown. Answer in user's language.
  
 Rules:
 - null = not stated.

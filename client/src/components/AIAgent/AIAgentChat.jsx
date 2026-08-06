@@ -11,7 +11,7 @@ export default function AIAgentChat({ isOpen, onClose }) {
     {
       role: "assistant",
       content:
-        'Hello! I’m your personal real estate assistant. Just describe what you’re looking for – e.g.:\n• "House in Portugal, max. €500,000"\n• "4-room rental apartment in Segovia"',
+        'Hello! I’m your personal real estate assistant. Just describe what you’re looking for – e.g.:\n• "Apartment in Portugal, max. €500.000"\n• "4-room rental apartment in Segovia"',
     },
   ]);
   const [input, setInput] = useState("");

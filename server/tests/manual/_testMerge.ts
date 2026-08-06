@@ -1,4 +1,4 @@
-import { mergeCriteria } from "./mergeCriteria.ts";
+import mergeCriteria from "./mergeCriteria.ts";
 import type { SearchCriteria } from "./criteriaSchema.ts";
 
 const previous: SearchCriteria = {
