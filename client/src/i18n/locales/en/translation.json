@@ -216,7 +216,14 @@
       "name": "Name",
       "email": "Email",
       "property": "Property",
-      "message": "Message"
+      "message": "Message",
+      "actions": "Actions",
+      "deleted": "Inquiry deleted successfully!",
+      "deleteError": "Failed to delete inquiry",
+      "deleteConfirm": {
+        "title": "Delete this inquiry?",
+        "message": "Inquiry from \"{{name}}\" will be permanently removed."
+      }
     }
   }
 }

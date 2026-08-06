@@ -7,6 +7,7 @@ import {
   ENTRY_URL,
   UPLOAD_URL,
   INQUIRIES_URL,
+  INQUIRY_URL,
 } from "../../config/api";
 import ConfirmModal from "../../components/ConfirmModal/ConfirmModal";
 import { AnimatePresence } from "framer-motion";
@@ -49,6 +50,7 @@ const Admin = () => {
   const [inquiries, setInquiries] = useState([]);
   const [inquiriesLoading, setInquiriesLoading] = useState(true);
   const [inquiriesError, setInquiriesError] = useState(null);
+  const [deleteInquiryTarget, setDeleteInquiryTarget] = useState(null);
 
   const { t, i18n } = useTranslation();
 
@@ -356,6 +358,31 @@ const Admin = () => {
     );
   };
 
+  // Delete an inquiry by ID
+  const handleDeleteInquiry = async (id) => {
+    if (isDemo) {
+      setFeedback({ type: "error", message: t("admin.demoCannotDelete") });
+      setDeleteInquiryTarget(null);
+      return;
+    }
+    setDeleting(true);
+    try {
+      const res = await fetch(INQUIRY_URL(id), {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${supabaseToken}` },
+      });
+      if (res.status === 401) throw new Error(t("admin.errors.sessionExpired"));
+      if (!res.ok) throw new Error(t("admin.inquiries.deleteError"));
+      setInquiries((prev) => prev.filter((i) => i.id !== id));
+      setFeedback({ type: "success", message: t("admin.inquiries.deleted") });
+    } catch (err) {
+      setFeedback({ type: "error", message: err.message });
+    } finally {
+      setDeleting(false);
+      setDeleteInquiryTarget(null);
+    }
+  };
+
   // RENDER
   if (loading)
     return <div className="admin-loading">{t("admin.loadingEntries")}</div>;
@@ -523,6 +550,7 @@ const Admin = () => {
                   <th>{t("admin.inquiries.email")}</th>
                   <th>{t("admin.inquiries.property")}</th>
                   <th>{t("admin.inquiries.message")}</th>
+                  <th>{t("admin.inquiries.actions")}</th>
                 </tr>
               </thead>
               <tbody className="entries-table-body">
@@ -549,6 +577,20 @@ const Admin = () => {
                       </td>
                       <td>{inq.property || "—"}</td>
                       <td className="inquiries-message">{inq.message}</td>
+                      <td>
+                        <button
+                          className="admin-delete-btn"
+                          onClick={() => setDeleteInquiryTarget(inq)}
+                          disabled={isDemo}
+                          title={
+                            isDemo
+                              ? t("admin.demoDisabledTitle")
+                              : t("admin.deleteTitle")
+                          }
+                        >
+                          <DeleteIcon size={18} />
+                        </button>
+                      </td>
                     </tr>
                   ))
                 )}
@@ -748,6 +790,22 @@ const Admin = () => {
             confirming={deleting}
             onConfirm={() => handleDelete(deleteTarget.id)}
             onCancel={() => setDeleteTarget(null)}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {deleteInquiryTarget && (
+          <ConfirmModal
+            title={t("admin.inquiries.deleteConfirm.title")}
+            message={t("admin.inquiries.deleteConfirm.message", {
+              name: deleteInquiryTarget.name,
+            })}
+            confirmLabel={t("admin.deleteConfirm.confirm")}
+            cancelLabel={t("admin.deleteConfirm.cancel")}
+            confirming={deleting}
+            onConfirm={() => handleDeleteInquiry(deleteInquiryTarget.id)}
+            onCancel={() => setDeleteInquiryTarget(null)}
           />
         )}
       </AnimatePresence>

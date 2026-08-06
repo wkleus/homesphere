@@ -8,5 +8,6 @@ export const ENTRY_URL = (id) => `${API_BASE}/entries/${id}`;
 export const CONTACT_URL = `${API_BASE}/contact`;
 export const UPLOAD_URL = `${API_BASE}/upload`;
 export const INQUIRIES_URL = `${API_BASE}/inquiries`;
+export const INQUIRY_URL = (id) => `${API_BASE}/inquiries/${id}`;
 
 export const AGENT_MATCH_URL = `${API_BASE}/agent/match`; // AI property search

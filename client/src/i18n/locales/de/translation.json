@@ -216,7 +216,14 @@
       "name": "Name",
       "email": "E-Mail",
       "property": "Immobilie",
-      "message": "Nachricht"
+      "message": "Nachricht",
+      "actions": "Aktionen",
+      "deleted": "Anfrage erfolgreich gelöscht!",
+      "deleteError": "Anfrage konnte nicht gelöscht werden",
+      "deleteConfirm": {
+        "title": "Diese Anfrage löschen?",
+        "message": "Anfrage von \"{{name}}\" wird dauerhaft entfernt. Das kann nicht rückgängig gemacht werden."
+      }
     }
   }
 }

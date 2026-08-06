@@ -497,4 +497,32 @@ app.get(
   },
 );
 
+// DELETE /api/inquiries/:id – admin only
+// Deletes an inquiry from the database by ID
+app.delete(
+  "/api/inquiries/:id",
+  adminLimiter,
+  authenticateSupabase,
+  blockDemoWrites,
+  validateParams(idParamSchema),
+  async (req, res) => {
+    try {
+      const result = await pool.query(
+        "DELETE FROM inquiries WHERE id = $1 RETURNING *",
+        [req.params.id],
+      );
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: "Inquiry not found" });
+      }
+      res.json({
+        message: "Inquiry deleted successfully",
+        deleted: transformKeys(result.rows[0]),
+      });
+    } catch (err) {
+      console.error("Database error:", err);
+      res.status(500).json({ error: "Database error" });
+    }
+  },
+);
+
 export default app;
