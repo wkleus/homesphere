@@ -47,7 +47,7 @@ function toSuggestion(row: PropertyRow) {
 }
 
 /** POST /match
- *  Body: { message: string, locale?: "en" | "de" }
+ *  Body: { message, history?, previousCriteria?, locale? }
  *  Runs parse → search and returns status + suggestions */
 router.post("/match", agentLimiter, async (req, res) => {
   const parsed = matchBodySchema.safeParse(req.body);
@@ -55,14 +55,19 @@ router.post("/match", agentLimiter, async (req, res) => {
   if (!parsed.success) {
     return res.status(400).json({
       error: "Validation failed",
-      details: parsed.error.flatten(),
+      details: z.flattenError(parsed.error),
     });
   }
 
-  const { message } = parsed.data;
+  const { message, history, previousCriteria } = parsed.data;
 
   try {
-    const result = await runAgent(message);
+    // Pass short memory so follow-ups keep prior filters
+    const result = await runAgent({
+      message,
+      history,
+      previousCriteria,
+    });
 
     return res.status(200).json({
       status: result.status,
@@ -82,9 +87,18 @@ export default router;
 
 /* Enter in terminal - for test purposes:
 
- curl -X POST http://localhost:3000/api/agent/match   -H "Content-Type: application/json"   -d "{\"message\":\"3-room apartment buy under 500000\"}"
+ curl -X POST http://localhost:3000/api/agent/match \
+  -H "Content-Type: application/json" \
+  -d "{\"message\":\"apartment in Portugal\"}"
+
+  curl -X POST http://localhost:3000/api/agent/match \
+  -H "Content-Type: application/json" \
+  -d "{\"message\":\"lieber zur Miete\",\"history\":[{\"role\":\"user\",\"content\":\"3 room apartment in Portugal buy\"},{\"role\":\"assistant\",\"content\":\"I found 1 listing\"}],\"previousCriteria\":{\"dealType\":\"buy\",\"minRooms\":3,\"maxRooms\":3,\"minPrice\":null,\"maxPrice\":500000,\"minSquareMeters\":null,\"maxSquareMeters\":null,\"categories\":[\"Apartment\"],\"locationHints\":[\"Portugal\"],\"energyClass\":null,\"onlyAvailable\":true,\"needMoreInfo\":false,\"followUpQuestion\":null}}"
 
  Output (example):
 
- {"status":"ok","criteria":{"dealType":"buy","minRooms":3,"maxRooms":null,"minPrice":null,"maxPrice":500000,"minSquareMeters":null,"maxSquareMeters":null,"categories":["Apartment"],"locationHints":null,"energyClass":null,"onlyAvailable":true,"needMoreInfo":false,"followUpQuestion":null},"suggestions":[{"id":32,"address":"Rua das Flores 10, Braga, Portugal","isAvailable":true,"energyClass":"C","buy":310000,"rent":null,"photo":"/photos/apartment_5.webp","rooms":3,"squareMeters":72, "category":"Apartment","yearBuilt":1996}],"followUpQuestion":null} 
- */
+ {"status":"ok","criteria":{"dealType":null,"minRooms":null,"maxRooms":null,"minPrice":null,"maxPrice":null,"minSquareMeters":null,"maxSquareMeters":null,"categories":["Apartment"],"locationHints":["Portugal"],"energyClass":null,"onlyAvailable":true,"needMoreInfo":false,"followUpQuestion":null},"suggestions":[{"id":32,"address":"Rua das Flores 10, Braga, Portugal","isAvailable":true,"energyClass":"C","buy":310000,"rent":null,"photo":"/photos/apartment_5.webp","rooms":3,"squareMeters":72,"category":"Apartment","yearBuilt":1996}],"followUpQuestion":null}
+
+ {"status":"no_match","criteria":{"dealType":"rent","minRooms":3,"maxRooms":3,"minPrice":null,"maxPrice":500000,"minSquareMeters":null,"maxSquareMeters":null,"categories":["Apartment"],"locationHints":["Portugal"],"energyClass":null,"onlyAvailable":true,"needMoreInfo":false,"followUpQuestion":null},"suggestions":[],"followUpQuestion":null}
+
+*/
