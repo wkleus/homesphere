@@ -293,13 +293,15 @@ homesphere/
     │   └── optimize-photos.js              # Bulk-compress existing property photos
     ├── src/
     │   └── agent/                          # AI Property Matching Agent (LangGraph pipeline)
-    │       ├── router.ts                    # POST /api/agent/match, rate limiters, request validation
-    │       ├── graph.ts                     # LangGraph pipeline: parse -> search
-    │       ├── parseIntent.ts                # DeepSeek call: message -> structured SearchCriteria
-    │       ├── mergeCriteria.ts              # Merges new criteria with previous turn's criteria
-    │       ├── searchProperties.ts           # Parameterized SQL search against `entries`
-    │       ├── criteriaSchema.ts             # Zod schema for extracted search criteria
-    │       └── llm.ts                        # DeepSeek chat model config (OpenAI-compatible)
+    │       ├── router.ts                   # POST /api/agent/match, rate limiters, request validation
+    │       ├── graph.ts                    # LangGraph pipeline: parse -> search
+    │       ├── parseIntent.ts              # DeepSeek call: message -> structured SearchCriteria
+    │       ├── mergeCriteria.ts            # Merges new criteria with previous turn's criteria
+    │       ├── searchProperties.ts         # Parameterized SQL search against `entries`
+    │       ├── criteriaSchema.ts           # Zod schema for extracted search criteria
+    │       └── llm.ts                      # DeepSeek chat model config (OpenAI-compatible)
+    ├── migrations/                         # One-off SQL changes applied to the live DB, in order
+    │   └── 0001_enable_rls_entries.sql     # Enables RLS on `entries`, adds public read-only policy
     ├── schema.sql                          # Database table definition
     ├── seed.sql                            # Initial data (entries)
     ├── .env
@@ -411,6 +413,8 @@ Create a PostgreSQL database (e.g. on [Supabase](https://supabase.com)) and run 
 server/schema.sql   ← creates the entries table
 server/seed.sql     ← inserts all entries
 ```
+
+For a new database, the `server/schema.sql` file is sufficient — it always reflects the current schema. For an existing database (e.g., a live Supabase project), the corresponding files from the `server/migrations/` directory must be executed in the order of their filenames instead, in order to apply only the specific changes (which are already included in `schema.sql`).
 
 ### 3. Configure environment variables
 
