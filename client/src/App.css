@@ -116,6 +116,21 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
+/* On small screens, keep just the round icon — dropping the label pill
+   shrinks the button's footprint, so it needs less reserved space
+   below the listings (see .realEstate margin-bottom in RealEstate.css)
+   and covers less of the page either way. */
+@media screen and (max-width: 640px) {
+  .ai-chat-toggle {
+    bottom: 14px;
+    right: 14px;
+  }
+
+  .ai-chat-toggle__label {
+    display: none;
+  }
+}
+
 /* AI Chat Button Animations */
 @keyframes pulse-ring {
   0% {
