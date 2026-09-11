@@ -3,9 +3,8 @@
   max-width: 1800px;
   margin: 0 auto;
   justify-content: center;
-  /* gap: 1rem; */
   padding: 1rem;
-  /* new element will be placed on a new line when it doesn't fit */
+  /* new element will be placed on new line when it doesn't fit */
   flex-wrap: wrap;
 }
 
@@ -14,7 +13,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 2.5rem;
+  gap: 1rem;
   padding: 1.2rem 2rem;
   background: white;
   border-bottom: 2px solid #eee;
@@ -146,6 +145,14 @@
   line-height: 1;
 }
 
+.filter-advanced-toggle-label-short {
+  display: none;
+}
+
+.filter-label-short {
+  display: none;
+}
+
 .filter-advanced {
   display: flex;
   flex-wrap: wrap;
@@ -208,7 +215,7 @@
 }
 
 .filter-input--price {
-  width: 6rem;
+  width: 5rem;
 }
 
 .filter-select {
@@ -300,35 +307,10 @@
   }
 }
 
-@media screen and (max-width: 768px) {
-  .filter-bar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .filter-count {
-    margin-left: 0;
-  }
-
-  .filter-advanced {
-    padding: 0.9rem 1rem;
-  }
-}
-
 @media screen and (max-width: 480px) {
   .filter-bar {
     padding: 1rem;
     gap: 0.8rem;
-  }
-
-  .filter-buttons {
-    gap: 0.35rem;
-  }
-
-  .filter-btn {
-    padding: 0.35rem 0.75rem;
-    font-size: 0.78rem;
   }
 
   .filter-advanced {
@@ -352,28 +334,157 @@
     gap: 0.7rem;
   }
 
-  .filter-group {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.4rem;
-    width: 100%;
-  }
-
-  .filter-buttons {
-    gap: 0.3rem;
-    width: 100%;
-  }
-
-  .filter-btn {
-    flex: 1;
-    padding: 0.4rem 0.7rem;
-    font-size: 0.75rem;
-    text-align: center;
-  }
-
   .filter-count {
     margin-top: 0.5rem;
     text-align: center;
     width: 100%;
+  }
+}
+
+/* Hide the result count ("X entries found") below 1160px */
+@media screen and (max-width: 1159px) {
+  .filter-count {
+    display: none;
+  }
+
+  .filter-bar {
+    justify-content: center;
+  }
+}
+
+@media screen and (min-width: 770px) {
+  .filter-group--cattype-mobile {
+    display: none;
+  }
+}
+
+/* Below 770px: "More filters" shrinks to "Filter". Category and Type
+   move out of the top filter bar and into the "More filters" panel
+   Advanced panel uses a 3-column grid (on screens ≥450px). */
+@media screen and (max-width: 769px) {
+  .filter-bar > .filter-group--cattype {
+    display: none;
+  }
+
+  .filter-bar {
+    justify-content: center;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .filter-count {
+    margin-left: 0;
+  }
+
+  .filter-advanced-toggle-label-full {
+    display: none;
+  }
+
+  .filter-advanced-toggle-label-short {
+    display: inline;
+  }
+
+  .filter-advanced {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.9rem 1rem;
+    line-height: 1.2;
+    padding: 0.9rem 1rem;
+  }
+
+  .filter-advanced .filter-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    width: auto;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  /* Reset spans all columns */
+  .filter-advanced .filter-reset {
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
+
+  .filter-advanced .filter-label {
+    font-size: 0.75rem;
+  }
+
+  .filter-advanced .filter-input,
+  .filter-advanced .filter-select,
+  .filter-advanced .filter-range-sep,
+  .filter-advanced .filter-reset {
+    font-size: 0.78rem;
+    line-height: 1.2;
+  }
+
+  .filter-advanced .filter-input {
+    padding: 0.28rem 0.5rem;
+  }
+
+  .filter-advanced .filter-select {
+    padding: 0.28rem 0.6rem;
+    width: 100%;
+  }
+
+  .filter-advanced .filter-range {
+    width: 100%;
+    gap: 0.35rem;
+  }
+
+  .filter-advanced .filter-buttons {
+    width: 100%;
+  }
+}
+
+/* Below 450px: back to 2 columns + tighter text */
+@media screen and (max-width: 449px) {
+  .filter-label-full {
+    display: none;
+  }
+
+  .filter-label-short {
+    display: inline;
+  }
+
+  .filter-advanced {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem 0.8rem;
+    line-height: 1.05;
+  }
+
+  .filter-advanced .filter-group {
+    gap: 0.3rem;
+  }
+
+  .filter-advanced .filter-label {
+    font-size: 0.68rem;
+  }
+
+  .filter-advanced .filter-input,
+  .filter-advanced .filter-select,
+  .filter-advanced .filter-range-sep,
+  .filter-advanced .filter-reset {
+    font-size: 0.7rem;
+    line-height: 1.05;
+  }
+
+  .filter-advanced .filter-input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.2rem 0.35rem;
+    box-sizing: border-box;
+  }
+
+  .filter-advanced .filter-select {
+    width: 100%;
+    padding: 0.2rem 0.45rem;
+    box-sizing: border-box;
+  }
+
+  .filter-advanced .filter-range {
+    gap: 0.3rem;
   }
 }

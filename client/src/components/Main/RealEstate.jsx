@@ -200,7 +200,7 @@ const RealEstate = () => {
       <Heading available={available} />
       <main>
         <div className="filter-bar">
-          <div className="filter-group">
+          <div className="filter-group filter-group--cattype">
             <span className="filter-label">{t("filter.category")}</span>
             <div className="filter-buttons">
               {CATEGORIES.map((cat, i) => (
@@ -215,7 +215,7 @@ const RealEstate = () => {
               ))}
             </div>
           </div>
-          <div className="filter-group">
+          <div className="filter-group filter-group--cattype">
             <span className="filter-label">{t("filter.type")}</span>
             <div className="filter-buttons">
               {DEAL_TYPES.map((deal, i) => (
@@ -237,7 +237,10 @@ const RealEstate = () => {
             onClick={() => setShowAdvanced((prev) => !prev)}
             aria-expanded={showAdvanced}
           >
-            {t("filter.moreFilters")}
+            <span className="filter-advanced-toggle-label-full">
+              {t("filter.moreFilters")}
+            </span>
+            <span className="filter-advanced-toggle-label-short">Filter</span>
             {activeAdvancedCount > 0 && (
               <span className="filter-badge">{activeAdvancedCount}</span>
             )}
@@ -283,7 +286,10 @@ const RealEstate = () => {
 
             {/* Square meters */}
             <div className="filter-group">
-              <span className="filter-label">{t("filter.area")}</span>
+              <span className="filter-label">
+                <span className="filter-label-full">{t("filter.area")}</span>
+                <span className="filter-label-short">m²</span>
+              </span>
               <div className="filter-range">
                 <input
                   type="number"
@@ -335,6 +341,42 @@ const RealEstate = () => {
                   aria-label={t("filter.maxPrice")}
                 />
               </div>
+            </div>
+
+            {/* Category + Type — duplicated here for narrow screens only
+                (<770px), where they're hidden from the top filter bar and
+                instead live inside "More filters" next to Energy class.
+                Rendered as <select> dropdowns to match Energy class's
+                collapsed/expandable behavior. */}
+            <div className="filter-group filter-group--cattype-mobile">
+              <span className="filter-label">{t("filter.category")}</span>
+              <select
+                className="filter-select"
+                value={activeCategory}
+                onChange={(e) => handleCategoryChange(e.target.value)}
+                aria-label={t("filter.category")}
+              >
+                {CATEGORY_KEYS.map((key, i) => (
+                  <option key={`mobile-${key}`} value={key}>
+                    {CATEGORIES[i]}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="filter-group filter-group--cattype-mobile">
+              <span className="filter-label">{t("filter.type")}</span>
+              <select
+                className="filter-select"
+                value={activeDeal}
+                onChange={(e) => handleDealChange(e.target.value)}
+                aria-label={t("filter.type")}
+              >
+                {DEAL_KEYS.map((key, i) => (
+                  <option key={`mobile-${key}`} value={key}>
+                    {DEAL_TYPES[i]}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Energy class */}
