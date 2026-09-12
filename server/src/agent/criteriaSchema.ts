@@ -44,3 +44,28 @@ export const criteriaSchema = z.object({
 });
 
 export type SearchCriteria = z.infer<typeof criteriaSchema>;
+
+/* 
+  Same structure as `criteriaSchema`, but with field-level fault tolerance: a missing or
+  invalid value defaults to `null` (or `false` for `needMoreInfo`) instead of
+  triggering an error. This is used for Free.ai’s small, self-hosted model (qwen7b), which
+  occasionally omits fields or returns values ​​outside the enum definition—these cases should
+  be treated silently as "unspecified" rather than wasting a DeepSeek fallback call
+  on an incomplete yet still useful response. DeepSeek continues to use the
+  strict `criteriaSchema`, as it does not require this fault tolerance
+*/
+export const lenientCriteriaSchema = z.object({
+  dealType: z.enum(["buy", "rent", "any"]).nullable().catch(null),
+  minRooms: z.number().int().positive().nullable().catch(null),
+  maxRooms: z.number().int().positive().nullable().catch(null),
+  minPrice: z.number().int().nonnegative().nullable().catch(null),
+  maxPrice: z.number().int().nonnegative().nullable().catch(null),
+  minSquareMeters: z.number().int().positive().nullable().catch(null),
+  maxSquareMeters: z.number().int().positive().nullable().catch(null),
+  categories: z.array(categoryEnum).nullable().catch(null),
+  locationHints: z.array(z.string().min(1)).nullable().catch(null),
+  energyClass: z.string().min(1).max(5).nullable().catch(null),
+  onlyAvailable: z.boolean().nullable().catch(null),
+  needMoreInfo: z.boolean().catch(false),
+  followUpQuestion: z.string().nullable().catch(null),
+});
