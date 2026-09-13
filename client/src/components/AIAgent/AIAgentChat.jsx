@@ -1,19 +1,19 @@
 import { useState, useRef, useEffect } from "react";
-import { X, Bot } from "lucide-react";
+import { X, Bot, Trash2 } from "lucide-react";
 import "./AIAgentChat.css";
 import { MdOutlineForwardToInbox, MdPersonOutline } from "react-icons/md";
 import { MdHourglassEmpty } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { AGENT_MATCH_URL } from "../../config/api";
 
+const INITIAL_MESSAGE = {
+  role: "assistant",
+  content:
+    'Hello! I’m your personal real estate assistant. Just describe what you’re looking for – e.g.:\n• "Apartment in Portugal, max. €500.000"\n• "4-room rental apartment in Segovia"',
+};
+
 export default function AIAgentChat({ isOpen, onClose }) {
-  const [messages, setMessages] = useState([
-    {
-      role: "assistant",
-      content:
-        'Hello! I’m your personal real estate assistant. Just describe what you’re looking for – e.g.:\n• "Apartment in Portugal, max. €500.000"\n• "4-room rental apartment in Segovia"',
-    },
-  ]);
+  const [messages, setMessages] = useState([INITIAL_MESSAGE]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   // Last search criteria from API — sent back so follow-ups keep filters
@@ -97,7 +97,6 @@ export default function AIAgentChat({ isOpen, onClose }) {
                 data.error || "Too many requests. Please try again later.",
               suggestions: [],
             },
-            
           ]);
           return;
         }
@@ -129,6 +128,13 @@ export default function AIAgentChat({ isOpen, onClose }) {
     }
   };
 
+  // Reset the conversation back to just the initial greeting, and drop any
+  // remembered search criteria so a fresh chat doesn't carry over old filters
+  const clearChat = () => {
+    setMessages([INITIAL_MESSAGE]);
+    setLastCriteria(null);
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -146,13 +152,24 @@ export default function AIAgentChat({ isOpen, onClose }) {
             </span>
             <span>AI Real Estate Assistant</span>
           </div>
-          <button
-            onClick={onClose}
-            className="ai-chat-close"
-            aria-label="Close chat window"
-          >
-            <X size={20} strokeWidth={1.5} />
-          </button>
+          <div className="ai-chat-header-actions">
+            <button
+              onClick={clearChat}
+              className="ai-chat-clear"
+              aria-label="Delete all chat messages"
+              title="Delete all chat messages"
+              disabled={isLoading}
+            >
+              <Trash2 size={18} strokeWidth={1.5} />
+            </button>
+            <button
+              onClick={onClose}
+              className="ai-chat-close"
+              aria-label="Close chat window"
+            >
+              <X size={20} strokeWidth={1.5} />
+            </button>
+          </div>
         </div>
 
         {/* Messages */}

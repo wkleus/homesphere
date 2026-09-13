@@ -29,10 +29,10 @@
 
 .filter-label {
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: #355fa7;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.2px;
   white-space: nowrap;
 }
 
@@ -43,7 +43,7 @@
 }
 
 .filter-btn {
-  padding: 0.3rem 0.9rem;
+  padding: 0.3rem 0.7rem;
   border: 2px solid #ccc;
   border-radius: 20px;
   background: white;
@@ -95,7 +95,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.3rem 0.9rem;
+  padding: 0.3rem 0.7rem;
   border: 2px solid #ccc;
   border-radius: 20px;
   background: white;
@@ -190,10 +190,10 @@
 
 .filter-input {
   width: 4.5rem;
-  padding: 0.35rem 0.6rem;
+  padding: 0.2rem 0.3rem;
   border: 2px solid #ccc;
   border-radius: 8px;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-family: inherit;
   color: #333;
   background: white;
@@ -214,22 +214,23 @@
   font-weight: 600;
 }
 
-.filter-input--price {
+/* .filter-input--price {
   width: 5rem;
-}
+} */
 
 .filter-select {
-  padding: 0.35rem 0.75rem;
+  padding: 0.15rem 0.75rem;
   border: 2px solid #ccc;
   border-radius: 8px;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-family: inherit;
   font-weight: 600;
   color: #333;
   background: white;
   cursor: pointer;
   transition: border-color 0.2s;
-  min-width: 5rem;
+  min-width: 4.5rem;
+  max-width: 10.25rem;
 }
 
 .filter-select:focus {
@@ -319,6 +320,7 @@
 
   .filter-input {
     width: 4rem;
+    max-width: 5rem;
   }
 }
 
@@ -349,6 +351,12 @@
 
   .filter-bar {
     justify-content: center;
+  }
+}
+
+@media screen and (min-width: 1160px) {
+  .filter-advanced-toggle {
+    margin-left: 6rem;
   }
 }
 

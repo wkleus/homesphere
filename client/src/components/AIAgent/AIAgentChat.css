@@ -59,6 +59,12 @@
   height: 32px;
 }
 
+.ai-chat-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .ai-chat-close {
   background: none;
   border: none;
@@ -77,6 +83,29 @@
 .ai-chat-close:hover {
   color: white;
   background: rgba(255, 255, 255, 0.15);
+}
+
+.ai-chat-clear {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.85);
+  padding: 4px;
+  border-radius: 6px;
+  transition:
+    color 0.2s,
+    background 0.2s;
+  display: flex;
+}
+
+.ai-chat-clear:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.ai-chat-clear:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 /* Messages */
