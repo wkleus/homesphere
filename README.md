@@ -30,11 +30,13 @@ The demo account is **read-only**: listing and inquiry views work; create, edit,
 
 ---
 
-HomeSphere is a full-stack real estate platform for property seekers and administrators. Browse listings across Europe, filter by category and deal type, save favorites, and contact agents via email.An advanced search enables combined filtering across key property attributes for fast, precise results. A conversational AI Property Matching Agent (DeepSeek + LangGraph) lets users describe what they're looking for in plain language and get matching listings. Admins can manage the entire property catalog through a protected dashboard.
+HomeSphere is a full-stack real estate platform for property seekers and administrators. Browse listings across Europe, filter by category and deal type, save favorites, and contact agents via email.An advanced search enables combined filtering across key property attributes for fast, precise results. A conversational AI Property Matching Agent (Free.ai + DeepSeek fallback, via LangGraph) lets users describe what they're looking for in plain language and get matching listings. Admins can manage the entire property catalog through a protected dashboard.
 
-**Tech Stack:** React frontend with a Node.js/Express REST API, PostgreSQL on Supabase, DeepSeek (via LangGraph) for AI-powered search, Resend for emails, and react‑i18next for multilingual support (EN/DE).
+**Tech Stack:** React frontend with a Node.js/Express REST API, PostgreSQL on Supabase, Free.ai (primary) with DeepSeek as a cost-control fallback (via LangGraph) for AI-powered search, Resend for emails, and react‑i18next for multilingual support (EN/DE).
 
 Built with **security**, **performance**, and **user experience** in mind – featuring Supabase Authentication, JWT-based session management, lazy loading, and a fully responsive design.
+
+---
 
 ## Screenshots
 
@@ -83,11 +85,16 @@ Built with **security**, **performance**, and **user experience** in mind – fe
 ### AI Property Matching Agent
 
 - Conversational search: describe what you're looking for in plain language (EN/DE) and get matching listings
-- `POST /api/agent/match` runs a LangGraph pipeline (`parse` → `search`): DeepSeek extracts structured search criteria from the message, then a parameterized SQL query searches `entries`
+- `POST /api/agent/match` runs a LangGraph pipeline (`parse` → `search`): an LLM extracts structured search criteria from the message, then a parameterized SQL query searches `entries`
+- **Cost-optimized dual-provider setup:** Free.ai (solid free daily token budget) is tried first; DeepSeek is used as a fallback once Free.ai's budget is exhausted
+  - On a `402` (budget exhausted) response, a circuit breaker skips Free.ai entirely for a configurable cooldown (default 24h) so subsequent requests go straight to DeepSeek instead of repeatedly failing against Free.ai
+  - On a `429` (rate limit), a brief retry is attempted on Free.ai before falling back
+  - Free.ai's response is validated with a fault-tolerant schema (missing/invalid fields fall back to `null`) to accommodate its smaller self-hosted model; DeepSeek uses a strict schema via LangChain's structured output
 - Multi-turn follow-ups (e.g. "rent instead") merge with the previous turn's criteria server-side, so the model only needs to return what changed
 - Clarifying questions (`needMoreInfo` / `followUpQuestion`) when a request is too vague to search
 - Rate limited to 20 requests / 10 minutes per IP
-- Cost-optimized: fixed, byte-identical system prompt kept as the first message so DeepSeek's automatic prompt caching applies, plus a trimmed client-side chat history (last 4 turns, greeting excluded)
+- Cost-optimized prompting: fixed, byte-identical system prompt kept as the first message so DeepSeek's automatic prompt caching applies, plus a trimmed client-side chat history (last 4 turns, greeting excluded)
+- Chat widget includes a button to clear the conversation and reset remembered search criteria
 
 ### Authentication & Security
 
@@ -293,6 +300,7 @@ homesphere/
     │   └── optimize-photos.js              # Bulk-compress existing property photos
     ├── src/
     │   └── agent/                          # AI Property Matching Agent (LangGraph pipeline)
+    │       ├── aiProviderCircuit.ts
     │       ├── router.ts                   # POST /api/agent/match, rate limiters, request validation
     │       ├── graph.ts                    # LangGraph pipeline: parse -> search
     │       ├── parseIntent.ts              # DeepSeek call: message -> structured SearchCriteria
@@ -446,10 +454,23 @@ SUPABASE_SECRET_KEY=your_supabase_secret_key
 SUPABASE_STORAGE_BUCKET=property-photos
 
 # DeepSeek API key for the AI Property Matching Agent (POST /api/agent/match).
+# Used as the fallback once Free.ai's budget is exhausted.
 AI_API_KEY=your_deepseek_api_key
 
 # DeepSeek model used for criteria extraction. Optional, defaults to
 AI_MODEL=deepseek-v4-flash
+
+# Free.ai API key for the AI Property Matching Agent — tried first, before
+# falling back to DeepSeek. Get one at https://free.ai
+FREE_AI_API_KEY=your_free_ai_api_key
+
+# Free.ai model used for criteria extraction. Optional, defaults to
+# "qwen7b" (Free.ai's self-hosted, free-tier model).
+FREE_AI_MODEL=qwen7b
+
+# How long (in ms) to skip Free.ai after it returns a 402 ("budget
+# exhausted") before trying it again. Optional, defaults to 24h.
+FREE_AI_COOLDOWN_MS=86400000
 ```
 
 #### Create `client/.env`:
@@ -581,6 +602,8 @@ npm run test:run  # run once
 - [x] Demo login (read-only admin)
 - [x] AI Property Matching Agent (conversational search via DeepSeek + LangGraph)
 - [x] Cost-optimized AI prompt (DeepSeek prompt caching + trimmed client-side chat
+- [x] Dual-provider AI setup: Free.ai as primary with DeepSeek fallback + circuit breaker, to reduce DeepSeek costs
+- [x] Chat widget: button to clear conversation history and reset search criteria
 
 ### Next Steps
 
